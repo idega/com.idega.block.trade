@@ -1,71 +1,38 @@
 package com.idega.block.trade.stockroom.data;
 
-
-
 import com.idega.block.tpos.data.TPosMerchantHome;
 import com.idega.block.tpos.data.TPosMerchant;
 import javax.ejb.*;
 import java.rmi.RemoteException;
 import java.sql.*;
-
 import java.util.*;
-
 import com.idega.data.IDOLegacyEntity;
-
 import com.idega.core.data.*;
-
 import com.idega.data.*;
-
 import com.idega.block.trade.stockroom.business.SupplierManager;
-
 import com.idega.block.employment.data.EmployeeGroup;
-
 import com.idega.core.accesscontrol.data.PermissionGroup;
 
-
-
-
 /**
-
  * Title:        IW Trade
-
  * Description:
-
  * Copyright:    Copyright (c) 2001
-
  * Company:      idega.is
-
  * @author 2000 - idega team - <br><a href="mailto:gummi@idega.is">Guðmundur Ágúst Sæmundsson</a><br><a href="mailto:gimmi@idega.is">Grímur Jónsson</a>
-
  * @version 1.0
-
  */
-
-
-
 
 
 public class SupplierBMPBean extends com.idega.data.GenericEntity implements com.idega.block.trade.stockroom.data.Supplier {
 
-
-
   private String newName;
 
-
-
   public SupplierBMPBean(){
-
           super();
-
   }
-
   public SupplierBMPBean(int id)throws SQLException{
-
           super(id);
-
   }
-
-
 
   public void initializeAttributes(){
     addAttribute(getIDColumnName());
@@ -78,7 +45,6 @@ public class SupplierBMPBean extends com.idega.data.GenericEntity implements com
     this.addManyToManyRelationShip(Address.class,"SR_SUPPLIER_IC_ADDRESS");
     this.addManyToManyRelationShip(Phone.class,"SR_SUPPLIER_IC_PHONE");
     this.addManyToManyRelationShip(Email.class,"SR_SUPPLIER_IC_EMAIL");
-//    this.addManyToManyRelationShip(PriceCategory.class, "SR_SUPPLIER_PRICE_CATEGORY");
     this.addManyToManyRelationShip(ProductCategory.class, "SR_SUPPLIER_PRODUCT_CATEGORY" );
     this.addManyToManyRelationShip(Reseller.class);
   }
@@ -202,12 +168,7 @@ public class SupplierBMPBean extends com.idega.data.GenericEntity implements com
   public void update() throws SQLException {
     if (newName != null) {
       PermissionGroup pGroup = SupplierManager.getPermissionGroup(this);
-        try {
-          pGroup.setName(newName+"_"+this.getID()+SupplierManager.permissionGroupNameExtention);
-        }
-        catch (RemoteException ex) {
-          throw new EJBException(ex);
-        }
+        pGroup.setName(newName+"_"+this.getID()+SupplierManager.permissionGroupNameExtention);
         pGroup.update();
       SupplierStaffGroup sGroup = SupplierManager.getSupplierStaffGroup(this);
         sGroup.setName(newName+"_"+this.getID());
@@ -264,6 +225,10 @@ public class SupplierBMPBean extends com.idega.data.GenericEntity implements com
     } else {
       return shome.create(this);
     }
+  }
+
+  public Collection getProductCategories() throws IDORelationshipException{
+    return this.idoGetRelatedEntities(ProductCategory.class);
   }
 
 }
