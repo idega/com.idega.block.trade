@@ -1,0 +1,10 @@
+#Wed Jan 14 00:49:01 GMT 2004
+iw.component.com.idega.block.trade.stockroom.presentation.ProductViewer.name=ProductViewer
+iw.component.com.idega.block.trade.stockroom.presentation.ProductItemTeaser.name=ProductItemTeaser
+iw.component.com.idega.block.trade.stockroom.presentation.ProductItemThumbnail.name=ProductItemThumbnail
+iw.component.com.idega.block.trade.stockroom.presentation.ProductCatalog.name=ProductCatalog
+iw.component.com.idega.block.trade.stockroom.presentation.ProductItemDescription.name=ProductItemDescription
+iw.component.com.idega.block.trade.stockroom.presentation.ProductItemNumber.name=ProductItemNumber
+iw.component.com.idega.block.trade.stockroom.presentation.ProductItemPrice.name=ProductItemPrice
+iw.component.com.idega.block.trade.stockroom.presentation.ProductItemName.name=ProductItemName
+iw.component.com.idega.block.trade.stockroom.presentation.ProductItemImages.name=ProductItemImages
