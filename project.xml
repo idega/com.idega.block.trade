@@ -5,7 +5,7 @@
   <pomVersion>3</pomVersion>
   <name>idegaWeb Trade Block</name>
   <artifactId>com.idega.block.trade</artifactId>
-  <currentVersion>1.1</currentVersion>
+  <currentVersion>1.2-SNAPSHOT</currentVersion>
   <versions>
     <version>
       <id>1.0</id>
@@ -61,9 +61,9 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.core</artifactId>
-      <version>1.9</version>
-      <!--<version>SNAPSHOT</version>-->
-
+      <!--<version>1.9</version>-->
+      <version>SNAPSHOT</version>
+      
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -73,9 +73,9 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.category</artifactId>
-      <version>1.0</version>
-      <!--<version>SNAPSHOT</version>-->
-
+      <!--<version>1.0</version>-->
+      <version>SNAPSHOT</version>
+      
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -85,8 +85,8 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.builder</artifactId>
-      <version>1.1</version>
-      <!--<version>SNAPSHOT</version>-->
+      <!--<version>1.1</version>-->
+      <version>SNAPSHOT</version>
 
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -97,8 +97,8 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.media</artifactId>
-      <version>1.0</version>
-      <!--<version>SNAPSHOT</version>-->
+      <!--<version>1.0</version>-->
+      <version>SNAPSHOT</version>
 
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -109,8 +109,8 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.image</artifactId>
-      <version>1.0</version>
-      <!--<version>SNAPSHOT</version>-->
+      <!--<version>1.0</version>-->
+      <version>SNAPSHOT</version>
 
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -121,8 +121,8 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.text</artifactId>
-      <version>1.0</version>
-      <!--<version>SNAPSHOT</version>-->
+      <!--<version>1.0</version>-->
+      <version>SNAPSHOT</version>
 
       <type>jar</type>
       <url>http://www.idega.com/</url>
