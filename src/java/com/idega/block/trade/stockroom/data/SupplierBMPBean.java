@@ -24,6 +24,7 @@ import com.idega.core.accesscontrol.data.PermissionGroup;
 
 
 
+
 /**
 
  * Title:        IW Trade
@@ -201,7 +202,12 @@ public class SupplierBMPBean extends com.idega.data.GenericEntity implements com
   public void update() throws SQLException {
     if (newName != null) {
       PermissionGroup pGroup = SupplierManager.getPermissionGroup(this);
-        pGroup.setName(newName+"_"+this.getID()+SupplierManager.permissionGroupNameExtention);
+        try {
+          pGroup.setName(newName+"_"+this.getID()+SupplierManager.permissionGroupNameExtention);
+        }
+        catch (RemoteException ex) {
+          throw new EJBException(ex);
+        }
         pGroup.update();
       SupplierStaffGroup sGroup = SupplierManager.getSupplierStaffGroup(this);
         sGroup.setName(newName+"_"+this.getID());
