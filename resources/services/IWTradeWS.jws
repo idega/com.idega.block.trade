@@ -9,11 +9,11 @@ public class IWTradeWS {
 	private final String SUCCESS = "iwtravel-ok";
 	private final String FAILED  = "iwtravel-failed";
 	
-	public String invalidateProductCache(String productID) {
+	public String invalidateProductCache(String productID, String remoteCallingHostName) {
 		ProductBusiness pb;
 		try {
 			pb = (ProductBusiness) IBOLookup.getServiceInstance(IWMainApplication.getDefaultIWApplicationContext(), ProductBusiness.class);
-			String remoteCallingHostName = com.idega.axis.util.AxisUtil.getHttpServletRequest().getRemoteHost();
+			//String remoteCallingHostName = com.idega.axis.util.AxisUtil.getHttpServletRequest().getRemoteHost();
 			boolean success = pb.invalidateProductCache(productID, remoteCallingHostName);
 			if(success){
 				return SUCCESS;
@@ -27,11 +27,11 @@ public class IWTradeWS {
 			return "Service failed to decache product = "+productID+". The error message was :"+e.getMessage();
 		}
 	}
-	public String clearAddressMaps(String productID) {
+	public String clearAddressMaps(String productID, String remoteCallingHostName) {
 		ProductBusiness pb;
 		try {
 			pb = (ProductBusiness) IBOLookup.getServiceInstance(IWMainApplication.getDefaultIWApplicationContext(), ProductBusiness.class);
-			String remoteCallingHostName = com.idega.axis.util.AxisUtil.getHttpServletRequest().getRemoteHost();
+			//String remoteCallingHostName = com.idega.axis.util.AxisUtil.getHttpServletRequest().getRemoteHost();
 			boolean success = pb.clearAddressMaps(productID, remoteCallingHostName);
 			if(success){
 				return SUCCESS;
@@ -46,11 +46,11 @@ public class IWTradeWS {
 		}
 	}	
 	
-	public String clearProductCache(String supplierID) {
+	public String clearProductCache(String supplierID, String remoteCallingHostName) {
 		ProductBusiness pb;
 		try {
 			pb = (ProductBusiness) IBOLookup.getServiceInstance(IWMainApplication.getDefaultIWApplicationContext(), ProductBusiness.class);
-			String remoteCallingHostName = com.idega.axis.util.AxisUtil.getHttpServletRequest().getRemoteHost();
+			//String remoteCallingHostName = com.idega.axis.util.AxisUtil.getHttpServletRequest().getRemoteHost();
 			boolean success = pb.clearProductCache(supplierID, remoteCallingHostName);
 			if(success){
 				return SUCCESS;
@@ -65,11 +65,11 @@ public class IWTradeWS {
 		}
 	}	
 	
-	public String invalidatePriceCache(String productID) {
+	public String invalidatePriceCache(String productID, String remoteCallingHostName) {
 		ProductPriceBusiness pb;
 		try {
 			pb = (ProductPriceBusiness) IBOLookup.getServiceInstance(IWMainApplication.getDefaultIWApplicationContext(), ProductPriceBusiness.class);
-			String remoteCallingHostName = com.idega.axis.util.AxisUtil.getHttpServletRequest().getRemoteHost();
+			//String remoteCallingHostName = com.idega.axis.util.AxisUtil.getHttpServletRequest().getRemoteHost();
 			boolean success = pb.invalidateCache(productID, remoteCallingHostName);
 			if(success){
 				return SUCCESS;
