@@ -15,6 +15,8 @@
   </classpathentry>
   <classpathentry kind="src" path="/com.idega.block.image">
   </classpathentry>
+  <classpathentry kind="src" path="/org.apache.axis">
+  </classpathentry>
   <classpathentry kind="src" path="/com.idega.block.text">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar">
