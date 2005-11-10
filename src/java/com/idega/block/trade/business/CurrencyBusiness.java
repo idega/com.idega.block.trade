@@ -60,7 +60,7 @@ public class CurrencyBusiness {
 	public static String currencyUrl = null;
 	public static IWTimestamp lastUpdate = null;
 	
-	public static void getCurrencyMap(IWBundle bundle) throws RemoteException, CreateException {
+	public static synchronized void getCurrencyMap(IWBundle bundle) throws RemoteException, CreateException {
 		IWTimestamp stamp = new IWTimestamp();
 		file = null;
 
@@ -121,23 +121,28 @@ public class CurrencyBusiness {
 
 				holder = new CurrencyHolder();
 				Iterator iter2 = childElement.getChildren().iterator();
-				while (iter2.hasNext()) {
-					XMLElement currencyValues = (XMLElement) iter2.next();
-
-					if (currencyValues.getName().equalsIgnoreCase(currency_name)) {
-						holder.setCurrencyName(currencyValues.getText());
-						holder.setCurrencyAbbreviation(currencyValues.getText());
+				try {
+					while (iter2.hasNext()) {
+						XMLElement currencyValues = (XMLElement) iter2.next();
+	
+						if (currencyValues.getName().equalsIgnoreCase(currency_name)) {
+							holder.setCurrencyName(currencyValues.getText());
+							holder.setCurrencyAbbreviation(currencyValues.getText());
+						}
+						else if (currencyValues.getName().equalsIgnoreCase(buy_value)) {
+							holder.setBuyValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
+						} else if (currencyValues.getName().equalsIgnoreCase(sell_value))
+							holder.setSellValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
+						else if (currencyValues.getName().equalsIgnoreCase(middle_value))
+							holder.setMiddleValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
+						a++;
 					}
-					else if (currencyValues.getName().equalsIgnoreCase(buy_value)) {
-						holder.setBuyValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
-					} else if (currencyValues.getName().equalsIgnoreCase(sell_value))
-						holder.setSellValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
-					else if (currencyValues.getName().equalsIgnoreCase(middle_value))
-						holder.setMiddleValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
-					a++;
+					holder.setTimestamp(stamp);
+					currencyMap.put(holder.getCurrencyName(), holder);
+				} catch (Exception e) {
+					System.out.println("[CurrencyBusiness] Error getting currency "+holder.getCurrencyName());
 				}
-				holder.setTimestamp(stamp);
-				currencyMap.put(holder.getCurrencyName(), holder);
+
 			}
 			addDefaultCurrency();
 
