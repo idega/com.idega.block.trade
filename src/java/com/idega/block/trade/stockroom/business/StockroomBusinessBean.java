@@ -32,6 +32,8 @@ import com.idega.business.IBORuntimeException;
 import com.idega.business.IBOServiceBean;
 import com.idega.core.accesscontrol.business.LoginBusinessBean;
 import com.idega.core.accesscontrol.business.NotLoggedOnException;
+import com.idega.core.data.ICApplicationBinding;
+import com.idega.core.data.ICApplicationBindingHome;
 import com.idega.data.EntityControl;
 import com.idega.data.EntityFinder;
 import com.idega.data.IDOAddRelationshipException;
@@ -59,7 +61,7 @@ import com.idega.util.IWTimestamp;
 public class StockroomBusinessBean extends IBOServiceBean implements StockroomBusiness {
 
 	public static final String REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST = "REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST";
-	
+	private static String remoteTravelApplications = null;
 
   public StockroomBusinessBean() {
   }
@@ -580,6 +582,39 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 			throw new IBORuntimeException(e);
 		}
 	}
+	
+	private String getRemoteTravelApplicationUrlCsvList() {
+		if (remoteTravelApplications != null) {
+			try {
+				ICApplicationBindingHome abHome = (ICApplicationBindingHome) IDOLookup.getHome(ICApplicationBinding.class);
+				try {
+					ICApplicationBinding binding = abHome.findByPrimaryKey(REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST);
+					remoteTravelApplications = binding.getValue();
+				}
+				catch (FinderException e) {
+					try {
+						IWBundle bundle =  getIWMainApplication().getBundle("com.idega.block.trade");
+						String remoteTravelWebs = bundle.getProperty(REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST,"");
+		
+						ICApplicationBinding binding = abHome.create();
+						binding.setKey(REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST);
+						binding.setBindingType("travel.binding");
+						binding.setValue(remoteTravelWebs);
+						binding.store();
+						remoteTravelApplications = remoteTravelWebs;
+					}
+					catch (CreateException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+			catch (IDOLookupException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return remoteTravelApplications;
+	}
 
 	public void executeRemoteService(String remoteDomainToExclude, String methodQuery) {
 		executeRemoteService(remoteDomainToExclude, methodQuery, "/idegaweb/bundles/com.idega.block.trade.bundle/resources/services/IWTradeWS.jws");
@@ -593,8 +628,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 	 * @param methodQuery
 	 */
 	protected void executeRemoteService(String remoteDomainToExclude, String methodQuery, String webserviceURI) {
-		IWBundle bundle =  getIWMainApplication().getBundle("com.idega.block.trade");
-		String remoteTravelWebs = bundle.getProperty(REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST,"");
+		String remoteTravelWebs = getRemoteTravelApplicationUrlCsvList();
 		if(!"".equals(remoteTravelWebs) && remoteTravelWebs != null){
 //			log("Invalidating REMOTE stored search results");
 
