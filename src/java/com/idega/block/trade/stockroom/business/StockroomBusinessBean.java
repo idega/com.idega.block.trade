@@ -584,7 +584,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 	}
 	
 	private String getRemoteTravelApplicationUrlCsvList() {
-		if (remoteTravelApplications != null) {
+		if (remoteTravelApplications == null) {
 			try {
 				ICApplicationBindingHome abHome = (ICApplicationBindingHome) IDOLookup.getHome(ICApplicationBinding.class);
 				try {
