@@ -571,15 +571,15 @@ public class ProductCatalog extends CategoryBlock {
 		}
 		return list;
 	}
-	void sortList(List products) {
+	void sortList(List products) throws RemoteException {
 		sortList(products, this._orderProductsBy);
 	}
-	void sortList(List products, int orderBy) {
+	void sortList(List products, int orderBy) throws RemoteException {
 		/**
 		 * @todo Caching....
 		 */
 		if (this._orderProductsBy != -1 && products != null) {
-			Collections.sort(products, new ProductComparator(orderBy, this._currentLocale));
+			Collections.sort(products, new ProductComparator(orderBy, this._currentLocale, getProductBusiness()));
 		}
 	}
 	protected String getCacheState(IWContext iwc, String cacheStatePrefix) {
