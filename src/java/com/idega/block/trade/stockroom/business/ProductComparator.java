@@ -15,8 +15,10 @@ import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.block.trade.stockroom.data.Product;
 import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.block.trade.stockroom.data.Timeframe;
+import com.idega.block.trade.stockroom.data.TravelAddress;
 import com.idega.business.IBOLookup;
 import com.idega.core.localisation.business.ICLocaleBusiness;
+import com.idega.data.IDOFinderException;
 import com.idega.presentation.IWContext;
 import com.idega.util.IWTimestamp;
 import com.idega.util.IsCollator;
@@ -34,8 +36,8 @@ public class ProductComparator implements Comparator {
 
   public static final int NAME = 1;
   public static final int NUMBER = 2;
-//  public static final int DEPARTURETIME = 3;
-//  public static final int DEPARTURETIME_NAME = 4;
+  public static final int DEPARTURETIME = 3;
+  public static final int DEPARTURETIME_NAME = 4;
   public static final int PRICE = 5;
   public static final int CREATION_DATE = 6;
   public static final int SUPPLIER = 7; 
@@ -50,10 +52,12 @@ public class ProductComparator implements Comparator {
   private int currencyId;
   private IWTimestamp time;
   private Collator collator;
-
-  public ProductComparator(int toSortBy, Locale locale) {
+  private ProductBusiness pBus;
+  
+  public ProductComparator(int toSortBy, Locale locale, ProductBusiness pBus) {
       sortBy = toSortBy;
       this.locale = locale;
+      this.pBus = pBus;
       this.localeId = ICLocaleBusiness.getLocaleId(locale);
       try {
       		collator = Collator.getInstance(locale);
@@ -78,10 +82,10 @@ public class ProductComparator implements Comparator {
           break;
           case NUMBER   : result = numberSort(o1, o2);
           break;
-          /*case DEPARTURETIME   : result = departureTimeSort(o1, o2);
+          case DEPARTURETIME   : result = departureTimeSort(o1, o2);
           break;
           case DEPARTURETIME_NAME   : result = departureTimeNameSort(o1, o2);
-          break;*/
+          break;
           case PRICE : result = priceSort(o1, o2);
           break;
           case CREATION_DATE : result = dateSort(o1, o2);
@@ -124,8 +128,8 @@ public class ProductComparator implements Comparator {
 
     return collator.compare(one,two);
   }
-/*
-  private int departureTimeNameSort(Object o1, Object o2) {
+
+  private int departureTimeNameSort(Object o1, Object o2) throws RemoteException {
     int result = departureTimeSort(o1, o2);
     if (result == 0) {
       return nameSort(o1, o2);
@@ -133,15 +137,16 @@ public class ProductComparator implements Comparator {
       return result;
     }
   }
-*/
-/*
+
   private int departureTimeSort(Object o1, Object o2) {
     Product p1 = (Product) o1;
     Product p2 = (Product) o2;
 
     try {
-      IWTimestamp s1 = p1.getDepartureTime(p1);
-      IWTimestamp s2 = getServiceHandler().getDepartureTime(p2);
+    	TravelAddress a1 = pBus.getDepartureAddressFirst(p1);
+    	TravelAddress a2 = pBus.getDepartureAddressFirst(p2);
+      IWTimestamp s1 = new IWTimestamp(a1.getTime());
+      IWTimestamp s2 = new IWTimestamp(a2.getTime());
 
       if (s1.isLaterThan(s2)) {
 	return 1;
@@ -150,15 +155,16 @@ public class ProductComparator implements Comparator {
       }else {
 	return 0;
       }
-    }catch (SQLException sql) {
-      sql.printStackTrace(System.err);
-      return 0;
     }catch (RemoteException r) {
       throw new RuntimeException(r.getMessage());
     }
+	catch (IDOFinderException e) {
+		e.printStackTrace();
+		return 0;
+	}
 
   }
-*/
+
   private int priceSort(Object o1, Object o2) {
     try {
       Product p1 = (Product) o1;
