@@ -550,6 +550,14 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 		return returner;
   }
 
+  public TravelAddress getDepartureAddressFirst(Product product) throws RemoteException, IDOFinderException {
+	  List list = getDepartureAddresses(product, true);
+	  if (list != null) {
+		  return (TravelAddress) list.get(0);
+	  }
+	  return null;
+  }
+  
   public List getDepartureAddresses(Product product, boolean ordered) throws RemoteException, IDOFinderException  {
 	  List list  = (List) productDepartureAddresses.get(product.getPrimaryKey().toString()+ordered);
 	  if (list == null) {

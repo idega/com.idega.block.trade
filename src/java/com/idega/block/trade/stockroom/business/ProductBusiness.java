@@ -1,5 +1,5 @@
 /*
- * $Id: ProductBusiness.java,v 1.48 2005/10/10 10:51:23 gimmi Exp $
+ * $Id: ProductBusiness.java,v 1.49 2005/11/23 18:42:15 gimmi Exp $
  * Created on Aug 29, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -35,10 +35,10 @@ import com.idega.util.IWTimestamp;
 
 /**
  * 
- *  Last modified: $Date: 2005/10/10 10:51:23 $ by $Author: gimmi $
+ *  Last modified: $Date: 2005/11/23 18:42:15 $ by $Author: gimmi $
  * 
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public interface ProductBusiness extends IBOService {
 	
@@ -348,4 +348,5 @@ public interface ProductBusiness extends IBOService {
 	public boolean invalidateProductCache(String productID, String remoteDomainToExclude);
 	public boolean invalidateProductCache(String productID);
 	public boolean clearAddressMaps(String productID, String remoteDomainToExclude);
+	public TravelAddress getDepartureAddressFirst(Product product) throws RemoteException, IDOFinderException;
 }
