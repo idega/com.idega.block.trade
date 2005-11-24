@@ -51,10 +51,13 @@ public class TravelAddressBMPBean extends com.idega.data.GenericEntity implement
 	  return (Address) getColumnValue(getColumnNameAddressId());
   }
 
-  public String getName() {
+  public String getTimeString() {
     IWTimestamp timestamp = new IWTimestamp(getTime());
-
-    return getStreetName()+" - "+TextSoap.addZero(timestamp.getHour())+":"+TextSoap.addZero(timestamp.getMinute());
+    return TextSoap.addZero(timestamp.getHour())+":"+TextSoap.addZero(timestamp.getMinute());
+  }
+  
+  public String getName() {
+    return getStreetName()+" - "+getTimeString();
   }
 
   public String getStreetName() {
