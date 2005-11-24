@@ -38,7 +38,6 @@ import com.idega.data.IDORemoveRelationshipException;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.util.IWTimestamp;
-import com.idega.util.Timer;
 /**
  * @todo losa vi� service;
  */
@@ -454,13 +453,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 	  for (int i = 0; i < timeframes.length; i++) {
 	  	returner = timeframes[i];
 	    if (travelAddressId != -1) {
-	    	Timer t = new Timer();
-	    	t.start();
 	    	pPrices = getProductPriceBusiness().getProductPrices(((Integer) product.getPrimaryKey()).intValue() , timeframes[i].getID(), travelAddressId, false, null);
-	    	t.stop();
-	    	System.out.println("      [ProductBusiness] got prices : "+t.getTimeString());
-//	      pPrices = getProductPriceHome().findProductPrices(((Integer) product.getPrimaryKey()).intValue() , timeframes[i].getID(), travelAddressId, false);
-	//          System.err.println("getting prices : length = "+pPrices.length);
 	      if (pPrices == null || pPrices.isEmpty()) {
 	        continue;
 	      }
