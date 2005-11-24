@@ -587,8 +587,9 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 		if (remoteTravelApplications == null) {
 			try {
 				ICApplicationBindingHome abHome = (ICApplicationBindingHome) IDOLookup.getHome(ICApplicationBinding.class);
+				String icABKey = "RemoteTravelAppUrl";
 				try {
-					ICApplicationBinding binding = abHome.findByPrimaryKey(REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST);
+					ICApplicationBinding binding = abHome.findByPrimaryKey(icABKey);
 					remoteTravelApplications = binding.getValue();
 				}
 				catch (FinderException e) {
@@ -597,7 +598,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 						String remoteTravelWebs = bundle.getProperty(REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST,"");
 		
 						ICApplicationBinding binding = abHome.create();
-						binding.setKey(REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST);
+						binding.setKey(icABKey);
 						binding.setBindingType("travel.binding");
 						binding.setValue(remoteTravelWebs);
 						binding.store();
