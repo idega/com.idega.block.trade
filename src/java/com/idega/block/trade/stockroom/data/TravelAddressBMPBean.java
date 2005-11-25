@@ -61,9 +61,13 @@ public class TravelAddressBMPBean extends com.idega.data.GenericEntity implement
   }
 
   public String getStreetName() {
-	  String tmp = getAddress().getStreetNameOriginal();
-	  if (tmp == null) {
-		  tmp = getAddress().getStreetName();
+	  Address a = getAddress();
+	  String tmp = "";
+	  if (a != null) {
+		  tmp = a.getStreetNameOriginal();
+		  if (tmp == null) {
+			  tmp = a.getStreetName();
+		  }
 	  }
 	  return tmp;
   }
