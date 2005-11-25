@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import com.idega.core.location.data.Address;
 import com.idega.util.IWTimestamp;
-import com.idega.util.StringHandler;
 import com.idega.util.text.TextSoap;
 
 /**
@@ -62,11 +61,11 @@ public class TravelAddressBMPBean extends com.idega.data.GenericEntity implement
   }
 
   public String getStreetName() {
-	  String tmp = getAddress().getStreetName();
-	  if (tmp != null) {
-		  tmp = StringHandler.firstCharacterToUpperCaseRestToLowerCase(tmp);
+	  String tmp = getAddress().getStreetNameOriginal();
+	  if (tmp == null) {
+		  tmp = getAddress().getStreetName();
 	  }
-    return tmp;
+	  return tmp;
   }
 
   public Timestamp getTime() {
