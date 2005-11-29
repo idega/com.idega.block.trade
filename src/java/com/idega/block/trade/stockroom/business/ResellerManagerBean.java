@@ -506,7 +506,7 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
 
   public List getUsers(Reseller reseller) throws RemoteException, FinderException {
 	  ResellerStaffGroup sGroup = getResellerStaffGroup(reseller);
-	  Collection coll = getUserBusiness().getUsersInGroup((Group) sGroup);
+	  Collection coll = getUserBusiness().getUsersInGroup(sGroup);
 	  List users = new Vector(coll);
 	  //List users = UserBusiness.getUsersInGroup(sGroup);
 	  if (users != null) {

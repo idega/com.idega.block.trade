@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.4 2005/10/27 14:27:04 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.5 2005/11/29 12:52:41 laddi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -114,7 +114,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 					if (coll != null && !coll.isEmpty()) {
 						Iterator tmpIter = coll.iterator();
 						while (tmpIter.hasNext()) {
-							prices.add( (ProductPrice) tmpIter.next() );
+							prices.add(tmpIter.next());
 						}
 					} else {
 						prices.add(price);

@@ -234,7 +234,7 @@ public class CurrencyBusiness {
 			Iterator iter = getCurrencyMap().keySet().iterator();
 			while (iter.hasNext()) {
 //				update = true;
-				holder = (CurrencyHolder) getCurrencyMap().get((String) iter.next());
+				holder = (CurrencyHolder) getCurrencyMap().get(iter.next());
 				currency = (Currency) currencies.get(holder.getCurrencyName());
 				if (currency != null) {
 					values = CurrencyFinder.getCurrencyValue(currency.getID(), currency.getDatasource());
@@ -382,7 +382,7 @@ public class CurrencyBusiness {
 		if (getCurrencyMap() != null) {
 			Iterator iter = getCurrencyMap().keySet().iterator();
 			while (iter.hasNext()) {
-				vector.add((CurrencyHolder) getCurrencyMap().get((String) iter.next()));
+				vector.add(getCurrencyMap().get(iter.next()));
 			}
 			Collections.sort(vector, new CurrencyComparator());
 

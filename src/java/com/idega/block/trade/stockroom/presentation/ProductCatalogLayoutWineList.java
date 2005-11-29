@@ -71,7 +71,7 @@ public class ProductCatalogLayoutWineList extends AbstractProductCatalogLayout {
 			
 		while (iter.hasNext()) {
 			pCat = (ICCategory) iter.next();
-			if (!hasParameterSet && productCategories.contains((ICCategory)pCat.getParentNode()))
+			if (!hasParameterSet && productCategories.contains(pCat.getParentNode()))
 				showCategory = false;
 			else
 				showCategory = true;

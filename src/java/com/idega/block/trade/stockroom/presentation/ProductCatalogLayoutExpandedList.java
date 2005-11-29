@@ -58,7 +58,7 @@ public class ProductCatalogLayoutExpandedList extends AbstractProductCatalogLayo
 
 		for (int j = 0; j < productCategories.size(); j++) {
 			pCat = (ICCategory) productCategories.get(j);
-			products = getProductBusiness(iwc).getProducts((ICCategory) pCat);
+			products = getProductBusiness(iwc).getProducts(pCat);
 			productCatalog.sortList(products);
 
 			if (productCatalog._hasEditPermission) {

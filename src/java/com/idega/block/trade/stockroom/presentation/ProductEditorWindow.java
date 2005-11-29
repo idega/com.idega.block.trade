@@ -393,7 +393,7 @@ public class ProductEditorWindow extends IWAdminWindow {
 		String thumbnailId = iwc.getParameter(PAR_IMAGE_THUMBNAIL);
 		if (thumbnailId == null)
 			thumbnailId = "-1";
-		String[] categories = (String[]) iwc.getParameterValues(PAR_CATEGORY);
+		String[] categories = iwc.getParameterValues(PAR_CATEGORY);
 
 		boolean returner = false;
 
