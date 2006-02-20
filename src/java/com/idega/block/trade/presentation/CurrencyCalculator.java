@@ -138,9 +138,9 @@ public class CurrencyCalculator extends PresentationObjectContainer {
 			add(rsh);
 		}
 		
-		String sFrom = iwc.getParameter(this.PARAMETER_FROM_CURRENCY);
-		String sTo = iwc.getParameter(this.PARAMETER_TO_CURRENCY);
-		String sPrice = iwc.getParameter(this.PARAMETER_PRICE);
+		String sFrom = iwc.getParameter(CurrencyCalculator.PARAMETER_FROM_CURRENCY);
+		String sTo = iwc.getParameter(CurrencyCalculator.PARAMETER_TO_CURRENCY);
+		String sPrice = iwc.getParameter(CurrencyCalculator.PARAMETER_PRICE);
 		if (sPrice != null)
 			sPrice = TextSoap.findAndReplace(sPrice, ',', '.');
 		
@@ -264,9 +264,9 @@ public class CurrencyCalculator extends PresentationObjectContainer {
 		String price = "";
 		
 		try {
-			String sFrom = iwc.getParameter(this.PARAMETER_FROM_CURRENCY);
-			String sTo = iwc.getParameter(this.PARAMETER_TO_CURRENCY);
-			String sPrice = iwc.getParameter(this.PARAMETER_PRICE);
+			String sFrom = iwc.getParameter(CurrencyCalculator.PARAMETER_FROM_CURRENCY);
+			String sTo = iwc.getParameter(CurrencyCalculator.PARAMETER_TO_CURRENCY);
+			String sPrice = iwc.getParameter(CurrencyCalculator.PARAMETER_PRICE);
 			
 			if (sFrom != null && sTo != null && sPrice != null && !sPrice.equals("")) {
 				sPrice = TextSoap.findAndReplace(sPrice, ',', '.');

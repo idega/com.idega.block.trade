@@ -251,7 +251,7 @@ public class SupplierBMPBean extends GenericEntity implements Supplier{
 	
 	public Collection ejbFindAll(Group supplierManager) throws FinderException {
 		Table table = new Table(this);
-		Column isValid = new Column(table, this.getColumnNameIsValid());
+		Column isValid = new Column(table, SupplierBMPBean.getColumnNameIsValid());
 		Column suppMan = new Column(table, COLUMN_SUPPLIER_MANAGER_ID);
 		Column name = new Column(table, getColumnNameName());
 		Order order = new Order(name, true);

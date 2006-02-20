@@ -158,8 +158,8 @@ public class ProductCatalog extends CategoryBlock {
 			ie.printStackTrace(System.err);
 		}
 		try {
-			String sCurrentPage = iwc.getParameter(this._VIEW_PAGE);
-			String sOrderBy = iwc.getParameter(this._ORDER_BY);
+			String sCurrentPage = iwc.getParameter(ProductCatalog._VIEW_PAGE);
+			String sOrderBy = iwc.getParameter(ProductCatalog._ORDER_BY);
 			if (sCurrentPage != null) {
 				this.currentPage = Integer.parseInt(sCurrentPage);
 			}

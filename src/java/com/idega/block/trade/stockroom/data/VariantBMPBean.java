@@ -30,7 +30,7 @@ public class VariantBMPBean extends com.idega.data.GenericEntity implements com.
   public void initializeAttributes() {
     addAttribute(getIDColumnName());
     addAttribute(getColumnNameName(), "Name", true, true, String.class);
-    addAttribute(getColumnNameProductId(), "product_id", true, true, Integer.class, super.MANY_TO_ONE, Product.class);
+    addAttribute(getColumnNameProductId(), "product_id", true, true, Integer.class, MANY_TO_ONE, Product.class);
   }
   public String getEntityName() {
     return getTableNameVariant();

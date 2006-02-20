@@ -103,8 +103,8 @@ public class ProductCategoryEditor extends CategoryWindow {
 	}
 	private void viewCategory(IWContext iwc) throws RemoteException {
 		try {
-			String sFilter = iwc.getParameter(this._parameterProductFilter);
-			String sLocale = iwc.getParameter(this._parameterLocale);
+			String sFilter = iwc.getParameter(ProductCategoryEditor._parameterProductFilter);
+			String sLocale = iwc.getParameter(ProductCategoryEditor._parameterLocale);
 			int iFilter = -1;
 			int iLocale = -1;
 			if (sFilter != null)
@@ -127,7 +127,7 @@ public class ProductCategoryEditor extends CategoryWindow {
 			Collection allProducts = ((ProductHome) IDOLookup.getHome(Product.class)).findProducts(-1, -1, null, null, null, iLocale, iFilter);
 
 			allProducts.removeAll(products);
-			SelectionDoubleBox sdb = new SelectionDoubleBox(this._parameterProductOut, this._parameterProductIn);
+			SelectionDoubleBox sdb = new SelectionDoubleBox(ProductCategoryEditor._parameterProductOut, ProductCategoryEditor._parameterProductIn);
 			/** @todo Sortera productin */
 			Product product;
 			Iterator iter = allProducts.iterator();
@@ -158,9 +158,9 @@ public class ProductCategoryEditor extends CategoryWindow {
 			sdb.getRightBox().setWidth("130");
 			//sdb.getLeftBox().setStyleAttribute(IWConstants.BUILDER_FONT_STYLE_INTERFACE + "width:130px");
 			//sdb.getRightBox().setStyleAttribute(IWConstants.BUILDER_FONT_STYLE_INTERFACE + "width:130px");
-			SubmitButton save = new SubmitButton(iwrb.getLocalizedImageButton("save", "Save"), this._action, this._parameterSaveCategory);
-			SubmitButton close = new SubmitButton(iwrb.getLocalizedImageButton("close", "Close"), this._action, this._parameterClose);
-			DropdownMenu filter = new DropdownMenu(this._parameterProductFilter);
+			SubmitButton save = new SubmitButton(iwrb.getLocalizedImageButton("save", "Save"), ProductCategoryEditor._action, ProductCategoryEditor._parameterSaveCategory);
+			SubmitButton close = new SubmitButton(iwrb.getLocalizedImageButton("close", "Close"), ProductCategoryEditor._action, ProductCategoryEditor._parameterClose);
+			DropdownMenu filter = new DropdownMenu(ProductCategoryEditor._parameterProductFilter);
 			filter.addMenuElement(-1, iwrb.getLocalizedString("trade.all_products", "All products"));
 			filter.addMenuElement(
 				getProductHome().getProductFilterNotConnectedToAnyProductCategory(),
@@ -174,7 +174,7 @@ public class ProductCategoryEditor extends CategoryWindow {
 			loc.setSelectedElement(sLocale);
 			//      super.addRight(iwrb.getLocalizedString("trade.product_filter","Product filter"), filter, false, true);
 			super.addRight(iwrb.getLocalizedString("only_show_products_localized_in", "Only show products localized in")+" :", loc, true, true);
-			this.addHiddenInput(new HiddenInput(this.SELECTED_CATEGORY, Integer.toString(this._selectedCategory)));
+			this.addHiddenInput(new HiddenInput(ProductCategoryEditor.SELECTED_CATEGORY, Integer.toString(this._selectedCategory)));
 			super.maintainClearCacheKeyInForm(iwc);
 			sdb.addToScripts(this.getParentPage().getAssociatedScript());
 			GenericButton add = sdb.getRightButton();
@@ -196,7 +196,7 @@ public class ProductCategoryEditor extends CategoryWindow {
 		}
 	}
 	private void saveAssignment(IWContext iwc) throws RemoteException {
-		String[] in = iwc.getParameterValues(this._parameterProductIn);
+		String[] in = iwc.getParameterValues(ProductCategoryEditor._parameterProductIn);
 		TransactionManager tm = IdegaTransactionManager.getInstance();
 		try {
 			tm.begin();

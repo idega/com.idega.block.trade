@@ -809,7 +809,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
       timeframeSQL.append(" AND ")
           .append(locMiddleTable+"."+locText.getIDColumnName()+ " = "+locTxtTable+"."+locText.getIDColumnName())
           .append(" AND ")
-          .append(locMiddleTable+"."+this.getIdColumnName()+" = "+Ptable+"."+this.getIdColumnName())
+          .append(locMiddleTable+"."+ProductBMPBean.getIdColumnName()+" = "+Ptable+"."+ProductBMPBean.getIdColumnName())
           .append(" AND ")
           .append(locTxtTable+"."+LocalizedTextBMPBean.getColumnNameLocaleId()+" = "+localeId);
     }

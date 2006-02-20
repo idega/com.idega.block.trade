@@ -45,7 +45,7 @@ public class ProductEditor extends Block {
     iwrb = bundle.getResourceBundle(iwc);
 
     try {
-      String sProductId = iwc.getParameter(this.PRODUCT_ID);
+      String sProductId = iwc.getParameter(ProductEditor.PRODUCT_ID);
       _productId = Integer.parseInt(sProductId);
       _product = getProductBusiness(iwc).getProduct(_productId);
     }catch (Exception e) {
