@@ -33,7 +33,6 @@ import com.idega.util.text.TextSoap;
 public class ProductViewerLayoutIdega extends AbstractProductViewerLayout {
 
 	private String _name = "Demo";
-	private String _number = "Number";
 	private String _teaser = "Teaser";
 	private String _description = "Desription";
 	private ProductItemPrice _price = null;

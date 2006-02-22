@@ -368,10 +368,6 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 	  return (this.idoGetNumberOfRecords(s) > 0);
   }
 
-  private String getSQLQuery(int productId, int timeframeId, int addressId, int countAsPersonStatus, int currencyId, int[] visibility) {
-		return getSQLQuery(productId, timeframeId, addressId, countAsPersonStatus, currencyId, visibility, null, -1, null);
-  }
-  
   private String getSQLQuery(int productId, int timeframeId, int addressId, int countAsPersonStatus, int currencyId, int[] visibility, String categoryKey, int priceCategoryId, Date exactDate) {
     PriceCategory category = (PriceCategory) com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.getStaticInstance(PriceCategory.class);
     Timeframe timeframe = (Timeframe) com.idega.block.trade.stockroom.data.TimeframeBMPBean.getStaticInstance(Timeframe.class);

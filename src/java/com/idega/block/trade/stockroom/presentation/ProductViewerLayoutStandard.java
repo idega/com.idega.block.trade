@@ -4,9 +4,7 @@
 package com.idega.block.trade.stockroom.presentation;
 
 import java.rmi.RemoteException;
-import com.idega.block.trade.stockroom.business.ProductBusiness;
 import com.idega.block.trade.stockroom.data.Product;
-import com.idega.business.IBOLookup;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.PresentationObject;
 import com.idega.presentation.Table;
@@ -20,7 +18,6 @@ import com.idega.util.text.TextStyler;
 public class ProductViewerLayoutStandard extends AbstractProductViewerLayout {
 
 	private String _name = "Demo";
-	private String _number = "Number";
 	private String _teaser = "Teaser";
 	private String _description = "Desription";
 	private String _style = null;
@@ -117,9 +114,5 @@ public class ProductViewerLayoutStandard extends AbstractProductViewerLayout {
 		contentTable.add(teaser, 1, contentRow++);
 		
 		return table;
-	}
-
-	private ProductBusiness getProductBusiness(IWContext iwc) throws RemoteException {
-		return (ProductBusiness) IBOLookup.getServiceInstance(iwc, ProductBusiness.class);
 	}
 }

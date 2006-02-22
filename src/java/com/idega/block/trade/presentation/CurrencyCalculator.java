@@ -38,7 +38,6 @@ public class CurrencyCalculator extends PresentationObjectContainer {
 	public static  String PARAMETER_TO_CURRENCY = "to";
 	public static  String PARAMETER_PRICE = "price";
 	private String parameterAll = "ALL";
-	private String PARAMETER_REMOTE_CALL = "prm_rc";
 	private String DATE_PLACEHOLDER = "[date]";
 	
 	private IWResourceBundle iwrb;

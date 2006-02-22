@@ -42,7 +42,6 @@ public class ProductComparator implements Comparator {
   public static final int CREATION_DATE = 6;
   public static final int SUPPLIER = 7; 
 
-  private Locale locale = null;
   private int localeId = -1;
   private int sortBy;
   private StockroomBusiness stockroomBusiness;
@@ -56,7 +55,6 @@ public class ProductComparator implements Comparator {
   
   public ProductComparator(int toSortBy, Locale locale, ProductBusiness pBus) {
       sortBy = toSortBy;
-      this.locale = locale;
       this.pBus = pBus;
       this.localeId = ICLocaleBusiness.getLocaleId(locale);
       try {

@@ -29,16 +29,11 @@ public class ProductCatalogLayoutExpandedList extends AbstractProductCatalogLayo
 	private ProductCatalog productCatalog;
 	private int imageId = -1;
 	private String description;
-	private String teaser;
-
-	private IWContext iwc;
-
 	public ProductCatalogLayoutExpandedList() {
 	}
 
 	public PresentationObject getCatalog(ProductCatalog productCatalog, IWContext iwc, List productCategories) throws RemoteException, FinderException {
 		this.productCatalog = productCatalog;
-		this.iwc = iwc;
 		Table table = new Table();
 		table.setCellpaddingAndCellspacing(0);
 		table.setWidth("100%");

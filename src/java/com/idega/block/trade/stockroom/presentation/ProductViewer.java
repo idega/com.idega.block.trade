@@ -13,11 +13,10 @@ import com.idega.block.trade.stockroom.business.ProductBusiness;
 import com.idega.block.trade.stockroom.business.ProductComparator;
 import com.idega.block.trade.stockroom.data.Product;
 import com.idega.block.trade.stockroom.data.ProductCategory;
-import com.idega.core.builder.data.ICPage;
 import com.idega.business.IBOLookup;
+import com.idega.core.builder.data.ICPage;
 import com.idega.core.localisation.business.ICLocaleBusiness;
 import com.idega.idegaweb.IWBundle;
-import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Image;
@@ -39,8 +38,6 @@ import com.idega.presentation.text.Text;
 public class ProductViewer extends Block {
 	private final static String IW_BUNDLE_IDENTIFIER = "com.idega.block.trade";
 
-	private IWResourceBundle iwrb;
-	private IWBundle bundle;
 	private Image iEdit = null;
 
 	private Product _product = null;
@@ -108,8 +105,6 @@ public class ProductViewer extends Block {
 	}
 
 	private void init(IWContext iwc) throws RemoteException {
-		bundle = getBundle(iwc);
-		iwrb = bundle.getResourceBundle(iwc);
 
 		this._locale = iwc.getCurrentLocale();
 		this._localeId = ICLocaleBusiness.getLocaleId(_locale);

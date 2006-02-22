@@ -36,7 +36,6 @@ import com.idega.presentation.Table;
 import com.idega.presentation.text.Link;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.texteditor.TextEditor;
-import com.idega.presentation.ui.BackButton;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.presentation.ui.HiddenInput;
 import com.idega.presentation.ui.RadioButton;
@@ -501,14 +500,6 @@ public class ProductEditorWindow extends IWAdminWindow {
 		catch (IDORelationshipException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void saveFailed(IWContext iwc) {
-		super.addLeft(iwrb.getLocalizedString("save_failed", "Save failed"), "");
-
-		BackButton back = new BackButton(iwrb.getLocalizedImageButton("back", "Back"));
-
-		super.addSubmitButton(back);
 	}
 
 	private void verifyDelete(IWContext iwc) throws RemoteException {

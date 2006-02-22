@@ -250,15 +250,6 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@param  timestamp  The new modificationDate value
    */
-  private void setModificationDate( IWTimestamp timestamp ) {
-    setModificationDate( timestamp.getTimestamp() );
-  }
-
-  /**
-   *  Sets the modificationDate attribute of the Product object
-   *
-   *@param  timestamp  The new modificationDate value
-   */
   private void setModificationDate( Timestamp timestamp ) {
     setColumn( getColumnNameModificationDate(), timestamp );
   }
