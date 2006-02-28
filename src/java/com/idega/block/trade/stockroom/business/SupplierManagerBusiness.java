@@ -1,8 +1,8 @@
 /*
- * $Id: SupplierManagerBusiness.java,v 1.11 2005/07/11 17:54:29 gimmi Exp $
- * Created on Jul 11, 2005
+ * $Id: SupplierManagerBusiness.java,v 1.12 2006/02/28 13:44:29 gimmi Exp $
+ * Created on Jan 16, 2006
  *
- * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
+ * Copyright (C) 2006 Idega Software hf. All Rights Reserved.
  *
  * This software is the proprietary information of Idega hf.
  * Use is subject to license terms.
@@ -28,11 +28,13 @@ import com.idega.user.data.User;
 
 
 /**
- * 
- *  Last modified: $Date: 2005/07/11 17:54:29 $ by $Author: gimmi $
+ * <p>
+ * TODO gimmi Describe Type SupplierManagerBusiness
+ * </p>
+ *  Last modified: $Date: 2006/02/28 13:44:29 $ by $Author: gimmi $
  * 
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public interface SupplierManagerBusiness extends IBOService {
 
@@ -45,7 +47,7 @@ public interface SupplierManagerBusiness extends IBOService {
 	/**
 	 * @see com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean#createSupplierManagerStaff
 	 */
-	public User createSupplierManagerStaff(Group supplierManager, String userType, String name, String loginName,
+	public User createSupplierManagerStaff(Group supplierManager, String userType, String name, String email, String loginName,
 			String password) throws RemoteException, CreateException;
 
 	/**
@@ -241,4 +243,10 @@ public interface SupplierManagerBusiness extends IBOService {
 	 * @see com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean#getMainUser
 	 */
 	public User getMainUser(Supplier supplier) throws RemoteException, FinderException;
+
+	/**
+	 * @see com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean#getMetaDataKeysForGroupType
+	 */
+	public String[] getMetaDataKeysForGroupType(String groupType) throws RemoteException;
+	public Collection getTravelAgents(Group supplierManager) throws RemoteException;
 }
