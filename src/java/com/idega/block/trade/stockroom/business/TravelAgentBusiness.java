@@ -1,5 +1,5 @@
 /*
- * $Id: TravelAgentBusiness.java,v 1.1 2006/02/28 13:43:35 gimmi Exp $
+ * $Id: TravelAgentBusiness.java,v 1.2 2006/03/27 11:59:07 gimmi Exp $
  * Created on Jan 16, 2006
  *
  * Copyright (C) 2006 Idega Software hf. All Rights Reserved.
@@ -17,10 +17,10 @@ import com.idega.user.data.User;
  * <p>
  * TODO gimmi Describe Type TravelAgentBusiness
  * </p>
- *  Last modified: $Date: 2006/02/28 13:43:35 $ by $Author: gimmi $
+ *  Last modified: $Date: 2006/03/27 11:59:07 $ by $Author: gimmi $
  * 
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface TravelAgentBusiness extends IBOService {
 
@@ -29,10 +29,10 @@ public interface TravelAgentBusiness extends IBOService {
 	 */
 	public double getDiscount(User travelAgent) throws java.rmi.RemoteException;
 
-	/**
-	 * @see com.idega.block.trade.stockroom.business.TravelAgentBusinessBean#setDiscount
-	 */
-	public void setDiscount(User travelAgent, double discount) throws java.rmi.RemoteException;
+//	/**
+//	 * @see com.idega.block.trade.stockroom.business.TravelAgentBusinessBean#setDiscount
+//	 */
+//	public void setDiscount(User travelAgent, double discount) throws java.rmi.RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.TravelAgentBusinessBean#getMetaDataKeys
