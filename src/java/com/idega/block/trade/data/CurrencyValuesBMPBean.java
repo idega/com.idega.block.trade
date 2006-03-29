@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import javax.ejb.FinderException;
 
+import com.idega.data.GenericEntity;
+
 
 /**
  * Title:        User
@@ -46,7 +48,7 @@ public class CurrencyValuesBMPBean extends com.idega.data.GenericEntity implemen
     }
 
     public static CurrencyValues getStaticInstance(){
-      return (CurrencyValues)com.idega.block.trade.data.CurrencyValuesBMPBean.getStaticInstance(sClassName);
+      return (CurrencyValues)GenericEntity.getStaticInstance(sClassName);
     }
 
     /*  ColumNames begin   */

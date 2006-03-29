@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import javax.ejb.FinderException;
+
+import com.idega.block.category.data.ICCategoryBMPBean;
 import com.idega.block.text.business.TextFinder;
 import com.idega.block.text.data.LocalizedText;
 import com.idega.block.text.data.LocalizedTextBMPBean;
@@ -362,7 +364,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
         throw new SQLException(e.getMessage());
       }
     } else {
-      return ( Timeframe[] ) this.findRelated( com.idega.block.trade.stockroom.data.TimeframeBMPBean.getStaticInstance( Timeframe.class ) );
+      return ( Timeframe[] ) this.findRelated( GenericEntity.getStaticInstance( Timeframe.class ) );
     }
   }
 
@@ -658,7 +660,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   }
 
   public Collection ejbFindProductsOrderedByProductCategory(int supplierId, IWTimestamp from, IWTimestamp to) throws FinderException {
-    return ejbFindProducts(supplierId, -1, from, to, ProductCategoryBMPBean.getEntityTableName()+"."+ProductCategoryBMPBean.getColumnName(), -1, -1, false);
+    return ejbFindProducts(supplierId, -1, from, to, ICCategoryBMPBean.getEntityTableName()+"."+ICCategoryBMPBean.getColumnName(), -1, -1, false);
   }
 
   public Collection ejbFindProducts(int supplierId) throws FinderException {
@@ -716,9 +718,9 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     	orderString = orderBy;
     }
 
-    Timeframe timeframe = (Timeframe) com.idega.block.trade.stockroom.data.TimeframeBMPBean.getStaticInstance(Timeframe.class);
-    ProductCategory pCat = (ProductCategory) com.idega.block.trade.stockroom.data.ProductCategoryBMPBean.getStaticInstance(ProductCategory.class);
-    LocalizedText locText = (LocalizedText) LocalizedTextBMPBean.getStaticInstance(LocalizedText.class);
+    Timeframe timeframe = (Timeframe) GenericEntity.getStaticInstance(Timeframe.class);
+    ProductCategory pCat = (ProductCategory) GenericEntity.getStaticInstance(ProductCategory.class);
+    LocalizedText locText = (LocalizedText) GenericEntity.getStaticInstance(LocalizedText.class);
     //Service tService = (Service) is.idega.idegaweb.travel.data.ServiceBMPBean.getStaticInstance(Service.class);
 
     String middleTable = EntityControl.getManyToManyRelationShipTableName(Timeframe.class,Product.class);

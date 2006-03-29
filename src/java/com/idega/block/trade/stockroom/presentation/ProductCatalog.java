@@ -543,7 +543,7 @@ public class ProductCatalog extends CategoryBlock {
 	Link getProductCategoryEditorLink(ICCategory productCategory) {
 		Link link = new Link(this.iDetach);
 		link.addParameter(ProductCategoryEditor.SELECTED_CATEGORY, productCategory.getID());
-		link.addParameter(ProductCategoryEditor.prmCacheClearKey, super.getDerivedCacheKey());
+		link.addParameter(CategoryWindow.prmCacheClearKey, super.getDerivedCacheKey());
 		link.setToolTip(iwrb.getLocalizedString("trade.product_catalog.select_products_for_this_category", "Select products for this category ("+productCategory.getName(this._currentLocale)+")"));
 		link.setWindowToOpen(ProductCategoryEditor.class);
 		return link;

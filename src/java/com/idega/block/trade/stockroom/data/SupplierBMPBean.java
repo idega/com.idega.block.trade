@@ -186,11 +186,11 @@ public class SupplierBMPBean extends GenericEntity implements Supplier{
 	}
 
 	public List getAddresses() throws SQLException {
-		return EntityFinder.findRelated(this, com.idega.core.location.data.AddressBMPBean.getStaticInstance(Address.class));
+		return EntityFinder.findRelated(this, GenericEntity.getStaticInstance(Address.class));
 	}
 
 	public List getPhones() throws SQLException {
-		return EntityFinder.findRelated(this, com.idega.core.contact.data.PhoneBMPBean.getStaticInstance(Phone.class));
+		return EntityFinder.findRelated(this, GenericEntity.getStaticInstance(Phone.class));
 	}
 
 	public List getHomePhone() throws SQLException {
@@ -234,7 +234,7 @@ public class SupplierBMPBean extends GenericEntity implements Supplier{
 	}
 
 	public List getEmails() throws SQLException {
-		return EntityFinder.findRelated(this, com.idega.core.contact.data.EmailBMPBean.getStaticInstance(Email.class));
+		return EntityFinder.findRelated(this, GenericEntity.getStaticInstance(Email.class));
 	}
 
 	/**
@@ -246,7 +246,7 @@ public class SupplierBMPBean extends GenericEntity implements Supplier{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return (Supplier[]) com.idega.block.trade.stockroom.data.SupplierBMPBean.getStaticInstance(Supplier.class).findAllByColumnOrdered(com.idega.block.trade.stockroom.data.SupplierBMPBean.getColumnNameIsValid(), "Y", com.idega.block.trade.stockroom.data.SupplierBMPBean.getColumnNameName());
+		return (Supplier[]) GenericEntity.getStaticInstance(Supplier.class).findAllByColumnOrdered(com.idega.block.trade.stockroom.data.SupplierBMPBean.getColumnNameIsValid(), "Y", com.idega.block.trade.stockroom.data.SupplierBMPBean.getColumnNameName());
 	}
 	
 	public Collection ejbFindAll(Group supplierManager) throws FinderException {

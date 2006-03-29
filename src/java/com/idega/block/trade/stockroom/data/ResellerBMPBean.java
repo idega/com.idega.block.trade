@@ -15,6 +15,7 @@ import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.location.data.Address;
 import com.idega.data.EntityFinder;
+import com.idega.data.GenericEntity;
 import com.idega.data.IDOException;
 import com.idega.data.IDOLookup;
 import com.idega.data.TreeableEntity;
@@ -99,7 +100,7 @@ public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, 
   }
 
   public List getPhones() throws SQLException {
-    return EntityFinder.findRelated(this,com.idega.core.contact.data.PhoneBMPBean.getStaticInstance(Phone.class));
+    return EntityFinder.findRelated(this,GenericEntity.getStaticInstance(Phone.class));
   }
 
   public List getPhones(int PhoneTypeId) throws SQLException{
@@ -118,7 +119,7 @@ public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, 
   }
 
   public List getEmails() throws SQLException {
-    return EntityFinder.findRelated(this,com.idega.core.contact.data.EmailBMPBean.getStaticInstance(Email.class));
+    return EntityFinder.findRelated(this,GenericEntity.getStaticInstance(Email.class));
   }
 
   public Email getEmail() throws SQLException{
@@ -158,7 +159,7 @@ public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, 
   }
 
   public List getAddresses() throws SQLException{
-    return EntityFinder.findRelated(this,com.idega.core.location.data.AddressBMPBean.getStaticInstance(Address.class));
+    return EntityFinder.findRelated(this,GenericEntity.getStaticInstance(Address.class));
   }
 
   public List getHomePhone() throws SQLException {
@@ -178,7 +179,7 @@ public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    return (Reseller[]) com.idega.block.trade.stockroom.data.ResellerBMPBean.getStaticInstance(Reseller.class).findAllByColumnOrdered(com.idega.block.trade.stockroom.data.ResellerBMPBean.getColumnNameIsValid(),"Y",com.idega.block.trade.stockroom.data.ResellerBMPBean.getColumnNameName());
+    return (Reseller[]) GenericEntity.getStaticInstance(Reseller.class).findAllByColumnOrdered(com.idega.block.trade.stockroom.data.ResellerBMPBean.getColumnNameIsValid(),"Y",com.idega.block.trade.stockroom.data.ResellerBMPBean.getColumnNameName());
   }
 
   public Reseller getParent() {

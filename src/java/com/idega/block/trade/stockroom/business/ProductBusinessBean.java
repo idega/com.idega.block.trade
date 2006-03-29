@@ -12,6 +12,7 @@ import java.util.Vector;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import com.idega.block.category.data.ICCategory;
+import com.idega.block.category.data.ICCategoryBMPBean;
 import com.idega.block.trade.stockroom.data.Product;
 import com.idega.block.trade.stockroom.data.ProductCategory;
 import com.idega.block.trade.stockroom.data.ProductCategoryHome;
@@ -621,7 +622,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 		catch (FinderException e) {
 			e.printStackTrace();
 		}
-    return EntityFinder.getInstance().findAllOrdered(ProductCategory.class, com.idega.block.trade.stockroom.data.ProductCategoryBMPBean.getColumnName());
+    return EntityFinder.getInstance().findAllOrdered(ProductCategory.class, ICCategoryBMPBean.getColumnName());
   }
 
   public List getProductCategories(Product product) throws RemoteException, IDORelationshipException{

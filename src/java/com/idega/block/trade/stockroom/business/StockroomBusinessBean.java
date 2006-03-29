@@ -8,8 +8,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
+
 import com.idega.axis.util.AxisUtil;
 import com.idega.block.trade.business.CurrencyBusiness;
 import com.idega.block.trade.business.CurrencyHolder;
@@ -20,7 +22,6 @@ import com.idega.block.trade.stockroom.data.ProductPriceHome;
 import com.idega.block.trade.stockroom.data.Reseller;
 import com.idega.block.trade.stockroom.data.ResellerHome;
 import com.idega.block.trade.stockroom.data.ResellerStaffGroup;
-import com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean;
 import com.idega.block.trade.stockroom.data.Supplier;
 import com.idega.block.trade.stockroom.data.SupplierHome;
 import com.idega.block.trade.stockroom.data.SupplierStaffGroupBMPBean;
@@ -36,6 +37,7 @@ import com.idega.core.data.ICApplicationBinding;
 import com.idega.core.data.ICApplicationBindingHome;
 import com.idega.data.EntityControl;
 import com.idega.data.EntityFinder;
+import com.idega.data.GenericEntity;
 import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOCompositePrimaryKeyException;
 import com.idega.data.IDOFinderException;
@@ -166,9 +168,9 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 
   	try {
         PriceCategory cat = ((com.idega.block.trade.stockroom.data.PriceCategoryHome)com.idega.data.IDOLookup.getHomeLegacy(PriceCategory.class)).findByPrimaryKeyLegacy(priceCategoryId);
-        ProductPrice ppr = ((ProductPrice)com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getStaticInstanceIDO(ProductPrice.class));
-        TravelAddress taddr = ((TravelAddress) com.idega.block.trade.stockroom.data.TravelAddressBMPBean.getStaticInstance(TravelAddress.class));
-        Timeframe tfr = ((Timeframe) com.idega.block.trade.stockroom.data.TimeframeBMPBean.getStaticInstance(Timeframe.class));
+        ProductPrice ppr = ((ProductPrice)GenericEntity.getStaticInstanceIDO(ProductPrice.class));
+        TravelAddress taddr = ((TravelAddress) GenericEntity.getStaticInstance(TravelAddress.class));
+        Timeframe tfr = ((Timeframe) GenericEntity.getStaticInstance(Timeframe.class));
         String addrTable = EntityControl.getManyToManyRelationShipTableName(TravelAddress.class, ProductPrice.class);
         String tfrTable = EntityControl.getManyToManyRelationShipTableName(Timeframe.class, ProductPrice.class);
 		String ppColName = ppr.getEntityDefinition().getPrimaryKeyDefinition().getField().getSQLFieldName();
@@ -307,7 +309,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   public float getDiscount(int productId, int priceCategoryId, Timestamp time) throws RemoteException, SQLException, FinderException {
     PriceCategory cat = ((com.idega.block.trade.stockroom.data.PriceCategoryHome)com.idega.data.IDOLookup.getHomeLegacy(PriceCategory.class)).findByPrimaryKeyLegacy(priceCategoryId);
     if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT)){
-      ProductPrice ppr = ((ProductPrice)com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getStaticInstance(ProductPrice.class));
+      ProductPrice ppr = ((ProductPrice)GenericEntity.getStaticInstance(ProductPrice.class));
 		String ppTable = ppr.getEntityDefinition().getSQLTableName();
 
 		StringBuffer buffer = new StringBuffer();
@@ -471,7 +473,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 				Iterator iter = gr.iterator();
 			  while (iter.hasNext()) {
 					Group item = (Group)iter.next();
-					if(item.getGroupType().equals(((ResellerStaffGroup) ResellerStaffGroupBMPBean.getStaticInstance(ResellerStaffGroup.class)).getGroupTypeValue())){
+					if(item.getGroupType().equals(((ResellerStaffGroup) GenericEntity.getStaticInstance(ResellerStaffGroup.class)).getGroupTypeValue())){
 	      		try {
 	      			Collection coll = rHome.findAllByGroupID( item.getPrimaryKey() );
 	      			if (coll != null && !coll.isEmpty()) {

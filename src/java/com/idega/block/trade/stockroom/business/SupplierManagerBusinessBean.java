@@ -29,6 +29,7 @@ import com.idega.core.location.data.Address;
 import com.idega.core.location.data.AddressHome;
 import com.idega.core.location.data.AddressType;
 import com.idega.core.location.data.AddressTypeHome;
+import com.idega.data.GenericEntity;
 import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
@@ -690,17 +691,17 @@ public class SupplierManagerBusinessBean extends IBOServiceBean  implements Supp
 				}
 				supp.store();
 				
-				supp.removeFrom(com.idega.core.location.data.AddressBMPBean.getStaticInstance(Address.class));
+				supp.removeFrom(GenericEntity.getStaticInstance(Address.class));
 				for (int i = 0; i < addressIds.length; i++) {
 					supp.addTo(Address.class, addressIds[i]);
 				}
 				
-				supp.removeFrom(com.idega.core.contact.data.PhoneBMPBean.getStaticInstance(Phone.class));
+				supp.removeFrom(GenericEntity.getStaticInstance(Phone.class));
 				for (int i = 0; i < phoneIds.length; i++) {
 					supp.addTo(Phone.class, phoneIds[i]);
 				}
 				
-				supp.removeFrom(com.idega.core.contact.data.EmailBMPBean.getStaticInstance(Email.class));
+				supp.removeFrom(GenericEntity.getStaticInstance(Email.class));
 				for (int i = 0; i < emailIds.length; i++) {
 					supp.addTo(Email.class, emailIds[i]);
 				}

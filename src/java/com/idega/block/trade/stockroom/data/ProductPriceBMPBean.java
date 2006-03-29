@@ -12,6 +12,7 @@ import com.idega.block.trade.data.Currency;
 import com.idega.block.trade.data.CurrencyHome;
 import com.idega.core.location.data.Address;
 import com.idega.data.EntityControl;
+import com.idega.data.GenericEntity;
 import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOException;
 import com.idega.data.IDOLookup;
@@ -369,9 +370,9 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
   }
 
   private String getSQLQuery(int productId, int timeframeId, int addressId, int countAsPersonStatus, int currencyId, int[] visibility, String categoryKey, int priceCategoryId, Date exactDate) {
-    PriceCategory category = (PriceCategory) com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.getStaticInstance(PriceCategory.class);
-    Timeframe timeframe = (Timeframe) com.idega.block.trade.stockroom.data.TimeframeBMPBean.getStaticInstance(Timeframe.class);
-    TravelAddress tAddress = (TravelAddress) com.idega.block.trade.stockroom.data.TravelAddressBMPBean.getStaticInstance(TravelAddress.class);
+    PriceCategory category = (PriceCategory) GenericEntity.getStaticInstance(PriceCategory.class);
+    Timeframe timeframe = (Timeframe) GenericEntity.getStaticInstance(Timeframe.class);
+    TravelAddress tAddress = (TravelAddress) GenericEntity.getStaticInstance(TravelAddress.class);
 
     String ptmTable = EntityControl.getManyToManyRelationShipTableName(ProductPrice.class, Timeframe.class);
     String pamTable = EntityControl.getManyToManyRelationShipTableName(ProductPrice.class, TravelAddress.class);
@@ -505,8 +506,8 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
   
   public Integer ejbFindByData(int productId,int timeframeId,int addressId,int currencyId,int priceCategoryId,Date date)throws FinderException{
  
-    Timeframe timeframe = (Timeframe) com.idega.block.trade.stockroom.data.TimeframeBMPBean.getStaticInstance(Timeframe.class);
-    TravelAddress tAddress = (TravelAddress) com.idega.block.trade.stockroom.data.TravelAddressBMPBean.getStaticInstance(TravelAddress.class);
+    Timeframe timeframe = (Timeframe) GenericEntity.getStaticInstance(Timeframe.class);
+    TravelAddress tAddress = (TravelAddress) GenericEntity.getStaticInstance(TravelAddress.class);
 
     String ptmTable = EntityControl.getManyToManyRelationShipTableName(ProductPrice.class, Timeframe.class);
     String pamTable = EntityControl.getManyToManyRelationShipTableName(ProductPrice.class, TravelAddress.class);
