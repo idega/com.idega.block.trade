@@ -458,7 +458,7 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 //  	}*/
 
     
-    SQLQuery.append(" ORDER BY "+pTable+"."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+","+cTable+"."+com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.getColumnNameName());
+    SQLQuery.append(" ORDER BY "+pTable+"."+getColumnNameCurrencyId()+","+pTable+"."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+","+cTable+"."+com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.getColumnNameName());
     
 /*
 		try {
