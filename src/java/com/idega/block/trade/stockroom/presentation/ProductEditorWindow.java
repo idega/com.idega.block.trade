@@ -221,7 +221,7 @@ public class ProductEditorWindow extends IWAdminWindow {
 	private void setCurrencies(IWContext iwc) throws RemoteException {
 		String sLocaleId = iwc.getParameter(getProductBusiness(iwc).getParameterLocaleDrop());
 		if (sLocaleId != null) {
-			_locale = ICLocaleBusiness.getLocale(Integer.parseInt(sLocaleId));;
+			_locale = ICLocaleBusiness.getLocale(Integer.parseInt(sLocaleId));
 		}
 		else {
 			_locale = iwc.getCurrentLocale();

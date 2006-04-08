@@ -766,7 +766,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
       }
 
     // Hondla ef supplierId != -1
-    Collection tempProducts = null;;
+    Collection tempProducts = null;
     if (supplierId != -1) tempProducts = ejbFindProducts(supplierId);
     if (tempProducts != null)
     if (tempProducts.size() > 0) {
