@@ -107,9 +107,13 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
 
   private Reseller createReseller(int resellerId, Reseller parentReseller, String name, String userName, String password, String description, int[] addressIds, int[] phoneIds, int[] emailIds, String organizationID) throws Exception {
     boolean isUpdate = false;
-    if (resellerId != -1) isUpdate = true;
+    if (resellerId != -1) {
+			isUpdate = true;
+		}
 
-    if (description == null) description = "";
+    if (description == null) {
+			description = "";
+		}
 
 
     if (isUpdate) {
@@ -332,8 +336,9 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
           buff.append(" AND ");
           buff.append(reseller.getIDColumnName()+" not in (");
           for (int i = 0; i < exclude.length; i++) {
-            if (i != 0)
-              buff.append(", ");
+            if (i != 0) {
+							buff.append(", ");
+						}
             buff.append(exclude[i]);
           }
           buff.append(") ");
@@ -477,8 +482,9 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
   public void addUser(Reseller reseller, User user, boolean addToPermissionGroup) throws RemoteException, FinderException {
     Group pGroup = getPermissionGroup(reseller);
     ResellerStaffGroup sGroup = getResellerStaffGroup(reseller);
-    if (addToPermissionGroup)
-      pGroup.addGroup(user);
+    if (addToPermissionGroup) {
+			pGroup.addGroup(user);
+		}
     sGroup.addGroup(user);
   }
 

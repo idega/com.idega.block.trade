@@ -54,21 +54,21 @@ public class ProductComparator implements Comparator {
   private ProductBusiness pBus;
   
   public ProductComparator(int toSortBy, Locale locale, ProductBusiness pBus) {
-      sortBy = toSortBy;
+      this.sortBy = toSortBy;
       this.pBus = pBus;
       this.localeId = ICLocaleBusiness.getLocaleId(locale);
       try {
-      		collator = Collator.getInstance(locale);
-      		if (collator == null) {
-      			collator = IsCollator.getIsCollator();
+      		this.collator = Collator.getInstance(locale);
+      		if (this.collator == null) {
+      			this.collator = IsCollator.getIsCollator();
       		}
       } catch (Exception e) {
-      		collator = IsCollator.getIsCollator();
+      		this.collator = IsCollator.getIsCollator();
       }
   }
 
   public void sortBy(int toSortBy) {
-      sortBy = toSortBy;
+      this.sortBy = toSortBy;
   }
 
   public int compare(Object o1, Object o2) {
@@ -101,10 +101,10 @@ public class ProductComparator implements Comparator {
     Product p1 = (Product) o1;
     Product p2 = (Product) o2;
 
-    String one = p1.getProductName(localeId)!=null?p1.getProductName(localeId):"";
-    String two = p2.getProductName(localeId)!=null?p2.getProductName(localeId):"";
+    String one = p1.getProductName(this.localeId)!=null?p1.getProductName(this.localeId):"";
+    String two = p2.getProductName(this.localeId)!=null?p2.getProductName(this.localeId):"";
 
-    return collator.compare(one, two);
+    return this.collator.compare(one, two);
   }
   
   private int supplierSort(Object o1, Object o2) throws RemoteException {
@@ -113,7 +113,7 @@ public class ProductComparator implements Comparator {
 
     String one = p1.getSupplier().getName() != null ? p1.getSupplier().getName(): "";
     String two = p2.getSupplier().getName() != null ? p2.getSupplier().getName(): "";
-    return collator.compare(one, two);
+    return this.collator.compare(one, two);
   	
   }
 
@@ -124,7 +124,7 @@ public class ProductComparator implements Comparator {
     String one = p1.getNumber()!=null?p1.getNumber():"";
     String two = p2.getNumber()!=null?p2.getNumber():"";
 
-    return collator.compare(one,two);
+    return this.collator.compare(one,two);
   }
 
   private int departureTimeNameSort(Object o1, Object o2) throws RemoteException {
@@ -141,8 +141,8 @@ public class ProductComparator implements Comparator {
     Product p2 = (Product) o2;
 
     try {
-    	TravelAddress a1 = pBus.getDepartureAddressFirst(p1);
-    	TravelAddress a2 = pBus.getDepartureAddressFirst(p2);
+    	TravelAddress a1 = this.pBus.getDepartureAddressFirst(p1);
+    	TravelAddress a2 = this.pBus.getDepartureAddressFirst(p2);
       IWTimestamp s1 = new IWTimestamp(a1.getTime());
       IWTimestamp s2 = new IWTimestamp(a2.getTime());
 
@@ -171,25 +171,29 @@ public class ProductComparator implements Comparator {
 		  float pr1 = 0;
 		  float pr2 = 0;
 
-			if (priceCategoryToSortBy == null) {
+			if (this.priceCategoryToSortBy == null) {
       	ProductPrice price1 = getStockroomBusiness().getPrice(p1);
       	ProductPrice price2 = getStockroomBusiness().getPrice(p2);
 
-	      if (price1 != null) pr1 = price1.getPrice();
-      	if (price2 != null) pr2 = price2.getPrice();
+	      if (price1 != null) {
+					pr1 = price1.getPrice();
+				}
+      	if (price2 != null) {
+					pr2 = price2.getPrice();
+				}
 			} else {
-				Timeframe timeframe = getProductBusiness().getTimeframe(p1, time, -1);
+				Timeframe timeframe = getProductBusiness().getTimeframe(p1, this.time, -1);
 				int timeframeId1 = -1;
 				if (timeframe != null) {
 					timeframeId1 = timeframe.getID();
 				}
-				timeframe = getProductBusiness().getTimeframe(p2, time, -1);
+				timeframe = getProductBusiness().getTimeframe(p2, this.time, -1);
 				int timeframeId2 = -1;
 				if (timeframe != null) {
 					timeframeId2 = timeframe.getID();
 				}				
 				try {
-					pr1 = getStockroomBusiness().getPrice(-1, p1.getID(), Integer.parseInt(priceCategoryToSortBy.getPrimaryKey().toString()), currencyId, IWTimestamp.getTimestampRightNow(), timeframeId1, -1);
+					pr1 = getStockroomBusiness().getPrice(-1, p1.getID(), Integer.parseInt(this.priceCategoryToSortBy.getPrimaryKey().toString()), this.currencyId, IWTimestamp.getTimestampRightNow(), timeframeId1, -1);
 					//System.out.println("[ProductComparator] : price for p1 = "+pr1+" ("+p1.getProductName(IWContext.getInstance().getCurrentLocaleId())+"="+p1.getID()+")");
 				}
 				catch (ProductPriceException e) {
@@ -200,7 +204,7 @@ public class ProductComparator implements Comparator {
 					e.printStackTrace();
 				}
 				try {
-					pr2 = getStockroomBusiness().getPrice(-1, p2.getID(), Integer.parseInt(priceCategoryToSortBy.getPrimaryKey().toString()), currencyId, IWTimestamp.getTimestampRightNow(), timeframeId2, -1);
+					pr2 = getStockroomBusiness().getPrice(-1, p2.getID(), Integer.parseInt(this.priceCategoryToSortBy.getPrimaryKey().toString()), this.currencyId, IWTimestamp.getTimestampRightNow(), timeframeId2, -1);
 					//System.out.println("[ProductComparator] : price for p2 = "+pr2+" ("+p2.getProductName(IWContext.getInstance().getCurrentLocaleId())+"="+p2.getID()+")");
 				}
 				catch (ProductPriceException e) {
@@ -212,9 +216,15 @@ public class ProductComparator implements Comparator {
 				}
 			}
 
-      if (pr1 < pr2) return -1;
-      else if (pr2 < pr1) return 1;
-      else return 0;
+      if (pr1 < pr2) {
+				return -1;
+			}
+			else if (pr2 < pr1) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
 
 	  }catch (RemoteException re) {
 	    throw new RuntimeException(re.getMessage());
@@ -251,7 +261,7 @@ public class ProductComparator implements Comparator {
   }
 
   public Iterator sort(Product[] products, int toSortBy) {
-      sortBy = toSortBy;
+      this.sortBy = toSortBy;
       List list = new LinkedList();
       for(int i = 0; i < products.length; i++) {
 	  list.add(products[i]);
@@ -270,7 +280,7 @@ public class ProductComparator implements Comparator {
   }
 
   public Product[] sortedArray(Product[] products, int toSortBy) {
-      sortBy = toSortBy;
+      this.sortBy = toSortBy;
       List list = new LinkedList();
       for(int i = 0; i < products.length; i++) {
 	  list.add(products[i]);
@@ -303,7 +313,7 @@ public class ProductComparator implements Comparator {
   }
 
   public Product[] reverseSortedArray(Product[] products, int toSortBy) {
-      sortBy = toSortBy;
+      this.sortBy = toSortBy;
       List list = new LinkedList();
       for(int i = 0; i < products.length; i++) {
 	  list.add(products[i]);
@@ -319,10 +329,10 @@ public class ProductComparator implements Comparator {
 
   private StockroomBusiness getStockroomBusiness() {
     try {
-      if (stockroomBusiness == null) {
-        stockroomBusiness = (StockroomBusiness) IBOLookup.getServiceInstance(IWContext.getInstance(), StockroomBusiness.class);
+      if (this.stockroomBusiness == null) {
+        this.stockroomBusiness = (StockroomBusiness) IBOLookup.getServiceInstance(IWContext.getInstance(), StockroomBusiness.class);
       }
-      return stockroomBusiness;
+      return this.stockroomBusiness;
     }catch (RemoteException re) {
       throw new RuntimeException(re.getMessage());
     }
@@ -330,10 +340,10 @@ public class ProductComparator implements Comparator {
   
   private ProductBusiness getProductBusiness() {
 		try {
-		  if (productBusiness == null) {
-			productBusiness = (ProductBusiness) IBOLookup.getServiceInstance(IWContext.getInstance(), ProductBusiness.class);
+		  if (this.productBusiness == null) {
+			this.productBusiness = (ProductBusiness) IBOLookup.getServiceInstance(IWContext.getInstance(), ProductBusiness.class);
 		  }
-		  return productBusiness;
+		  return this.productBusiness;
 		}catch (RemoteException re) {
 		  throw new RuntimeException(re.getMessage());
 		}

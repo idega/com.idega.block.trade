@@ -109,8 +109,9 @@ public class CurrencyBusiness {
 		CurrencyHolder holder = null;
 
 		if (rootElement != null) {
-			if (currencyMap == null)
+			if (currencyMap == null) {
 				currencyMap = new HashMap();
+			}
 
 			List currencies = rootElement.getChildren();
 			Iterator iter = currencies.iterator();
@@ -131,10 +132,12 @@ public class CurrencyBusiness {
 						}
 						else if (currencyValues.getName().equalsIgnoreCase(buy_value)) {
 							holder.setBuyValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
-						} else if (currencyValues.getName().equalsIgnoreCase(sell_value))
+						} else if (currencyValues.getName().equalsIgnoreCase(sell_value)) {
 							holder.setSellValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
-						else if (currencyValues.getName().equalsIgnoreCase(middle_value))
+						}
+						else if (currencyValues.getName().equalsIgnoreCase(middle_value)) {
 							holder.setMiddleValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
+						}
 						a++;
 					}
 					holder.setTimestamp(stamp);

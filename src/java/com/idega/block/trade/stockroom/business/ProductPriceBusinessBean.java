@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.5 2005/11/29 12:52:41 laddi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.6 2006/04/09 11:59:45 laddi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -138,10 +138,10 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	}
 	
 	private HashMap getPriceMapForProduct(Object productID) {
-		HashMap t = (HashMap) mapForProductPriceMap.get(productID);
+		HashMap t = (HashMap) this.mapForProductPriceMap.get(productID);
 		if (t == null) {
 			t = new HashMap();
-			mapForProductPriceMap.put(productID, t);
+			this.mapForProductPriceMap.put(productID, t);
 		}
 		
 		return t;
@@ -154,7 +154,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 
 	
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) {
-		mapForProductPriceMap.put(new Integer(productID), null);
+		this.mapForProductPriceMap.put(new Integer(productID), null);
 		getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "invalidatePriceCache&productID="+productID);
 		return true;
 	}

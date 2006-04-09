@@ -132,7 +132,7 @@ public class SupplierBMPBean extends GenericEntity implements Supplier{
 	}
 	
 	public void setName(String name) {
-		newName = name;
+		this.newName = name;
 		setColumn(COLUMN_NAME_NAME_ALL_CAPS, name.toUpperCase());
 	}
 
@@ -268,18 +268,18 @@ public class SupplierBMPBean extends GenericEntity implements Supplier{
 	}
 
 	public void update() throws SQLException {
-		if (newName != null) {
+		if (this.newName != null) {
 			try {
 				SupplierManagerBusiness sm = (SupplierManagerBusiness) IBOLookup.getServiceInstance(IWContext.getInstance(), SupplierManagerBusiness.class);
 				Group pGroup = sm.getPermissionGroup(this);
-				pGroup.setName(newName + "_" + this.getID() + SupplierManagerBusinessBean.permissionGroupNameExtention);
+				pGroup.setName(this.newName + "_" + this.getID() + SupplierManagerBusinessBean.permissionGroupNameExtention);
 				pGroup.store();
 				SupplierStaffGroup sGroup = sm.getSupplierStaffGroup(this);
-				sGroup.setName(newName + "_" + this.getID());
+				sGroup.setName(this.newName + "_" + this.getID());
 				sGroup.store();
-				setColumn(getColumnNameName(), newName);
+				setColumn(getColumnNameName(), this.newName);
 				System.out.println("Supplier : setting updateName");
-				newName = null;
+				this.newName = null;
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new SQLException(e.getMessage());
@@ -289,8 +289,8 @@ public class SupplierBMPBean extends GenericEntity implements Supplier{
 	}
 
 	public void insert() throws SQLException {
-		if (newName != null) {
-			setColumn(getColumnNameName(), newName);
+		if (this.newName != null) {
+			setColumn(getColumnNameName(), this.newName);
 		}
 		super.insert();
 	}

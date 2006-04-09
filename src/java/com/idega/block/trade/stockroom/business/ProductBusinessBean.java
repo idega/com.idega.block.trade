@@ -106,8 +106,9 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
       product = getProduct(productId);// Product(productId);
     }
 
-    if (supplierId != -1)
-    product.setSupplierId(supplierId);
+    if (supplierId != -1) {
+			product.setSupplierId(supplierId);
+		}
     if(fileId != null){
       product.setFileId(fileId);
     }
@@ -115,7 +116,9 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
     if (discountTypeId != -1) {
       product.setDiscountTypeId(discountTypeId);
     }
-    if (number == null) number = "";
+    if (number == null) {
+			number = "";
+		}
     product.setNumber(number);
 
 
@@ -142,9 +145,9 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   }
   
   public boolean clearAddressMaps(String productID, String remoteDomainToExclude) {
-    productDepartureAddresses.put(productID+false, null); 
-    productDepartureAddresses.put(productID+true, null); 
-    productDepartureAddresses2 = new HashMap();
+    this.productDepartureAddresses.put(productID+false, null); 
+    this.productDepartureAddresses.put(productID+true, null); 
+    this.productDepartureAddresses2 = new HashMap();
 	getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "clearAddressMaps&productID="+productID);
 	return true;
   }
@@ -186,11 +189,11 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   }
 
   public Product getProduct(int productId) throws RemoteException, FinderException{
-    Object obj = products.get(Integer.toString(productId));
+    Object obj = this.products.get(Integer.toString(productId));
     if (obj == null) {
       Product prod = getProductHome().findByPrimaryKey(new Integer(productId));
 //      Product prod = ((com.idega.block.trade.stockroom.data.ProductHome)com.idega.data.IDOLookup.getHomeLegacy(Product.class)).findByPrimaryKeyLegacy(productId);
-      products.put(Integer.toString(productId), prod);
+      this.products.put(Integer.toString(productId), prod);
       //System.err.println("ProductBusiness : creating product : "+productId);
       return prod;
     }else {
@@ -203,8 +206,8 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 	  return invalidateProductCache(productID, null);
   }
   public boolean invalidateProductCache(String productID, String remoteDomainToExclude) {
-	  products.remove(productID);
-	  timeframeMap.remove(productID);
+	  this.products.remove(productID);
+	  this.timeframeMap.remove(productID);
 	  getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "invalidateProductCache&productID="+productID);
 	  return true;
   }
@@ -381,10 +384,12 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   }
 
   public List getProducts(int supplierId, IWTimestamp stamp) throws RemoteException, FinderException {
-    if (stamp != null)
-      return getProducts(supplierId, stamp, new IWTimestamp(stamp));
-    else
-      return getProducts(supplierId, null, null);
+    if (stamp != null) {
+			return getProducts(supplierId, stamp, new IWTimestamp(stamp));
+		}
+		else {
+			return getProducts(supplierId, null, null);
+		}
   }
 
   public List getProducts(int supplierId, IWTimestamp from, IWTimestamp to) throws RemoteException, FinderException{
@@ -423,10 +428,10 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   
   private HashMap timeframeMap = new HashMap();
   public Timeframe[] getTimeframes(Product product) throws SQLException {
-	  Timeframe[] returner = (Timeframe[]) timeframeMap.get(product.getPrimaryKey().toString());
+	  Timeframe[] returner = (Timeframe[]) this.timeframeMap.get(product.getPrimaryKey().toString());
 	  if (returner == null) {
 		  returner = product.getTimeframes();
-		  timeframeMap.put(product.getPrimaryKey().toString(), returner);
+		  this.timeframeMap.put(product.getPrimaryKey().toString(), returner);
 	  }
 	  return returner;
   }
@@ -488,7 +493,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 		}
 		
 		String mapKey = product.getPrimaryKey().toString()+stamp.toSQLDateString()+ordered+key+tFramesString;
-		List returner = (List) productDepartureAddresses2.get(mapKey);
+		List returner = (List) this.productDepartureAddresses2.get(mapKey);
 		
 //		Collection pPrices;
 		if (returner == null) {
@@ -539,7 +544,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 					}
 				}
 			}
-			productDepartureAddresses2.put(mapKey, returner);
+			this.productDepartureAddresses2.put(mapKey, returner);
 		}
 		return returner;
   }
@@ -553,13 +558,13 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   }
   
   public List getDepartureAddresses(Product product, boolean ordered) throws RemoteException, IDOFinderException  {
-	  List list  = (List) productDepartureAddresses.get(product.getPrimaryKey().toString()+ordered);
+	  List list  = (List) this.productDepartureAddresses.get(product.getPrimaryKey().toString()+ordered);
 	  if (list == null) {
 		  list = product.getDepartureAddresses(ordered);
 		  if (ordered) {
 			  Collections.sort(list, new TravelAddressComparator(TravelAddressComparator.TIME));
 		  }
-		  productDepartureAddresses.put(product.getPrimaryKey().toString()+ordered, list);
+		  this.productDepartureAddresses.put(product.getPrimaryKey().toString()+ordered, list);
 	  }
 	  return list;
   }

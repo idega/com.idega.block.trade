@@ -78,7 +78,7 @@ public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, 
   }
 
   public void setName(String name) {
-    newName = name;
+    this.newName = name;
 
     //setColumn(getColumnNameName(), name);
   }
@@ -235,17 +235,17 @@ public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, 
 
   
   public void update() throws SQLException {
-    if (newName != null) {
+    if (this.newName != null) {
     	try {
 	    	ResellerManager rm = (ResellerManager) IBOLookup.getServiceInstance(IWContext.getInstance(), ResellerManager.class);
 	      Group pGroup = rm.getPermissionGroup(this);
-	        pGroup.setName(newName+"_"+this.getID()+ResellerManagerBean.permissionGroupNameExtention);
+	        pGroup.setName(this.newName+"_"+this.getID()+ResellerManagerBean.permissionGroupNameExtention);
 	        pGroup.store();
 	      ResellerStaffGroup sGroup = rm.getResellerStaffGroup(this);
-	        sGroup.setName(newName+"_"+this.getID());
+	        sGroup.setName(this.newName+"_"+this.getID());
 	        sGroup.store();
-	      setColumn(getColumnNameName(),newName);
-	      newName = null;
+	      setColumn(getColumnNameName(),this.newName);
+	      this.newName = null;
     	} catch (Exception e) {
     		e.printStackTrace();
     		throw new SQLException(e.getMessage());
@@ -255,8 +255,8 @@ public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, 
   }
 
   public void insert() throws SQLException {
-    if (newName != null) {
-      setColumn(getColumnNameName(),newName);
+    if (this.newName != null) {
+      setColumn(getColumnNameName(),this.newName);
     }
     super.insert();
   }
