@@ -6,9 +6,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
+
 import com.idega.block.trade.data.CreditCardInformation;
 import com.idega.block.trade.stockroom.business.SupplierManagerBusiness;
 import com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean;
@@ -27,6 +29,7 @@ import com.idega.data.IDOLookup;
 import com.idega.data.IDOQuery;
 import com.idega.data.IDORelationshipException;
 import com.idega.data.IDORemoveRelationshipException;
+import com.idega.data.MetaDataCapable;
 import com.idega.data.query.AND;
 import com.idega.data.query.Column;
 import com.idega.data.query.Criteria;
@@ -49,7 +52,7 @@ import com.idega.user.data.Group;
  * @version 1.0
  */
 
-public class SupplierBMPBean extends GenericEntity implements Supplier{
+public class SupplierBMPBean extends GenericEntity implements Supplier, MetaDataCapable {
 
 	private String newName;
 	private static String COLUMN_SUPPLIER_MANAGER_ID = "SUPPLIER_MANAGER_ID";
@@ -86,6 +89,8 @@ public class SupplierBMPBean extends GenericEntity implements Supplier{
 		this.addManyToManyRelationShip(CreditCardInformation.class, "SR_SUPPLIER_CC_INFORMATION");
 
 		this.addManyToOneRelationship(COLUMN_IC_FILE_ID, ICFile.class);
+		
+		addMetaDataRelationship();
 		
 		addIndex("IDX_SUPP_1", new String[]{getIDColumnName(), getColumnNameIsValid()});
 		addIndex("IDX_SUPP_2", new String[]{getColumnNameIsValid()});
