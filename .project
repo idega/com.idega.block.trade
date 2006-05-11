@@ -10,7 +10,9 @@
     <project>com.idega.builder</project>
     <project>com.idega.block.media</project>
     <project>com.idega.block.image</project>
+    <project>org.apache.axis</project>
     <project>com.idega.block.text</project>
+    <project>com.idega.block.web2.0</project>
   </projects>
   <buildSpec>
     <buildCommand>
