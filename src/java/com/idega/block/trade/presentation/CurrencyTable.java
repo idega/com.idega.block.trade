@@ -67,32 +67,33 @@ public class CurrencyTable extends Block {
 		
 		Iterator iter = currencies.iterator();
 		while (iter.hasNext()) {
-			row = group.createRow();
-			
 			CurrencyHolder holder = (CurrencyHolder) iter.next();
-			
-			cell = row.createCell();
-			cell.setStyleClass("firstColumn");
-			cell.setStyleClass("currency");
-			cell.setStyleClass(holder.getCurrencyAbbreviation());
-			cell.add(new Text(holder.getCurrencyAbbreviation()));
-
-			cell = row.createCell();
-			cell.setStyleClass("buyValue");
-			cell.add(new Text(format.format(holder.getBuyValue())));
-			
-			cell = row.createCell();
-			cell.setStyleClass("lastColumn");
-			cell.setStyleClass("sellValue");
-			cell.add(new Text(format.format(holder.getSellValue())));
-			
-			if (iRow % 2 == 0) {
-				row.setStyleClass("evenRow");
+			if (holder != null && holder.getCurrencyAbbreviation() != null) {
+				row = group.createRow();
+				row.setStyleClass(holder.getCurrencyAbbreviation());
+				
+				cell = row.createCell();
+				cell.setStyleClass("firstColumn");
+				cell.setStyleClass("currency");
+				cell.add(new Text(holder.getCurrencyAbbreviation()));
+	
+				cell = row.createCell();
+				cell.setStyleClass("buyValue");
+				cell.add(new Text(format.format(holder.getBuyValue())));
+				
+				cell = row.createCell();
+				cell.setStyleClass("lastColumn");
+				cell.setStyleClass("sellValue");
+				cell.add(new Text(format.format(holder.getSellValue())));
+				
+				if (iRow % 2 == 0) {
+					row.setStyleClass("evenRow");
+				}
+				else {
+					row.setStyleClass("oddRow");
+				}
+				iRow++;
 			}
-			else {
-				row.setStyleClass("oddRow");
-			}
-			iRow++;
 		}
 		
 		add(table);
