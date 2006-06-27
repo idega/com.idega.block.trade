@@ -5,19 +5,19 @@
   </classpathentry>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
   </classpathentry>
-  <classpathentry kind="src" path="/com.idega.core">
+  <classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.core-3.1.0.jar">
   </classpathentry>
-  <classpathentry kind="src" path="/com.idega.block.category">
+  <classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.category-3.1.0.jar">
   </classpathentry>
-  <classpathentry kind="src" path="/com.idega.builder">
+  <classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.media-3.1.0.jar">
   </classpathentry>
-  <classpathentry kind="src" path="/com.idega.block.media">
+  <classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.image-3.1.0.jar">
   </classpathentry>
-  <classpathentry kind="src" path="/com.idega.block.image">
+  <classpathentry kind="var" path="MAVEN_REPO/bundles/jars/org.apache.axis-1.3.jar">
   </classpathentry>
-  <classpathentry kind="src" path="/org.apache.axis">
+  <classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.text-3.1.0.jar">
   </classpathentry>
-  <classpathentry kind="src" path="/com.idega.block.text">
+  <classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.builder-3.1.0.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar">
   </classpathentry>
@@ -37,15 +37,13 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/myfaces/jars/myfaces-jsf-api-1.1.3.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/myfaces/jars/myfaces-tomahawk-1.1.2.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/myfaces/jars/myfaces-tomahawk-1.1.3.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/jspapi/jars/jsp-api-2.0.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/ejb/jars/ejb-2.0.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/jta/jars/jta-spec1_0_1.jar">
-  </classpathentry>
-  <classpathentry kind="src" path="/com.idega.block.web2.0">
   </classpathentry>
   <classpathentry kind="output" path="target/classes">
   </classpathentry>
