@@ -4,6 +4,18 @@
     <author email="gimmi@idega.com">Grimur Jonsson</author>
   </properties>
   <body>
+
+	<release version="3.1.1" date="2006-07-01">
+		<action dev="gimmi" type="add">
+			New find method for ProductPrice, search by Product, PriceCategory, Currency and PriceType
+		</action>     
+		<action dev="gimmi" type="add">
+			New find method for Currency, a list of all available in the system.
+		</action>     
+		<action dev="gimmi" type="add">
+			New ROLE for SupplierManager, Currency Setter
+		</action>     
+	</release>
   
       <release version="3.1.0" date="2006-06-27">
 		  <action dev="gimmi" type="update">
