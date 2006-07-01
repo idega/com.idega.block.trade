@@ -1,5 +1,5 @@
 /*
- * $Id: CurrencyHomeImpl.java,v 1.3 2005/05/13 04:33:53 gimmi Exp $
+ * $Id: CurrencyHomeImpl.java,v 1.4 2006/07/01 15:05:22 gimmi Exp $
  * Created on 13.5.2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -17,10 +17,10 @@ import com.idega.data.*;
 
 /**
  * 
- *  Last modified: $Date: 2005/05/13 04:33:53 $ by $Author: gimmi $
+ *  Last modified: $Date: 2006/07/01 15:05:22 $ by $Author: gimmi $
  * 
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CurrencyHomeImpl extends IDOFactory implements CurrencyHome {
 
@@ -75,6 +75,13 @@ public class CurrencyHomeImpl extends IDOFactory implements CurrencyHome {
 	public Collection findAll() throws FinderException {
 		com.idega.data.IDOEntity entity = this.idoCheckOutPooledEntity();
 		java.util.Collection ids = ((CurrencyBMPBean) entity).ejbFindAll();
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public Collection findAllInUse() throws FinderException {
+		com.idega.data.IDOEntity entity = this.idoCheckOutPooledEntity();
+		java.util.Collection ids = ((CurrencyBMPBean) entity).ejbFindAllInUse();
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
