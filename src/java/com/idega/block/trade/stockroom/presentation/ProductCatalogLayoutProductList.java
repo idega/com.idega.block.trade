@@ -170,7 +170,7 @@ public class ProductCatalogLayoutProductList extends AbstractProductCatalogLayou
         }
 
         if (this._productCatalog._showPrice) {
-          if (price != 0) {
+          if (price != 0 && pPrice != null) {
             table.add(this._productCatalog.getText(Integer.toString((int) price)), 3, row);
             if (this._productCatalog._showCurrency)  {
               table.add(this._productCatalog.getText(Text.NON_BREAKING_SPACE), 3, row);

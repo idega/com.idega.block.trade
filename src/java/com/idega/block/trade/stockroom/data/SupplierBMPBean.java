@@ -305,14 +305,15 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 	}
 
 	public Settings getSettings() throws FinderException, RemoteException, CreateException {
+		SettingsHome shome = (SettingsHome) IDOLookup.getHome(Settings.class);
 		Collection coll = null;
 		try {
 			coll = this.idoGetRelatedEntities(Settings.class);
 		}
 		catch (IDOException ido) {
 			//throw new CreateException(ido.getMessage());
+			return shome.create(this);
 		}
-		SettingsHome shome = (SettingsHome) IDOLookup.getHome(Settings.class);
 		if (coll.size() == 1) {
 			Iterator iter = coll.iterator();
 			return (Settings) iter.next();

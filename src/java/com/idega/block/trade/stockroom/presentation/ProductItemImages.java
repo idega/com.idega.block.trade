@@ -158,7 +158,7 @@ public class ProductItemImages extends ProductItem {
 		catch (SQLException sql) {
 			sql.printStackTrace(System.err);
 		}
-		if (images != null && images.size() > 0) {
+		if (!images.isEmpty()) {
 			add(table);
 		}
 

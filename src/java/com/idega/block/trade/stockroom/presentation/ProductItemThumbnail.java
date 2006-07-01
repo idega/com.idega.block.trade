@@ -69,7 +69,7 @@ public class ProductItemThumbnail extends ProductItem {
       }
     }
 
-    if ( image != null ) {
+    if ( file != null && image != null ) {
 			String att = file.getMetaData(ProductEditorWindow.imageAttributeKey);
 	
 			if (att != null) {

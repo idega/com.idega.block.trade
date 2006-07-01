@@ -1,5 +1,5 @@
 /*
- * $Id: SupplierManagerHandler.java,v 1.2 2005/08/24 13:01:21 gimmi Exp $
+ * $Id: SupplierManagerHandler.java,v 1.3 2006/07/01 20:01:23 gimmi Exp $
  * Created on 20.5.2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -40,7 +40,7 @@ public class SupplierManagerHandler implements ICPropertyHandler {
 				object = (Group) iter.next();
 				menu.addMenuElement(object.getPrimaryKey().toString(), object.getName());
 			}
-			if (coll == null || coll.isEmpty()) {
+			if (coll.isEmpty()) {
 				menu.addMenuElement("null", "No SupplierManagers Found");
 			}
 		}

@@ -103,7 +103,6 @@ public class CurrencyBusiness {
 		}
 		catch (XMLException e) {
 				e.printStackTrace(System.err);
-			rootElement = null;
 		}
 
 		CurrencyHolder holder = null;
@@ -155,7 +154,7 @@ public class CurrencyBusiness {
 			getValuesFromDatabase();
 		}
 
-		if (getCurrencyHolder(defaultCurrency) == null && currencyMap != null) {
+		if (getCurrencyHolder(defaultCurrency) == null && currencyMap != null && holder != null) {
 			CurrencyHolder defaultHolder = new CurrencyHolder();
 			defaultHolder.setCurrencyName(defaultCurrency);
 			defaultHolder.setCurrencyAbbreviation(defaultCurrency);
@@ -291,35 +290,36 @@ public class CurrencyBusiness {
 						if (holder.getCurrencyAbbreviation() != null) {
 							currency = home.getCurrencyByAbbreviation(holder.getCurrencyAbbreviation());
 						}
-						if (currency != null) {
-							update = true;
-						}else {
+						
+						if (currency == null) {
 							update = false;
 							currency = home.create();
-						}
-
-						if (currency.getID() < 1 ) {
+						} else if (currency.getID() < 1) {
 							update = false;
 							currency = home.create();	
+						} else {
+							update = true;
 						}
+
 
 					} catch (Exception e) {
 						currency = home.create();
 						update = false;
 					}
-					
-					currency.setCurrencyAbbreviation(holder.getCurrencyName());
-					currency.setCurrencyName(holder.getCurrencyName());
-					if (update) {
-						System.out.println("[CurrencyBusiness] Updating existing currency : " + currency.getCurrencyName() + " (id: " + currency.getID() + ")");
-						
-//						bulk.add(currency, bulk.update);
-						currency.store();
-					}
-					else {
-						System.out.println("[CurrencyBusiness] Creating new currency, name : " + currency.getCurrencyName() + ", abbr : "+currency.getCurrencyAbbreviation());
-//						bulk.add(currency, bulk.insert);
-						currency.store();
+					if (currency != null) {
+						currency.setCurrencyAbbreviation(holder.getCurrencyName());
+						currency.setCurrencyName(holder.getCurrencyName());
+						if (update) {
+							System.out.println("[CurrencyBusiness] Updating existing currency : " + currency.getCurrencyName() + " (id: " + currency.getID() + ")");
+							
+	//						bulk.add(currency, bulk.update);
+							currency.store();
+						}
+						else {
+							System.out.println("[CurrencyBusiness] Creating new currency, name : " + currency.getCurrencyName() + ", abbr : "+currency.getCurrencyAbbreviation());
+	//						bulk.add(currency, bulk.insert);
+							currency.store();
+						}
 					}
 
 //					execute = true;
@@ -363,7 +363,7 @@ public class CurrencyBusiness {
 			while (iter.hasNext()) {
 				currency = (Currency) currencies.get(iter.next());
 				value = (CurrencyValues) values.get(new Integer(currency.getID()));
-				if (currency != null && value != null) {
+				if (value != null) {
 					holder = new CurrencyHolder();
 					holder.setBuyValue(value.getBuyValue());
 					holder.setCurrencyName(currency.getCurrencyAbbreviation());

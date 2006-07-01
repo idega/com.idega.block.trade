@@ -177,7 +177,7 @@ public class CurrencyCalculator extends PresentationObjectContainer {
 			
 			if (!this.useRemoteScripting) {
 				table.add(getText(getNewPrice(iwc)), 2, row);
-			} else {
+			} else if (rsh != null){
 				from.setOnChange(rsh.getSubmitEvent(iwc));
 				to.setOnChange  (rsh.getSubmitEvent(iwc));
 				if (this.calculateOnType) {
@@ -190,7 +190,7 @@ public class CurrencyCalculator extends PresentationObjectContainer {
 			Link calc = getLink(this.iwrb.getLocalizedString("calculate", "Calculate"));
 			if (!this.useRemoteScripting) {
 				calc.setToFormSubmit(form);
-			} else {
+			} else if (rsh != null){
 				calc.setOnClick(rsh.getSubmitEvent(iwc));
 			}
 //			table.add(Text.getNonBrakingSpace(), 2, 4);

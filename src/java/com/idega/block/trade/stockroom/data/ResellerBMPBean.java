@@ -262,14 +262,15 @@ public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, 
   }
 
   public Settings getSettings() throws FinderException, RemoteException, CreateException {
+    SettingsHome shome = (SettingsHome)IDOLookup.getHome(Settings.class);
     Collection coll = null;
     try{
       coll = this.idoGetRelatedEntities(Settings.class);
     }
     catch(IDOException ido){
+        return shome.create(this);
       //throw new CreateException(ido.getMessage());
     }
-    SettingsHome shome = (SettingsHome)IDOLookup.getHome(Settings.class);
     if (coll.size() == 1) {
       Iterator iter = coll.iterator();
       return (Settings) iter.next();

@@ -203,20 +203,18 @@ public class ProductEditorBusiness extends IBOServiceBean {
 				ido.printStackTrace(System.err);
 			}
 		}
-		if (files != null) {
-			int imageId = product.getFileId();
-			if (imageId != -1) {
-				try {
-					if (!files.contains(((com.idega.core.file.data.ICFileHome) com.idega.data.IDOLookup.getHome(ICFile.class)).findByPrimaryKey(new Integer(imageId)))) {
-						files.add(0, ((com.idega.core.file.data.ICFileHome) com.idega.data.IDOLookup.getHome(ICFile.class)).findByPrimaryKey(new Integer(imageId)));
-					}
+		int imageId = product.getFileId();
+		if (imageId != -1) {
+			try {
+				if (!files.contains(((com.idega.core.file.data.ICFileHome) com.idega.data.IDOLookup.getHome(ICFile.class)).findByPrimaryKey(new Integer(imageId)))) {
+					files.add(0, ((com.idega.core.file.data.ICFileHome) com.idega.data.IDOLookup.getHome(ICFile.class)).findByPrimaryKey(new Integer(imageId)));
 				}
-				catch (IDOLookupException e) {
-					e.printStackTrace();
-				}
-				catch (FinderException e) {
-					e.printStackTrace();
-				}
+			}
+			catch (IDOLookupException e) {
+				e.printStackTrace();
+			}
+			catch (FinderException e) {
+				e.printStackTrace();
 			}
 		}
 		return files;

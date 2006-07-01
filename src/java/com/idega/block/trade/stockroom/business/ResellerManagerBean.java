@@ -308,7 +308,7 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
         }
       }
       iter = listi.iterator();*/
-    }else if (iter == null) {
+    }else {
       iter = com.idega.util.ListUtil.getEmptyList().iterator();
     }
     return iter;
@@ -494,9 +494,7 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
 	  Collection coll = getUserBusiness().getUsersInGroup(pGroup);
 	  List users = new Vector(coll);
 	  //List users = UserBusiness.getUsersInGroup(pGroup);
-	  if (users != null) {
-	    java.util.Collections.sort(users, new com.idega.util.GenericUserComparator(com.idega.util.GenericUserComparator.NAME));
-	  }
+	  java.util.Collections.sort(users, new com.idega.util.GenericUserComparator(com.idega.util.GenericUserComparator.NAME));
 	  return users;
   }
 
@@ -516,9 +514,7 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
 	  Collection coll = getUserBusiness().getUsersInGroup(sGroup);
 	  List users = new Vector(coll);
 	  //List users = UserBusiness.getUsersInGroup(sGroup);
-	  if (users != null) {
-	     java.util.Collections.sort(users, new com.idega.util.GenericUserComparator(com.idega.util.GenericUserComparator.NAME));
-	  }
+	  java.util.Collections.sort(users, new com.idega.util.GenericUserComparator(com.idega.util.GenericUserComparator.NAME));
 	  return users;
   }
 
@@ -563,18 +559,16 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
     int number = 0;
 
     GenericGroup group;
-    String type;
-    if (groups != null) {
-      for (int i = 0; i < groups.size(); i++) {
-        group = (GenericGroup) groups.get(i);
-        type = group.getGroupType();
-        if (type != null && type.equals(com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean.GROUP_TYPE_VALUE)) {
-          isReseller = true;
-          number= i;
-          break;
-        }
-      }
-    }
+	String type;
+	  for (int i = 0; i < groups.size(); i++) {
+	    group = (GenericGroup) groups.get(i);
+	    type = group.getGroupType();
+	    if (type != null && type.equals(com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean.GROUP_TYPE_VALUE)) {
+	      isReseller = true;
+	      number= i;
+	      break;
+	    }
+	  }
 
     if (isReseller) {
     	try {
