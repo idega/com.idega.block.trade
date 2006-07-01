@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Iterator;
+
 import javax.ejb.FinderException;
+
 import com.idega.block.trade.business.CurrencyBusiness;
 import com.idega.block.trade.business.CurrencyHolder;
 import com.idega.block.trade.data.Currency;
@@ -20,6 +22,10 @@ import com.idega.data.IDOLookupException;
 import com.idega.data.IDOQuery;
 import com.idega.data.IDORelationshipException;
 import com.idega.data.SimpleQuerier;
+import com.idega.data.query.Column;
+import com.idega.data.query.MatchCriteria;
+import com.idega.data.query.SelectQuery;
+import com.idega.data.query.Table;
 import com.idega.util.text.TextSoap;
 
 /**
@@ -554,5 +560,16 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 		this.idoAddTo(TravelAddress.class, travelAddressPK); 
   }
   
+  public Object ejbFindByProductAndCategoryAndCurrencyAndType(int productId, int priceCategoryID, int currencyID, int type) throws FinderException {
+	  Table table = new Table(this);
+	  SelectQuery query = new SelectQuery(table);
+	  query.addColumn(new Column(table, getIDColumnName()));
+	  query.addCriteria(new MatchCriteria(new Column(table, getColumnNameProductId()), MatchCriteria.EQUALS, productId));
+	  query.addCriteria(new MatchCriteria(new Column(table, getColumnNamePriceCategoryId()), MatchCriteria.EQUALS, priceCategoryID));
+	  query.addCriteria(new MatchCriteria(new Column(table, getColumnNameCurrencyId()), MatchCriteria.EQUALS, currencyID));
+	  query.addCriteria(new MatchCriteria(new Column(table, getColumnNamePriceType()), MatchCriteria.EQUALS, type));
+	  query.addCriteria(new MatchCriteria(new Column(table, getColumnNameIsValid()), MatchCriteria.EQUALS, true));
+	  return this.idoFindOnePKByQuery(query);
+  }
 
 }

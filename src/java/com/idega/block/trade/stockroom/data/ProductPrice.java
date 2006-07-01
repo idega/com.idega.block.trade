@@ -1,33 +1,16 @@
-/*
- * $Id: ProductPrice.java,v 1.22 2005/06/15 11:48:22 gimmi Exp $
- * Created on 2.6.2005
- *
- * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
- *
- * This software is the proprietary information of Idega hf.
- * Use is subject to license terms.
- */
 package com.idega.block.trade.stockroom.data;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+
+import com.idega.data.IDOAddRelationshipException;
+import com.idega.data.IDORelationshipException;
 import java.util.Collection;
 import javax.ejb.FinderException;
+import java.sql.Date;
 import com.idega.block.trade.data.Currency;
-import com.idega.data.IDOAddRelationshipException;
+import java.sql.Timestamp;
 import com.idega.data.IDOEntity;
-import com.idega.data.IDORelationshipException;
 
-
-/**
- * 
- *  Last modified: $Date: 2005/06/15 11:48:22 $ by $Author: gimmi $
- * 
- * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.22 $
- */
 public interface ProductPrice extends IDOEntity {
-
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductPriceBMPBean#invalidate
 	 */
@@ -69,10 +52,14 @@ public interface ProductPrice extends IDOEntity {
 	public void setPriceCategoryID(int id);
 
 	/**
+	 * @see com.idega.block.trade.stockroom.data.ProductPriceBMPBean#getCurrency
+	 */
+	public Currency getCurrency() throws FinderException;
+
+	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductPriceBMPBean#getCurrencyId
 	 */
 	public int getCurrencyId();
-  public Currency getCurrency() throws FinderException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductPriceBMPBean#setCurrencyId
