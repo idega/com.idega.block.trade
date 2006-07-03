@@ -2,6 +2,7 @@ package com.idega.block.trade.stockroom.data;
 
 
 import com.idega.data.IDOException;
+import com.idega.data.IDORelationshipException;
 import java.util.Collection;
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -147,9 +148,9 @@ public class ProductPriceHomeImpl extends IDOFactory implements ProductPriceHome
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public ProductPrice findByProductAndCategoryAndCurrencyAndType(int productId, int priceCategoryID, int currencyID, int type) throws FinderException {
+	public ProductPrice findIdentical(ProductPrice price, int currencyID) throws FinderException, IDORelationshipException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Object pk = ((ProductPriceBMPBean) entity).ejbFindByProductAndCategoryAndCurrencyAndType(productId, priceCategoryID, currencyID, type);
+		Object pk = ((ProductPriceBMPBean) entity).ejbFindIdentical(price, currencyID);
 		this.idoCheckInPooledEntity(entity);
 		return this.findByPrimaryKey(pk);
 	}

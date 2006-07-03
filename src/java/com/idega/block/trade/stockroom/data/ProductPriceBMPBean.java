@@ -23,6 +23,7 @@ import com.idega.data.IDOQuery;
 import com.idega.data.IDORelationshipException;
 import com.idega.data.SimpleQuerier;
 import com.idega.data.query.Column;
+import com.idega.data.query.InCriteria;
 import com.idega.data.query.MatchCriteria;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
@@ -560,7 +561,13 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 		this.idoAddTo(TravelAddress.class, travelAddressPK); 
   }
   
-  public Object ejbFindByProductAndCategoryAndCurrencyAndType(int productId, int priceCategoryID, int currencyID, int type) throws FinderException {
+  public Object ejbFindIdentical(ProductPrice price, int currencyID) throws FinderException, IDORelationshipException {
+	  int productId = price.getProductId();
+	  int priceCategoryID = price.getPriceCategoryID();
+	  int type = price.getPriceType();
+	  Collection frames = price.getTimeframes();
+	  Collection addresses = price.getTravelAddresses();
+	  
 	  Table table = new Table(this);
 	  SelectQuery query = new SelectQuery(table);
 	  query.addColumn(new Column(table, getIDColumnName()));
@@ -569,6 +576,16 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 	  query.addCriteria(new MatchCriteria(new Column(table, getColumnNameCurrencyId()), MatchCriteria.EQUALS, currencyID));
 	  query.addCriteria(new MatchCriteria(new Column(table, getColumnNamePriceType()), MatchCriteria.EQUALS, type));
 	  query.addCriteria(new MatchCriteria(new Column(table, getColumnNameIsValid()), MatchCriteria.EQUALS, true));
+	  if (frames != null && !frames.isEmpty()) {
+		  Table fTable = new Table(Timeframe.class);
+		  query.addJoin(table, fTable);
+		  query.addCriteria(new InCriteria(new Column(fTable, "TB_TIMEFRAME_ID"), frames));
+	  }
+	  if (addresses != null && !addresses.isEmpty()) {
+		  Table aTable = new Table(TravelAddress.class);
+		  query.addJoin(table, aTable);
+		  query.addCriteria(new InCriteria(new Column(aTable, "SR_ADDRESS_ID"), addresses));
+	  }
 	  return this.idoFindOnePKByQuery(query);
   }
 

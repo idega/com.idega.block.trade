@@ -2,6 +2,7 @@ package com.idega.block.trade.stockroom.data;
 
 
 import com.idega.data.IDOException;
+import com.idega.data.IDORelationshipException;
 import java.util.Collection;
 import javax.ejb.CreateException;
 import com.idega.data.IDOHome;
@@ -50,5 +51,5 @@ public interface ProductPriceHome extends IDOHome {
 
 	public Collection findBySQL(String sql) throws FinderException;
 
-	public ProductPrice findByProductAndCategoryAndCurrencyAndType(int productId, int priceCategoryID, int currencyID, int type) throws FinderException;
+	public ProductPrice findIdentical(ProductPrice price, int currencyID) throws FinderException, IDORelationshipException;
 }
