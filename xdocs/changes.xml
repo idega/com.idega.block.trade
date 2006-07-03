@@ -1,39 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <document>
   <properties>
     <title>Trade Changes</title>
     <author email="gimmi@idega.com">Grimur Jonsson</author>
   </properties>
   <body>
-
-	<release version="3.1.2" date="in dev">
-		<action dev="gimmi" type="update">
-			Core updated to version 3.1.2
-		</action>     
-		<action dev="gimmi" type="fix">
-			Replaced the find method used in CurrencySetter
-		</action>     
-		<action dev="gimmi" type="update">
-			Removed null reference compiler warning.
-		</action>     
-	</release>
-
-	<release version="3.1.1" date="2006-07-01">
-		<action dev="gimmi" type="add">
-			New find method for ProductPrice, search by Product, PriceCategory, Currency and PriceType
-		</action>     
-		<action dev="gimmi" type="add">
-			New find method for Currency, a list of all available in the system.
-		</action>     
-		<action dev="gimmi" type="add">
-			New ROLE for SupplierManager, Currency Setter
-		</action>     
-	</release>
-  
-      <release version="3.1.0" date="2006-06-27">
-		  <action dev="gimmi" type="update">
-			Released module built on ePlatform 3.1
-	      </action>     
+    <release version="3.1.2" date="2006-07-03">
+      <action dev="gimmi" type="update">Core updated to version 3.1.2</action>
+      <action dev="gimmi" type="fix">Replaced the find method used in CurrencySetter</action>
+      <action dev="gimmi" type="update">Removed null reference compiler warning.</action>
     </release>
-
+    <release version="3.1.1" date="2006-07-01">
+      <action dev="gimmi" type="add">New find method for ProductPrice, search by Product, PriceCategory, Currency and PriceType</action>
+      <action dev="gimmi" type="add">New find method for Currency, a list of all available in the system.</action>
+      <action dev="gimmi" type="add">New ROLE for SupplierManager, Currency Setter</action>
+    </release>
+    <release version="3.1.0" date="2006-06-27">
+      <action dev="gimmi" type="update">Released module built on ePlatform 3.1</action>
+    </release>
   </body>
 </document>
