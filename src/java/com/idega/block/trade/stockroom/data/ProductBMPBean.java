@@ -942,4 +942,23 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 
 		return idoFindPKsByQuery(query);
 	}
+	
+	public Collection ejbFindByPriceCategory(PriceCategory priceCategory) throws IDORelationshipException, FinderException {
+		Table table = new Table(this);
+		Table priceTable = new Table(ProductPrice.class);
+		Table catTable = new Table(priceCategory);
+		
+		Column pk = new Column(table, getIDColumnName());
+		pk.setAsDistinct();
+		SelectQuery query = new SelectQuery(table);
+		query.addColumn(pk);
+		query.addJoin(priceTable, table);
+		query.addJoin(priceTable, catTable);
+		query.addCriteria(new MatchCriteria(new Column(catTable, "SR_PRICE_CATEGORY_ID"), MatchCriteria.EQUALS, priceCategory));
+//		String sql = "select p.sr_product_id from sr_product p, SR_PRODUCT_PRODUCT_CATEGORY pc " +
+//				"WHERE p.is_valid = 'Y' AND pc.sr_product_id = p.sr_product_id " +
+//				"AND pc.sr_product_category_id = "+priceCategory.getPrimaryKey().toString();
+//		return idoFindPKsBySQL(sql);
+		return idoFindPKsByQuery(query);
+	}
 }

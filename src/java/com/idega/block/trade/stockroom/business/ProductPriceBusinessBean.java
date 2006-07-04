@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.6 2006/04/09 11:59:45 laddi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.7 2006/07/04 00:30:01 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -14,8 +14,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
+
 import javax.ejb.FinderException;
+
+import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.block.trade.stockroom.data.PriceCategoryBMPBean;
+import com.idega.block.trade.stockroom.data.Product;
+import com.idega.block.trade.stockroom.data.ProductHome;
 import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.block.trade.stockroom.data.ProductPriceHome;
 import com.idega.business.IBOLookup;
@@ -24,6 +29,7 @@ import com.idega.business.IBORuntimeException;
 import com.idega.business.IBOServiceBean;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
+import com.idega.data.IDORelationshipException;
 import com.idega.data.IDORuntimeException;
 import com.idega.util.IWTimestamp;
 
@@ -147,7 +153,27 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return t;
 	}
 	
-
+	public boolean invalidateCache(PriceCategory cat) {
+		try {
+			ProductHome pHome = (ProductHome) IDOLookup.getHome(Product.class);
+			Collection coll = pHome.findByPriceCategory(cat);
+			if (coll != null) {
+				Iterator iter = coll.iterator();
+				while (iter.hasNext()) {
+					invalidateCache( ((Product) iter.next()).getPrimaryKey().toString() );
+				}
+			}
+			return true;
+		} catch (IDOLookupException e) {
+			e.printStackTrace();
+		} catch (IDORelationshipException e) {
+			e.printStackTrace();
+		} catch (FinderException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public boolean invalidateCache(String productId) {
 		return  invalidateCache(productId, null);
 	}

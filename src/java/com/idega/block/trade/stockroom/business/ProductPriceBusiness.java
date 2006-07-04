@@ -1,80 +1,67 @@
-/*
- * $Id: ProductPriceBusiness.java,v 1.2 2005/10/10 10:51:23 gimmi Exp $
- * Created on Aug 11, 2005
- *
- * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
- *
- * This software is the proprietary information of Idega hf.
- * Use is subject to license terms.
- */
 package com.idega.block.trade.stockroom.business;
 
+
 import java.util.Collection;
+import com.idega.util.IWTimestamp;
 import javax.ejb.FinderException;
 import com.idega.block.trade.stockroom.data.ProductPriceHome;
+import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.business.IBOService;
-import com.idega.util.IWTimestamp;
+import java.rmi.RemoteException;
 
-
-/**
- * 
- *  Last modified: $Date: 2005/10/10 10:51:23 $ by $Author: gimmi $
- * 
- * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.2 $
- */
 public interface ProductPriceBusiness extends IBOService {
+	/**
+	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getProductPrices
+	 */
+	public Collection getProductPrices(int productId, int timeframeId, int addressId, int[] visibility, IWTimestamp date) throws FinderException, RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getProductPrices
 	 */
-	public Collection getProductPrices(int productId, int timeframeId, int addressId, int[] visibility, IWTimestamp date)
-			throws FinderException, java.rmi.RemoteException;
+	public Collection getProductPrices(int productId, int timeframeId, int addressId, boolean netbookingOnly, IWTimestamp date) throws FinderException, RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getProductPrices
 	 */
-	public Collection getProductPrices(int productId, int timeframeId, int addressId, boolean netbookingOnly,
-			IWTimestamp date) throws FinderException, java.rmi.RemoteException;
+	public Collection getProductPrices(int productId, int timeframeId, int addressId, boolean netbookingOnly, String key, IWTimestamp date) throws FinderException, RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getProductPrices
 	 */
-	public Collection getProductPrices(int productId, int timeframeId, int addressId, boolean netbookingOnly,
-			String key, IWTimestamp date) throws FinderException, java.rmi.RemoteException;
+	public Collection getProductPrices(int productId, int timeframeId, int addressId, int currencyId, boolean netbookingOnly, String key, IWTimestamp date) throws FinderException, RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getProductPrices
 	 */
-	public Collection getProductPrices(int productId, int timeframeId, int addressId, int currencyId,
-			boolean netbookingOnly, String key, IWTimestamp date) throws FinderException, java.rmi.RemoteException;
-
-	/**
-	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getProductPrices
-	 */
-	public Collection getProductPrices(int productId, int timeframeId, int addressId, int currencyId, int[] visibility,
-			String key, IWTimestamp date) throws FinderException, java.rmi.RemoteException;
+	public Collection getProductPrices(int productId, int timeframeId, int addressId, int currencyId, int[] visibility, String key, IWTimestamp date) throws FinderException, RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#invalidateCache
 	 */
-	public boolean invalidateCache(String productId) throws java.rmi.RemoteException;
-	public boolean invalidateCache(String productId, String remoteDomainToExclude) throws java.rmi.RemoteException;
+	public boolean invalidateCache(PriceCategory cat) throws RemoteException;
+
+	/**
+	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#invalidateCache
+	 */
+	public boolean invalidateCache(String productId) throws RemoteException;
+
+	/**
+	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#invalidateCache
+	 */
+	public boolean invalidateCache(String productID, String remoteDomainToExclude) throws RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getMiscellaneousPrices
 	 */
-	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly)
-			throws FinderException, java.rmi.RemoteException;
+	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly) throws FinderException, RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getMiscellaneousPrices
 	 */
-	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly,
-			int currencyId) throws FinderException, java.rmi.RemoteException;
+	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId) throws FinderException, RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getProductPriceHome
 	 */
-	public ProductPriceHome getProductPriceHome() throws java.rmi.RemoteException;
+	public ProductPriceHome getProductPriceHome() throws RemoteException;
 }

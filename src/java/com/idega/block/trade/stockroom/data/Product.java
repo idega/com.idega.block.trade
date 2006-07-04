@@ -1,42 +1,26 @@
-/*
- * $Id: Product.java,v 1.37 2005/08/30 02:25:08 gimmi Exp $
- * Created on Jul 8, 2005
- *
- * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
- *
- * This software is the proprietary information of Idega hf.
- * Use is subject to license terms.
- */
 package com.idega.block.trade.stockroom.data;
 
-import java.rmi.RemoteException;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.List;
-import javax.ejb.FinderException;
-import com.idega.block.text.data.TxText;
-import com.idega.core.file.data.ICFile;
+
 import com.idega.core.location.data.Address;
-import com.idega.data.IDOAddRelationshipException;
+import com.idega.core.file.data.ICFile;
 import com.idega.data.IDOException;
 import com.idega.data.IDOFinderException;
-import com.idega.data.IDOLegacyEntity;
-import com.idega.data.IDORelationshipException;
-import com.idega.data.IDORemoveRelationshipException;
+import java.sql.SQLException;
 import com.idega.data.MetaDataCapable;
+import com.idega.data.IDORemoveRelationshipException;
+import com.idega.block.text.data.TxText;
+import java.rmi.RemoteException;
+import java.sql.Timestamp;
+import com.idega.data.IDOAddRelationshipException;
+import com.idega.data.IDORelationshipException;
+import java.util.Collection;
+import javax.ejb.FinderException;
 import com.idega.util.IWTimestamp;
+import java.util.List;
+import com.idega.data.IDOLegacyEntity;
+import com.idega.data.IDOEntity;
 
-
-/**
- * 
- *  Last modified: $Date: 2005/08/30 02:25:08 $ by $Author: gimmi $
- * 
- * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.37 $
- */
-public interface Product extends IDOLegacyEntity, MetaDataCapable {
-
+public interface Product extends IDOEntity, IDOLegacyEntity, MetaDataCapable {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#invalidate
 	 */
@@ -138,6 +122,11 @@ public interface Product extends IDOLegacyEntity, MetaDataCapable {
 	public Timeframe[] getTimeframes() throws SQLException;
 
 	/**
+	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#getTimeframe
+	 */
+	public Timeframe getTimeframe() throws SQLException;
+
+	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#getCreationDate
 	 */
 	public Timestamp getCreationDate();
@@ -165,8 +154,7 @@ public interface Product extends IDOLegacyEntity, MetaDataCapable {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#setProductCategories
 	 */
-	public void setProductCategories(int[] categoryIds) throws RemoteException, FinderException,
-			IDORemoveRelationshipException;
+	public void setProductCategories(int[] categoryIds) throws RemoteException, FinderException, IDORemoveRelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#addCategory
@@ -186,8 +174,7 @@ public interface Product extends IDOLegacyEntity, MetaDataCapable {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#addTravelAddresses
 	 */
-	public void addTravelAddresses(int[] addressIds) throws RemoteException, FinderException,
-			IDOAddRelationshipException;
+	public void addTravelAddresses(int[] addressIds) throws RemoteException, FinderException, IDOAddRelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#addTravelAddress
