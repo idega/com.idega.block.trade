@@ -5,7 +5,13 @@
   </properties>
   <body>
 
-	<release version="3.1.4" date="2006-07-04">
+	<release version="3.1.5" date="2006-09-10">
+		<action dev="gimmi" type="fix">
+			Little debug added
+		</action>     
+	</release>
+
+	<release version="3.1.4" date="2006-07-31">
 		<action dev="gimmi" type="fix">
 			Fixed an error in the webservice method
 		</action>     
