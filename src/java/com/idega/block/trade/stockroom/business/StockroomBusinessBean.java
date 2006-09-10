@@ -212,7 +212,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
             IWTimestamp stamp = new IWTimestamp(time);
 //            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameCurrencyId()+" = "+currencyId);
 //            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" <= '"+stamp.toSQLString()+"'");
+            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" <= '"+stamp.toSQLString(false)+"'");
             buffer.append(" and ");
             buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+" = "+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.PRICETYPE_PRICE);
             buffer.append(" and ");
