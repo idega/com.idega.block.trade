@@ -1,12 +1,43 @@
 package com.idega.block.trade.stockroom.data;
 
+
 import com.idega.data.IDOLegacyEntity;
 
-
-/**
- * @author gimmi
- */
 public interface PriceCategory extends IDOLegacyEntity {
+	/**
+	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#getValue
+	 */
+	public int getValue();
+
+	/**
+	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#setValue
+	 */
+	public void setValue(int value);
+
+	/**
+	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#getGroupedWith
+	 */
+	public PriceCategory getGroupedWith();
+
+	/**
+	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#setGroupedWith
+	 */
+	public void setGroupedWith(PriceCategory cat);
+
+	/**
+	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#setGroupedWith
+	 */
+	public void setGroupedWith(Object catId);
+
+	/**
+	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#getIsBooleanCategory
+	 */
+	public boolean getIsBooleanCategory();
+
+	/**
+	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#setIsBooleanCategory
+	 */
+	public void setIsBooleanCategory(boolean isBoolean);
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#getName

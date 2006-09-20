@@ -164,6 +164,32 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   }
 
   public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
+	  ProductPrice price = getProductPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId);
+	  return getPrice(price, time, timeframeId, addressId);
+  }
+
+  	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
+  	  if (price != null) {
+		  PriceCategory cat = price.getPriceCategory();
+		  if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_PRICE)){
+			  CurrencyHolder iceCurr = CurrencyBusiness.getCurrencyHolder(CurrencyHolder.ICELANDIC_KRONA);
+			  if ( iceCurr != null && (price.getCurrencyId() == iceCurr.getCurrencyID())) {
+				  return new Float(Math.round( price.getPrice()) ).floatValue();
+			  } else {
+				  return price.getPrice();
+			  }
+		  } else if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT)){
+				  float pr = getPrice(-1, price.getProductId(),cat.getParentId(),price.getCurrencyId(),time, timeframeId, addressId);
+				  float disc = price.getPrice();
+				  return pr*((100-disc) /100);
+
+			  }
+
+		  }
+		  return 0;
+	  }
+  
+	  public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
     /**@todo: Implement this com.idega.block.trade.stockroom.business.SupplyManager method*/
     /*skila ver�i ef PRICETYPE_PRICE annars ver�i me� tilliti til afsl�ttar*/
 
@@ -228,12 +254,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
           if(result != null && result.size() > 0){
 			  Iterator iter = result.iterator();
 			  ProductPrice price = (ProductPrice) iter.next();
-          	CurrencyHolder iceCurr = CurrencyBusiness.getCurrencyHolder(CurrencyHolder.ICELANDIC_KRONA);
-          	if ( iceCurr != null && (price.getCurrencyId() == iceCurr.getCurrencyID())) {
-          		return new Float(Math.round( price.getPrice()) ).floatValue();
-          	} else {
-          		return price.getPrice();
-          	}
+			  return price;
           }else{
         	  System.err.println(buffer.toString());
             throw new ProductPriceException("No Price Was Found");
@@ -277,27 +298,25 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 			  ProductPriceHome ppHome = (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);
 			  Collection result = ppHome.findBySQL(buffer.toString());
 //          List result = EntityFinder.findAll(ppr,buffer.toString());
-          float disc = 0;
           if(result != null && result.size() > 0){
 			  Iterator iter = result.iterator();
 			  ProductPrice price = (ProductPrice) iter.next();
-            disc = price.getPrice();
+			  return price;
           }
           
-          float pr = getPrice(-1, productId,cat.getParentId(),currencyId,time, timeframeId, addressId);
-          return pr*((100-disc) /100);
         }else{
           throw new ProductPriceException("No Price Was Found");
         }
     }
 	catch (FinderException e) {
 	      e.printStackTrace(System.err);
-		  return 0;
+		  return null;
 	}
 	catch (IDOCompositePrimaryKeyException e) {
 	      e.printStackTrace(System.err);
-		  return 0;
+		  return null;
 	}
+	return null;
 
   }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.7 2006/07/04 00:30:01 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.8 2006/09/20 17:40:46 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -19,6 +19,7 @@ import javax.ejb.FinderException;
 
 import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.block.trade.stockroom.data.PriceCategoryBMPBean;
+import com.idega.block.trade.stockroom.data.PriceCategoryHome;
 import com.idega.block.trade.stockroom.data.Product;
 import com.idega.block.trade.stockroom.data.ProductHome;
 import com.idega.block.trade.stockroom.data.ProductPrice;
@@ -37,7 +38,7 @@ import com.idega.util.IWTimestamp;
 public class ProductPriceBusinessBean extends IBOServiceBean  implements ProductPriceBusiness{
 
 	private HashMap mapForProductPriceMap = new HashMap();
-	
+
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int[] visibility, IWTimestamp date) throws FinderException {
 		return getProductPrices(productId, timeframeId, addressId, -1, visibility, null, date);
 	}
@@ -77,7 +78,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		}
 		
 		HashMap priceMap = getPriceMapForProduct(new Integer(productId));
-		
 //		System.out.println("[ProductPriceBusinessBean] mapKey = "+mapKey);
 		
 //		Timer t =  new Timer();
@@ -178,6 +178,25 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return  invalidateCache(productId, null);
 	}
 
+	public Collection getGroupedCategories(PriceCategory category) {
+		try {
+			Collection coll = getPriceCategoryHome().findGroupedCategories(category);
+			if (coll != null && coll.size() <= 1) {
+				return null;
+			}
+			return coll;
+		} catch (FinderException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	protected PriceCategoryHome getPriceCategoryHome() {
+		try {
+			return (PriceCategoryHome) IDOLookup.getHome(PriceCategory.class);
+		} catch (IDOLookupException e) {
+			throw new IDORuntimeException(e);
+		}
+	}
 	
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) {
 		this.mapForProductPriceMap.put(new Integer(productID), null);

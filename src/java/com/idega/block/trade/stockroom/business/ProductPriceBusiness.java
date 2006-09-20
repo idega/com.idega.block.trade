@@ -46,6 +46,11 @@ public interface ProductPriceBusiness extends IBOService {
 	public boolean invalidateCache(String productId) throws RemoteException;
 
 	/**
+	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getGroupedCategories
+	 */
+	public Collection getGroupedCategories(PriceCategory category) throws RemoteException;
+
+	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#invalidateCache
 	 */
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) throws RemoteException;

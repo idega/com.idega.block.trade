@@ -5,6 +5,12 @@
   </properties>
   <body>
 
+	<release version="3.1.6" date="2006-09-20">
+		<action dev="gimmi" type="update">
+			PriceCategory updated
+		</action>     
+	</release>
+
 	<release version="3.1.5" date="2006-09-10">
 		<action dev="gimmi" type="fix">
 			Little debug added

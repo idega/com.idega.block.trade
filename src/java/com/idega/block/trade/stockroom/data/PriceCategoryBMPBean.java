@@ -2,11 +2,15 @@ package com.idega.block.trade.stockroom.data;
 
 import java.sql.SQLException;
 import java.util.Collection;
+
 import javax.ejb.FinderException;
+
 import com.idega.core.location.data.Address;
+import com.idega.data.IDOException;
 import com.idega.data.IDOQuery;
 import com.idega.data.query.Column;
 import com.idega.data.query.MatchCriteria;
+import com.idega.data.query.OR;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
 import com.idega.data.query.WildCardColumn;
@@ -30,6 +34,11 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
 	public static final int PRICE_VISIBILITY_PUBLIC  = 2;
 	public static final int PRICE_VISIBILITY_BOTH_PRIVATE_AND_PUBLIC = 3;
 
+	// NEW COLUMNS
+	private static final String COLUMN_VALUE = "CATEGORY_VALUE";
+	private static final String COLUMN_GROUPED_WITH_ID = "GROUPED_WITH_ID";
+	private static final String COLUMN_IS_BOOLEAN_CATEGORY = "IS_BOOLEAN";
+	
   public PriceCategoryBMPBean(){
     super();
   }
@@ -53,6 +62,10 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
     addAttribute(getColumnNameVisibility(), "visibility", true, true, Integer.class);
     addAttribute(getColumnNameKey(), "key", true, true, String.class);
 
+    addAttribute(COLUMN_VALUE, "column value", Integer.class);
+    addOneToOneRelationship(COLUMN_GROUPED_WITH_ID, PriceCategory.class);
+    addAttribute(COLUMN_IS_BOOLEAN_CATEGORY, "is boolean", Boolean.class);
+    
     this.addManyToManyRelationShip(Address.class);
     this.addTreeRelationShip();
     
@@ -70,6 +83,63 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
     }catch (SQLException sql) {
       sql.printStackTrace(System.err);
     }
+  }
+  
+  public int getValue() {
+	  return getIntColumnValue(COLUMN_VALUE, 1);
+  }
+  
+  public void setValue(int value) {
+	  setColumn(COLUMN_VALUE, value);
+  }
+  
+  public Collection ejbFindGroupedCategories(PriceCategory cat) throws FinderException {
+	  Table table = new Table(this);
+	  
+	  SelectQuery query = new SelectQuery(table);
+	  query.addColumn(new Column(table, getIDColumnName()));
+	  if (cat.getGroupedWith() != null) {
+		  MatchCriteria left = new MatchCriteria(new Column(table, COLUMN_GROUPED_WITH_ID), MatchCriteria.EQUALS, cat.getGroupedWith());
+		  MatchCriteria right = new MatchCriteria(new Column(table, getIDColumnName()), MatchCriteria.EQUALS, cat.getGroupedWith());
+		  OR or = new OR(left, right);
+		  query.addCriteria(or);
+	  } else {
+		  MatchCriteria left = new MatchCriteria(new Column(table, COLUMN_GROUPED_WITH_ID), MatchCriteria.EQUALS, cat.getPrimaryKey());
+		  MatchCriteria right = new MatchCriteria(new Column(table, getIDColumnName()), MatchCriteria.EQUALS, cat.getPrimaryKey());
+		  OR or = new OR(left, right);
+		  query.addCriteria(or);
+	  }
+	  return idoFindPKsByQuery(query);
+  }
+  
+  public PriceCategory getGroupedWith() {
+	  return (PriceCategory) getColumnValue(COLUMN_GROUPED_WITH_ID);
+  }
+  
+  public void setGroupedWith(PriceCategory cat) {
+	  if (cat == null) {
+		  try {
+			  String sql = "update " + this.getEntityName() + " set " + COLUMN_GROUPED_WITH_ID + " = null where " + this.getIDColumnName() + " = " + this.getPrimaryKeyValueSQLString();
+			  idoExecuteTableUpdate(sql);
+		} catch (IDOException e) {
+			
+			e.printStackTrace();
+		}
+	  } else {
+		  setColumn(COLUMN_GROUPED_WITH_ID, cat);
+	  }
+  }
+  
+  public void setGroupedWith(Object catId) {
+	  setColumn(COLUMN_GROUPED_WITH_ID, catId);
+  }
+  
+  public boolean getIsBooleanCategory() {
+	  return getBooleanColumnValue(COLUMN_IS_BOOLEAN_CATEGORY, false);
+  }
+  
+  public void setIsBooleanCategory(boolean isBoolean) {
+	  setColumn(COLUMN_IS_BOOLEAN_CATEGORY, isBoolean);
   }
 
   public void setDefaultValues() {

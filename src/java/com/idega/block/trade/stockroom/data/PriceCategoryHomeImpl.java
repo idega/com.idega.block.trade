@@ -58,4 +58,11 @@ public class PriceCategoryHomeImpl extends IDOFactory implements PriceCategoryHo
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
+
+	public Collection findGroupedCategories(PriceCategory cat) throws FinderException {
+		com.idega.data.IDOEntity entity = this.idoCheckOutPooledEntity();
+		java.util.Collection ids = ((PriceCategoryBMPBean) entity).ejbFindGroupedCategories(cat);
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
 }
