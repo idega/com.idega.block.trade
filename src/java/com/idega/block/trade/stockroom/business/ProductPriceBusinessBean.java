@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.8 2006/09/20 17:40:46 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.9 2006/09/26 09:47:37 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -9,7 +9,9 @@
  */
 package com.idega.block.trade.stockroom.business;
 
+import java.rmi.RemoteException;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +26,8 @@ import com.idega.block.trade.stockroom.data.Product;
 import com.idega.block.trade.stockroom.data.ProductHome;
 import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.block.trade.stockroom.data.ProductPriceHome;
+import com.idega.block.trade.stockroom.data.Timeframe;
+import com.idega.block.trade.stockroom.data.TravelAddress;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
@@ -178,6 +182,52 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return  invalidateCache(productId, null);
 	}
 
+	public Collection getGroupedCategories(ProductPrice price) throws RemoteException {
+		PriceCategory cat = price.getPriceCategory();
+		Collection cats = getGroupedCategories(cat);
+		Vector v = new Vector();
+
+		if (cats != null && !cats.isEmpty()) {
+			Iterator iter = cats.iterator();
+
+			int timeframeID = -1;
+			int addressID = -1;
+			try {
+				Collection tFrames = price.getTimeframes();
+				if (tFrames != null && !tFrames.isEmpty()) {
+					timeframeID = ((Timeframe) tFrames.iterator().next()).getID();
+				}
+			} catch (IDORelationshipException e) {
+				e.printStackTrace();
+			}
+			try {
+				Collection tAddress =price.getTravelAddresses();
+				if (tAddress != null && !tAddress.isEmpty()) {
+					addressID = ((TravelAddress) tAddress.iterator().next()).getID();
+				}
+			} catch (IDORelationshipException e) {
+				e.printStackTrace();
+			}
+
+			while (iter.hasNext()) {
+				PriceCategory pCat = (PriceCategory) iter.next();
+				try {
+					ProductPrice pp = getStockroomBusiness().getProductPrice(-1, price.getProductId(), ((Integer)pCat.getPrimaryKey()).intValue(), price.getCurrencyId(), IWTimestamp.getTimestampRightNow(), timeframeID, addressID);
+					getStockroomBusiness().getPrice(pp, IWTimestamp.getTimestampRightNow(), timeframeID, addressID);
+					v.add(pCat);
+				} catch (ProductPriceException  p) {
+					System.out.println("[ProductPriceBusiness] Did not find price for the connected category");
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		if (v != null && v.isEmpty()) {
+			v= null;
+		}
+		
+		return v;
+	}
 	public Collection getGroupedCategories(PriceCategory category) {
 		try {
 			Collection coll = getPriceCategoryHome().findGroupedCategories(category);

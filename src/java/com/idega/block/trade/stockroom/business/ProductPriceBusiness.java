@@ -4,6 +4,8 @@ package com.idega.block.trade.stockroom.business;
 import java.util.Collection;
 import com.idega.util.IWTimestamp;
 import javax.ejb.FinderException;
+
+import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.block.trade.stockroom.data.ProductPriceHome;
 import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.business.IBOService;
@@ -48,6 +50,7 @@ public interface ProductPriceBusiness extends IBOService {
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getGroupedCategories
 	 */
+	public Collection getGroupedCategories(ProductPrice price) throws RemoteException;
 	public Collection getGroupedCategories(PriceCategory category) throws RemoteException;
 
 	/**
