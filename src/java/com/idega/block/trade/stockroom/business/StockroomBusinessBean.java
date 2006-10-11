@@ -1,5 +1,7 @@
 package com.idega.block.trade.stockroom.business;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -8,11 +10,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
+import javax.xml.rpc.ServiceException;
 
-import com.idega.axis.util.AxisUtil;
 import com.idega.block.trade.business.CurrencyBusiness;
 import com.idega.block.trade.business.CurrencyHolder;
 import com.idega.block.trade.stockroom.data.PriceCategory;
@@ -27,6 +30,8 @@ import com.idega.block.trade.stockroom.data.SupplierHome;
 import com.idega.block.trade.stockroom.data.SupplierStaffGroupBMPBean;
 import com.idega.block.trade.stockroom.data.Timeframe;
 import com.idega.block.trade.stockroom.data.TravelAddress;
+import com.idega.block.trade.stockroom.webservice.client.TradeServiceServiceLocator;
+import com.idega.block.trade.stockroom.webservice.client.TradeService_PortType;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
@@ -48,7 +53,6 @@ import com.idega.presentation.IWContext;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
-import com.idega.util.FileUtil;
 import com.idega.util.IWTimestamp;
 
 /**
@@ -643,54 +647,88 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 		return remoteTravelApplications;
 	}
 
-	public void executeRemoteService(String remoteDomainToExclude, String methodQuery) {
-		executeRemoteService(remoteDomainToExclude, methodQuery, "/idegaweb/bundles/com.idega.block.trade.bundle/resources/services/IWTradeWS.jws");
-	}
+//	public void executeRemoteService(String remoteDomainToExclude, String methodQuery) {
+//		executeRemoteService(remoteDomainToExclude, methodQuery, "/idegaweb/bundles/com.idega.block.trade.bundle/resources/services/IWTradeWS.jws");
+//	}
 	
-	/**
-	 * <p>
-	 * Method for calling methods on remote domains
-	 * </p>
-	 * @param remoteDomainToExclude
-	 * @param methodQuery
-	 */
-	protected void executeRemoteService(String remoteDomainToExclude, String methodQuery, String webserviceURI) {
+	public Collection getService_PortTypes(String remoteDomainToExclude) throws ServiceException, MalformedURLException {
+		Collection c = new Vector();
 		String remoteTravelWebs = getRemoteTravelApplicationUrlCsvList();
 		if(!"".equals(remoteTravelWebs) && remoteTravelWebs != null){
-//			log("Invalidating REMOTE stored search results");
 
-			String prmCallingServer = "remoteCallingHostName";
-			String serverName = null;
-			try {
-				serverName = AxisUtil.getHttpServletRequest().getServerName();
-			} catch (Exception e) {
-				try {
-					serverName = IWContext.getInstance().getRequest().getServerName();
-				} catch (NullPointerException e1) {
-					
-				}
-			}
 			StringTokenizer tokenizer = new StringTokenizer(remoteTravelWebs,",");
 			while(tokenizer.hasMoreTokens()){
 				String remoteWeb = tokenizer.nextToken();
 				if(remoteDomainToExclude == null || remoteWeb.indexOf(remoteDomainToExclude)==-1){
+
 					if(remoteWeb.endsWith("/")){
 						remoteWeb = remoteWeb.substring(0,remoteWeb.length()-1);
 					}
-					String response = FileUtil.getStringFromURL(remoteWeb+webserviceURI+"?method="+methodQuery+"&"+prmCallingServer+"="+serverName);
-					if( response.indexOf("iwtravel-ok")==-1){
-						logError("Webservice method : "+methodQuery+" failed on : "+remoteWeb+" message was : "+response);
-					}
-					else{
-						log("Webservice method : "+methodQuery+" successful for :"+remoteWeb);
-					}
+
+					java.rmi.Remote state_port = createServiceStatePortType(remoteWeb);
+					c.add(state_port);
 				}
 				else{
 					log("Skipping round-trip decaching for calling remote server : "+remoteDomainToExclude);
 				}
 			}
+
+			
 		}
+		
+		return c;
 	}
+	protected java.rmi.Remote createServiceStatePortType(String remoteWeb) throws ServiceException, MalformedURLException {
+		String endpoint2 = remoteWeb+"/services/TradeService";
+		TradeServiceServiceLocator state_locator = new TradeServiceServiceLocator();
+		TradeService_PortType state_port = state_locator.getTradeService(new URL(endpoint2));
+		return state_port;
+	}
+	
+//	/**
+//	 * <p>
+//	 * Method for calling methods on remote domains
+//	 * </p>
+//	 * @param remoteDomainToExclude
+//	 * @param methodQuery
+//	 */
+//	protected void executeRemoteService(String remoteDomainToExclude, String methodQuery, String webserviceURI) {
+//		String remoteTravelWebs = getRemoteTravelApplicationUrlCsvList();
+//		if(!"".equals(remoteTravelWebs) && remoteTravelWebs != null){
+////			log("Invalidating REMOTE stored search results");
+//
+//			String prmCallingServer = "remoteCallingHostName";
+//			String serverName = null;
+//			try {
+//				serverName = AxisUtil.getHttpServletRequest().getServerName();
+//			} catch (Exception e) {
+//				try {
+//					serverName = IWContext.getInstance().getRequest().getServerName();
+//				} catch (NullPointerException e1) {
+//					
+//				}
+//			}
+//			StringTokenizer tokenizer = new StringTokenizer(remoteTravelWebs,",");
+//			while(tokenizer.hasMoreTokens()){
+//				String remoteWeb = tokenizer.nextToken();
+//				if(remoteDomainToExclude == null || remoteWeb.indexOf(remoteDomainToExclude)==-1){
+//					if(remoteWeb.endsWith("/")){
+//						remoteWeb = remoteWeb.substring(0,remoteWeb.length()-1);
+//					}
+//					String response = FileUtil.getStringFromURL(remoteWeb+webserviceURI+"?method="+methodQuery+"&"+prmCallingServer+"="+serverName);
+//					if( response.indexOf("iwtravel-ok")==-1){
+//						logError("Webservice method : "+methodQuery+" failed on : "+remoteWeb+" message was : "+response);
+//					}
+//					else{
+//						log("Webservice method : "+methodQuery+" successful for :"+remoteWeb);
+//					}
+//				}
+//				else{
+//					log("Skipping round-trip decaching for calling remote server : "+remoteDomainToExclude);
+//				}
+//			}
+//		}
+//	}
 
 
 }

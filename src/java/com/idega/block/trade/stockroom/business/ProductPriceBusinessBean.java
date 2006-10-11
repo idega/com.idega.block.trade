@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.9 2006/09/26 09:47:37 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.10 2006/10/11 21:35:38 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -9,6 +9,7 @@
  */
 package com.idega.block.trade.stockroom.business;
 
+import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import javax.ejb.FinderException;
+import javax.xml.rpc.ServiceException;
 
 import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.block.trade.stockroom.data.PriceCategoryBMPBean;
@@ -28,6 +30,7 @@ import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.block.trade.stockroom.data.ProductPriceHome;
 import com.idega.block.trade.stockroom.data.Timeframe;
 import com.idega.block.trade.stockroom.data.TravelAddress;
+import com.idega.block.trade.stockroom.webservice.client.TradeService_PortType;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
@@ -250,7 +253,23 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) {
 		this.mapForProductPriceMap.put(new Integer(productID), null);
-		getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "invalidatePriceCache&productID="+productID);
+		
+	    System.out.println("[ProductPriceBusiness] invalidateCache for product "+productID);
+	    try {
+			Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
+			Iterator iter = coll.iterator();
+			while (iter.hasNext()) {
+				((TradeService_PortType) iter.next()).invalidatePriceCache(productID, remoteDomainToExclude);
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+
+//		getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "invalidatePriceCache&productID="+productID);
 		return true;
 	}
 	

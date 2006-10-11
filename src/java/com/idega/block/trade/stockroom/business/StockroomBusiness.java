@@ -1,5 +1,5 @@
 /*
- * $Id: StockroomBusiness.java,v 1.47 2006/09/20 17:40:46 gimmi Exp $
+ * $Id: StockroomBusiness.java,v 1.48 2006/10/11 21:35:39 gimmi Exp $
  * Created on 12.5.2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -9,12 +9,17 @@
  */
 package com.idega.block.trade.stockroom.business;
 
+import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collection;
+
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
+import javax.xml.rpc.ServiceException;
+
 import com.idega.block.trade.stockroom.data.Product;
 import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.business.IBOService;
@@ -28,10 +33,10 @@ import com.idega.util.IWTimestamp;
 
 /**
  * 
- *  Last modified: $Date: 2006/09/20 17:40:46 $ by $Author: gimmi $
+ *  Last modified: $Date: 2006/10/11 21:35:39 $ by $Author: gimmi $
  * 
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public interface StockroomBusiness extends IBOService {
 
@@ -189,6 +194,5 @@ public interface StockroomBusiness extends IBOService {
 	public boolean isBetween(IWTimestamp from, IWTimestamp to, IWTimestamp stampToCheck, boolean yearly,
 			boolean bordersCount) throws java.rmi.RemoteException;
 
-	public void executeRemoteService(String remoteDomainToExclude, String methodQuery);
-
+	public Collection getService_PortTypes(String remoteDomainToExclude) throws ServiceException, MalformedURLException;
 }

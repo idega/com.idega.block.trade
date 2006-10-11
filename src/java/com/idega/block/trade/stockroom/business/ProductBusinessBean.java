@@ -1,5 +1,6 @@
 package com.idega.block.trade.stockroom.business;
 
+import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -9,8 +10,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
+
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
+import javax.xml.rpc.ServiceException;
+
 import com.idega.block.category.data.ICCategory;
 import com.idega.block.category.data.ICCategoryBMPBean;
 import com.idega.block.trade.stockroom.data.Product;
@@ -22,6 +26,7 @@ import com.idega.block.trade.stockroom.data.ProductPriceHome;
 import com.idega.block.trade.stockroom.data.Timeframe;
 import com.idega.block.trade.stockroom.data.TravelAddress;
 import com.idega.block.trade.stockroom.presentation.ProductCatalog;
+import com.idega.block.trade.stockroom.webservice.client.TradeService_PortType;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
@@ -39,11 +44,6 @@ import com.idega.data.IDORemoveRelationshipException;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.util.IWTimestamp;
-/**
- * @todo losa vi� service;
- */
-//import is.idega.idegaweb.travel.data.Service;
-//import is.idega.idegaweb.travel.presentation.ServiceViewer;
 
 
 /**
@@ -148,7 +148,21 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
     this.productDepartureAddresses.put(productID+false, null); 
     this.productDepartureAddresses.put(productID+true, null); 
     this.productDepartureAddresses2 = new HashMap();
-	getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "clearAddressMaps&productID="+productID);
+    System.out.println("[ProductBusiness] clearingAddressMaps for product "+productID);
+    try {
+		Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
+		Iterator iter = coll.iterator();
+		while (iter.hasNext()) {
+			((TradeService_PortType) iter.next()).clearAddressMaps(productID, remoteDomainToExclude);
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	} catch (MalformedURLException e) {
+		e.printStackTrace();
+	} catch (ServiceException e) {
+		e.printStackTrace();
+	}
+
 	return true;
   }
   
@@ -208,7 +222,22 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   public boolean invalidateProductCache(String productID, String remoteDomainToExclude) {
 	  this.products.remove(productID);
 	  this.timeframeMap.remove(productID);
-	  getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "invalidateProductCache&productID="+productID);
+	    System.out.println("[ProductBusiness] invalidateProductCache for product "+productID);
+	    try {
+			Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
+			Iterator iter = coll.iterator();
+			while (iter.hasNext()) {
+				((TradeService_PortType) iter.next()).invalidateProductCache(productID, remoteDomainToExclude);
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+
+	//	  getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "invalidateProductCache&productID="+productID);
 	  return true;
   }
 
@@ -309,7 +338,22 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
     getIWApplicationContext().removeApplicationAttribute(productsApplication+supplierId);
     getIWApplicationContext().getIWMainApplication().getIWCacheManager().invalidateCache(ProductCatalog.CACHE_KEY);
     this.triggerActionEvent(COMMAND_CLEAR_CACHE);
-	getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "clearProductCache&supplierID="+supplierId);
+    System.out.println("[ProductBusiness] clearProductCache for product "+supplierId);
+    try {
+		Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
+		Iterator iter = coll.iterator();
+		while (iter.hasNext()) {
+			((TradeService_PortType) iter.next()).clearProductCache(supplierId, remoteDomainToExclude);
+		}
+	} catch (RemoteException e) {
+		e.printStackTrace();
+	} catch (MalformedURLException e) {
+		e.printStackTrace();
+	} catch (ServiceException e) {
+		e.printStackTrace();
+	}
+    
+	//getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "clearProductCache&supplierID="+supplierId);
     return true;
   }
 
