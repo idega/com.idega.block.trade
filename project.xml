@@ -62,6 +62,11 @@
       <name>3.1.8</name>
       <tag>TRADE_3_1_8</tag>
     </version>
+    <version>
+      <id>3.1.9</id>
+      <name>3.1.9</name>
+      <tag>TRADE_3_1_9</tag>
+    </version>
   </versions>
   <branches/>
   <mailingLists>
