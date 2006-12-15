@@ -513,5 +513,52 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		
 		return idoFindPKsByQuery(q);
 	}
+	
+	
+	public Collection ejbFindAllWithCreditCardMerchant(Group supplierManager) throws IDORelationshipException, FinderException {
+		Table table = new Table(this);
+		Table ccTable = new Table(CreditCardInformation.class);
+		Table middleTable = null;
+		
+		IDOEntityDefinition source = table.getEntityDefinition();
+		IDOEntityDefinition destination = ccTable.getEntityDefinition();
+
+		IDOEntityDefinition[] definitions = source.getManyToManyRelatedEntities();
+		if (definitions != null && definitions.length > 0) {
+			for (int i = 0; i < definitions.length; i++) {
+				IDOEntityDefinition definition = definitions[i];
+				if (destination.equals(definition)) {
+					try {
+						String middleTableName = source.getMiddleTableNameForRelation(destination.getSQLTableName());
+						middleTable = new Table(middleTableName);
+					} catch (Exception e) {}
+				}
+			}
+		}
+		
+		if (middleTable == null) {
+			throw new IDORelationshipException("Middletable not found for "+table.getName()+" and "+ccTable.getName());
+		}
+		
+		SelectQuery sub = new SelectQuery(middleTable);
+		sub.addColumn(new Column(middleTable, getIDColumnName()));
+		
+		Column idCol = new Column(table, getIDColumnName());
+		Column suppMan = new Column(table, COLUMN_SUPPLIER_MANAGER_ID);
+		Column isValid = new Column(table, getColumnNameIsValid());
+		
+		SelectQuery q = new SelectQuery(table);
+		q.addColumn(idCol);
+		q.addCriteria(new InCriteria(idCol, sub, false));
+		q.addCriteria(new MatchCriteria(isValid, MatchCriteria.EQUALS, true));
+		q.addCriteria(new MatchCriteria(suppMan, MatchCriteria.EQUALS, supplierManager.getPrimaryKey()));
+		//q.addJoin(table, ccTable);
+		System.out.println(q);
+		return idoFindPKsByQuery(q);
+		
+		// SQL fyrir sub-query sem "kannski" gerir thetta betur.
+		//select * from CC_INFORMATION where CC_INFORMATION_ID in (select i. CC_INFORMATION_ID from cc_information i, CC_KTH_MERCHANT m where i.cc_type ='KORTATHJONUSTAN' AND i.cc_merchant_pk = m.cc_kth_merchant_id AND end_date is null) OR CC_INFORMATION_ID in (select i. CC_INFORMATION_ID from cc_information i, tpos_merchant m where i.cc_type ='TPOS' AND i.cc_merchant_pk = m.tpos_merchant_id AND end_date is null)
+
+	}
 }
 
