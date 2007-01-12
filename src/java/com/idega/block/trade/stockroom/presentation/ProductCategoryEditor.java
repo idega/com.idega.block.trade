@@ -18,6 +18,7 @@ import com.idega.data.EntityFinder;
 import com.idega.data.IDOLookup;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWBundle;
+import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.text.Text;
@@ -46,7 +47,11 @@ public class ProductCategoryEditor extends CategoryWindow {
 	private static final String _parameterProductIn = "pr_cat_pr_in";
 	private static final String _parameterProductOut = "pr_cat_pr_out";
 	private static final String _parameterProductFilter = "pr_cat_filt";
+	private static final String _parameterProductFilterUnusedOnly = "pr_cat_filt_unsd";
+	private static final String _parameterProductFilterAllProducts = "pr_cat_filt_all";
 	private static final String _parameterLocale = "pr_cat_loc";
+	private static final String _parameterSelectedCategory = SELECTED_CATEGORY;
+	private int maxWidth = 50;
 	private int height = 10;
 	int _selectedCategory = -1;
 	ProductCategory _productCategory = null;
@@ -205,7 +210,7 @@ public class ProductCategoryEditor extends CategoryWindow {
 				}
 			}
 			tm.commit();
-			iwc.getIWMainApplication().getIWCacheManager().invalidateCache(ProductCatalog.CACHE_KEY);
+			IWMainApplication.getIWCacheManager().invalidateCache(ProductCatalog.CACHE_KEY);
 		}
 		catch (Exception e) {
 			e.printStackTrace(System.err);
@@ -218,6 +223,10 @@ public class ProductCategoryEditor extends CategoryWindow {
 		}
 		super.clearCache(iwc);
 		viewCategory(iwc);
+	}
+	private Text getText(String content) {
+		Text text = new Text(content);
+		return text;
 	}
 	private ProductBusiness getProductBusiness(IWApplicationContext iwac) throws RemoteException {
 		return (ProductBusiness) IBOLookup.getServiceInstance(iwac, ProductBusiness.class);

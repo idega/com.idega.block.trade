@@ -70,6 +70,7 @@ public class ProductItemProductInfoRequest extends ProductItem {
 			this.fromaddress = iwc.getParameter(this.PARAMETER_EMAIL);	
 		}
 		String text = this._iwrb.getLocalizedString(this.BODY_KEY, "Information is requested about the following product: "+getProductText(iwc));
+		SendMail sm = new SendMail();
 		try {
 			SendMail.send(this.fromaddress, this.toaddress, null, null, this.mailserver, this._iwrb.getLocalizedString(this.SUBJECT_KEY, "Product information request"), text);
 			return true;

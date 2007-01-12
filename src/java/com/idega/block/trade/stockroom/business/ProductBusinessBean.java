@@ -1,6 +1,5 @@
 package com.idega.block.trade.stockroom.business;
 
-import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -10,11 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
-
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
-import javax.xml.rpc.ServiceException;
-
 import com.idega.block.category.data.ICCategory;
 import com.idega.block.category.data.ICCategoryBMPBean;
 import com.idega.block.trade.stockroom.data.Product;
@@ -26,7 +22,6 @@ import com.idega.block.trade.stockroom.data.ProductPriceHome;
 import com.idega.block.trade.stockroom.data.Timeframe;
 import com.idega.block.trade.stockroom.data.TravelAddress;
 import com.idega.block.trade.stockroom.presentation.ProductCatalog;
-import com.idega.block.trade.stockroom.webservice.client.TradeService_PortType;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
@@ -41,9 +36,16 @@ import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.data.IDORelationshipException;
 import com.idega.data.IDORemoveRelationshipException;
+import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.util.IWTimestamp;
+import com.idega.util.Timer;
+/**
+ * @todo losa vi� service;
+ */
+//import is.idega.idegaweb.travel.data.Service;
+//import is.idega.idegaweb.travel.presentation.ServiceViewer;
 
 
 /**
@@ -107,8 +109,8 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
     }
 
     if (supplierId != -1) {
-			product.setSupplierId(supplierId);
-		}
+		product.setSupplierId(supplierId);
+	}
     if(fileId != null){
       product.setFileId(fileId);
     }
@@ -117,8 +119,8 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
       product.setDiscountTypeId(discountTypeId);
     }
     if (number == null) {
-			number = "";
-		}
+		number = "";
+	}
     product.setNumber(number);
 
 
@@ -148,21 +150,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
     this.productDepartureAddresses.put(productID+false, null); 
     this.productDepartureAddresses.put(productID+true, null); 
     this.productDepartureAddresses2 = new HashMap();
-    System.out.println("[ProductBusiness] clearingAddressMaps for product "+productID);
-    try {
-		Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
-		Iterator iter = coll.iterator();
-		while (iter.hasNext()) {
-			((TradeService_PortType) iter.next()).clearAddressMaps(productID, remoteDomainToExclude);
-		}
-	} catch (RemoteException e) {
-		e.printStackTrace();
-	} catch (MalformedURLException e) {
-		e.printStackTrace();
-	} catch (ServiceException e) {
-		e.printStackTrace();
-	}
-
+	getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "clearAddressMaps&productID="+productID);
 	return true;
   }
   
@@ -222,22 +210,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   public boolean invalidateProductCache(String productID, String remoteDomainToExclude) {
 	  this.products.remove(productID);
 	  this.timeframeMap.remove(productID);
-	    System.out.println("[ProductBusiness] invalidateProductCache for product "+productID);
-	    try {
-			Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
-			Iterator iter = coll.iterator();
-			while (iter.hasNext()) {
-				((TradeService_PortType) iter.next()).invalidateProductCache(productID, remoteDomainToExclude);
-			}
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
-
-	//	  getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "invalidateProductCache&productID="+productID);
+	  getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "invalidateProductCache&productID="+productID);
 	  return true;
   }
 
@@ -336,24 +309,9 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 	  
   public boolean clearProductCache(String supplierId, String remoteDomainToExclude) {
     getIWApplicationContext().removeApplicationAttribute(productsApplication+supplierId);
-    getIWApplicationContext().getIWMainApplication().getIWCacheManager().invalidateCache(ProductCatalog.CACHE_KEY);
+    IWMainApplication.getIWCacheManager().invalidateCache(ProductCatalog.CACHE_KEY);
     this.triggerActionEvent(COMMAND_CLEAR_CACHE);
-    System.out.println("[ProductBusiness] clearProductCache for product "+supplierId);
-    try {
-		Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
-		Iterator iter = coll.iterator();
-		while (iter.hasNext()) {
-			((TradeService_PortType) iter.next()).clearProductCache(supplierId, remoteDomainToExclude);
-		}
-	} catch (RemoteException e) {
-		e.printStackTrace();
-	} catch (MalformedURLException e) {
-		e.printStackTrace();
-	} catch (ServiceException e) {
-		e.printStackTrace();
-	}
-    
-	//getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "clearProductCache&supplierID="+supplierId);
+	getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "clearProductCache&supplierID="+supplierId);
     return true;
   }
 
@@ -429,11 +387,11 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 
   public List getProducts(int supplierId, IWTimestamp stamp) throws RemoteException, FinderException {
     if (stamp != null) {
-			return getProducts(supplierId, stamp, new IWTimestamp(stamp));
-		}
-		else {
-			return getProducts(supplierId, null, null);
-		}
+		return getProducts(supplierId, stamp, new IWTimestamp(stamp));
+	}
+	else {
+		return getProducts(supplierId, null, null);
+	}
   }
 
   public List getProducts(int supplierId, IWTimestamp from, IWTimestamp to) throws RemoteException, FinderException{
@@ -503,7 +461,13 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 	  for (int i = 0; i < timeframes.length; i++) {
 	  	returner = timeframes[i];
 	    if (travelAddressId != -1) {
+	    	Timer t = new Timer();
+	    	t.start();
 	    	pPrices = getProductPriceBusiness().getProductPrices(((Integer) product.getPrimaryKey()).intValue() , timeframes[i].getID(), travelAddressId, false, null);
+	    	t.stop();
+	    	System.out.println("      [ProductBusiness] got prices : "+t.getTimeString());
+//	      pPrices = getProductPriceHome().findProductPrices(((Integer) product.getPrimaryKey()).intValue() , timeframes[i].getID(), travelAddressId, false);
+	//          System.err.println("getting prices : length = "+pPrices.length);
 	      if (pPrices == null || pPrices.isEmpty()) {
 	        continue;
 	      }
@@ -593,14 +557,6 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 		return returner;
   }
 
-  public TravelAddress getDepartureAddressFirst(Product product) throws RemoteException, IDOFinderException {
-	  List list = getDepartureAddresses(product, true);
-	  if (list != null) {
-		  return (TravelAddress) list.get(0);
-	  }
-	  return null;
-  }
-  
   public List getDepartureAddresses(Product product, boolean ordered) throws RemoteException, IDOFinderException  {
 	  List list  = (List) this.productDepartureAddresses.get(product.getPrimaryKey().toString()+ordered);
 	  if (list == null) {

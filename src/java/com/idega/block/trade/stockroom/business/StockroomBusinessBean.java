@@ -1,7 +1,5 @@
 package com.idega.block.trade.stockroom.business;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -10,12 +8,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
-
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
-import javax.xml.rpc.ServiceException;
-
+import com.idega.axis.util.AxisUtil;
 import com.idega.block.trade.business.CurrencyBusiness;
 import com.idega.block.trade.business.CurrencyHolder;
 import com.idega.block.trade.stockroom.data.PriceCategory;
@@ -25,24 +20,20 @@ import com.idega.block.trade.stockroom.data.ProductPriceHome;
 import com.idega.block.trade.stockroom.data.Reseller;
 import com.idega.block.trade.stockroom.data.ResellerHome;
 import com.idega.block.trade.stockroom.data.ResellerStaffGroup;
+import com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean;
 import com.idega.block.trade.stockroom.data.Supplier;
 import com.idega.block.trade.stockroom.data.SupplierHome;
 import com.idega.block.trade.stockroom.data.SupplierStaffGroupBMPBean;
 import com.idega.block.trade.stockroom.data.Timeframe;
 import com.idega.block.trade.stockroom.data.TravelAddress;
-import com.idega.block.trade.stockroom.webservice.client.TradeServiceServiceLocator;
-import com.idega.block.trade.stockroom.webservice.client.TradeService_PortType;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
 import com.idega.business.IBOServiceBean;
 import com.idega.core.accesscontrol.business.LoginBusinessBean;
 import com.idega.core.accesscontrol.business.NotLoggedOnException;
-import com.idega.core.data.ICApplicationBinding;
-import com.idega.core.data.ICApplicationBindingHome;
 import com.idega.data.EntityControl;
 import com.idega.data.EntityFinder;
-import com.idega.data.GenericEntity;
 import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOCompositePrimaryKeyException;
 import com.idega.data.IDOFinderException;
@@ -53,6 +44,7 @@ import com.idega.presentation.IWContext;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
+import com.idega.util.FileUtil;
 import com.idega.util.IWTimestamp;
 
 /**
@@ -67,7 +59,7 @@ import com.idega.util.IWTimestamp;
 public class StockroomBusinessBean extends IBOServiceBean implements StockroomBusiness {
 
 	public static final String REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST = "REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST";
-	private static String remoteTravelApplications = null;
+	
 
   public StockroomBusinessBean() {
   }
@@ -152,10 +144,10 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 //      List prices = EntityFinder.findAll(((com.idega.block.trade.stockroom.data.ProductPriceHome)com.idega.data.IDOLookup.getHomeLegacy(ProductPrice.class)).createLegacy(), buffer.toString());
 //      EntityFinder.debug = false;
       if (prices != null) {
-				if (prices.size() > 0) {
-				  return ((ProductPrice)prices.get(0));
-				}
-			}
+		if (prices.size() > 0) {
+		    return ((ProductPrice)prices.get(0));
+		  }
+	}
     }catch (IDOFinderException ido) {
       ido.printStackTrace(System.err);
     }
@@ -168,40 +160,14 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   }
 
   public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
-	  ProductPrice price = getProductPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId);
-	  return getPrice(price, time, timeframeId, addressId);
-  }
-
-  	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
-  	  if (price != null) {
-		  PriceCategory cat = price.getPriceCategory();
-		  if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_PRICE)){
-			  CurrencyHolder iceCurr = CurrencyBusiness.getCurrencyHolder(CurrencyHolder.ICELANDIC_KRONA);
-			  if ( iceCurr != null && (price.getCurrencyId() == iceCurr.getCurrencyID())) {
-				  return new Float(Math.round( price.getPrice()) ).floatValue();
-			  } else {
-				  return price.getPrice();
-			  }
-		  } else if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT)){
-				  float pr = getPrice(-1, price.getProductId(),cat.getParentId(),price.getCurrencyId(),time, timeframeId, addressId);
-				  float disc = price.getPrice();
-				  return pr*((100-disc) /100);
-
-			  }
-
-		  }
-		  return 0;
-	  }
-  
-	  public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
     /**@todo: Implement this com.idega.block.trade.stockroom.business.SupplyManager method*/
     /*skila ver�i ef PRICETYPE_PRICE annars ver�i me� tilliti til afsl�ttar*/
 
   	try {
         PriceCategory cat = ((com.idega.block.trade.stockroom.data.PriceCategoryHome)com.idega.data.IDOLookup.getHomeLegacy(PriceCategory.class)).findByPrimaryKeyLegacy(priceCategoryId);
-        ProductPrice ppr = ((ProductPrice)GenericEntity.getStaticInstanceIDO(ProductPrice.class));
-        TravelAddress taddr = ((TravelAddress) GenericEntity.getStaticInstance(TravelAddress.class));
-        Timeframe tfr = ((Timeframe) GenericEntity.getStaticInstance(Timeframe.class));
+        ProductPrice ppr = ((ProductPrice)com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getStaticInstanceIDO(ProductPrice.class));
+        TravelAddress taddr = ((TravelAddress) com.idega.block.trade.stockroom.data.TravelAddressBMPBean.getStaticInstance(TravelAddress.class));
+        Timeframe tfr = ((Timeframe) com.idega.block.trade.stockroom.data.TimeframeBMPBean.getStaticInstance(Timeframe.class));
         String addrTable = EntityControl.getManyToManyRelationShipTableName(TravelAddress.class, ProductPrice.class);
         String tfrTable = EntityControl.getManyToManyRelationShipTableName(Timeframe.class, ProductPrice.class);
 		String ppColName = ppr.getEntityDefinition().getPrimaryKeyDefinition().getField().getSQLFieldName();
@@ -242,11 +208,9 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
             IWTimestamp stamp = new IWTimestamp(time);
 //            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameCurrencyId()+" = "+currencyId);
 //            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" <= '"+stamp.toSQLString(false)+"'");
+            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" <= '"+stamp.toSQLString()+"'");
             buffer.append(" and ");
             buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+" = "+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.PRICETYPE_PRICE);
-            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameCurrencyId()+" = "+currencyId);
             //buffer.append(" and ");
             //buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameIsValid()+" = 'Y'");
             buffer.append(" order by p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+ " desc");
@@ -258,9 +222,14 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
           if(result != null && result.size() > 0){
 			  Iterator iter = result.iterator();
 			  ProductPrice price = (ProductPrice) iter.next();
-			  return price;
+          	CurrencyHolder iceCurr = CurrencyBusiness.getCurrencyHolder(CurrencyHolder.ICELANDIC_KRONA);
+          	if ( iceCurr != null && (price.getCurrencyId() == iceCurr.getCurrencyID())) {
+          		return new Float(Math.round( price.getPrice()) ).floatValue();
+          	} else {
+          		return price.getPrice();
+          	}
           }else{
-        	  System.err.println(buffer.toString());
+            System.err.println(buffer.toString());
             throw new ProductPriceException("No Price Was Found");
           }
         }else if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT)){
@@ -294,33 +263,33 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
             buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" < '"+time.toString()+"'");
             buffer.append(" and ");
             buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+" = "+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.PRICETYPE_DISCOUNT);
-            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameCurrencyId()+" = "+currencyId);
             //buffer.append(" and ");
             //buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameIsValid()+" = 'Y'");
             buffer.append(" order by p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+ " desc");
 			  ProductPriceHome ppHome = (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);
 			  Collection result = ppHome.findBySQL(buffer.toString());
 //          List result = EntityFinder.findAll(ppr,buffer.toString());
+          float disc = 0;
           if(result != null && result.size() > 0){
 			  Iterator iter = result.iterator();
 			  ProductPrice price = (ProductPrice) iter.next();
-			  return price;
+            disc = price.getPrice();
           }
           
+          float pr = getPrice(-1, productId,cat.getParentId(),currencyId,time, timeframeId, addressId);
+          return pr*((100-disc) /100);
         }else{
           throw new ProductPriceException("No Price Was Found");
         }
     }
 	catch (FinderException e) {
 	      e.printStackTrace(System.err);
-		  return null;
+		  return 0;
 	}
 	catch (IDOCompositePrimaryKeyException e) {
 	      e.printStackTrace(System.err);
-		  return null;
+		  return 0;
 	}
-	return null;
 
   }
 
@@ -334,7 +303,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   public float getDiscount(int productId, int priceCategoryId, Timestamp time) throws RemoteException, SQLException, FinderException {
     PriceCategory cat = ((com.idega.block.trade.stockroom.data.PriceCategoryHome)com.idega.data.IDOLookup.getHomeLegacy(PriceCategory.class)).findByPrimaryKeyLegacy(priceCategoryId);
     if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT)){
-      ProductPrice ppr = ((ProductPrice)GenericEntity.getStaticInstance(ProductPrice.class));
+      ProductPrice ppr = ((ProductPrice)com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getStaticInstance(ProductPrice.class));
 		String ppTable = ppr.getEntityDefinition().getSQLTableName();
 
 		StringBuffer buffer = new StringBuffer();
@@ -498,7 +467,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 				Iterator iter = gr.iterator();
 			  while (iter.hasNext()) {
 					Group item = (Group)iter.next();
-					if(item.getGroupType().equals(((ResellerStaffGroup) GenericEntity.getStaticInstance(ResellerStaffGroup.class)).getGroupTypeValue())){
+					if(item.getGroupType().equals(((ResellerStaffGroup) ResellerStaffGroupBMPBean.getStaticInstance(ResellerStaffGroup.class)).getGroupTypeValue())){
 	      		try {
 	      			Collection coll = rHome.findAllByGroupID( item.getPrimaryKey() );
 	      			if (coll != null && !coll.isEmpty()) {
@@ -612,123 +581,52 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 			throw new IBORuntimeException(e);
 		}
 	}
-	
-	private String getRemoteTravelApplicationUrlCsvList() {
-		if (remoteTravelApplications == null) {
-			try {
-				ICApplicationBindingHome abHome = (ICApplicationBindingHome) IDOLookup.getHome(ICApplicationBinding.class);
-				String icABKey = "RemoteTravelAppUrl";
-				try {
-					ICApplicationBinding binding = abHome.findByPrimaryKey(icABKey);
-					remoteTravelApplications = binding.getValue();
-				}
-				catch (FinderException e) {
-					try {
-						IWBundle bundle =  getIWMainApplication().getBundle("com.idega.block.trade");
-						String remoteTravelWebs = bundle.getProperty(REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST,"");
-		
-						ICApplicationBinding binding = abHome.create();
-						binding.setKey(icABKey);
-						binding.setBindingType("travel.binding");
-						binding.setValue(remoteTravelWebs);
-						binding.store();
-						remoteTravelApplications = remoteTravelWebs;
-					}
-					catch (CreateException e1) {
-						e1.printStackTrace();
-					}
-				}
-			}
-			catch (IDOLookupException e) {
-				e.printStackTrace();
-			}
-		}
 
-		return remoteTravelApplications;
+	public void executeRemoteService(String remoteDomainToExclude, String methodQuery) {
+		executeRemoteService(remoteDomainToExclude, methodQuery, "/idegaweb/bundles/com.idega.block.trade.bundle/resources/services/IWTradeWS.jws");
 	}
-
-//	public void executeRemoteService(String remoteDomainToExclude, String methodQuery) {
-//		executeRemoteService(remoteDomainToExclude, methodQuery, "/idegaweb/bundles/com.idega.block.trade.bundle/resources/services/IWTradeWS.jws");
-//	}
 	
-	public Collection getService_PortTypes(String remoteDomainToExclude) throws ServiceException, MalformedURLException {
-		Collection c = new Vector();
-		String remoteTravelWebs = getRemoteTravelApplicationUrlCsvList();
+	/**
+	 * <p>
+	 * Method for calling methods on remote domains
+	 * </p>
+	 * @param remoteDomainToExclude
+	 * @param methodQuery
+	 */
+	protected void executeRemoteService(String remoteDomainToExclude, String methodQuery, String webserviceURI) {
+		IWBundle bundle =  getIWMainApplication().getBundle("com.idega.block.trade");
+		String remoteTravelWebs = bundle.getProperty(REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST,"");
 		if(!"".equals(remoteTravelWebs) && remoteTravelWebs != null){
+//			log("Invalidating REMOTE stored search results");
 
+			String prmCallingServer = "remoteCallingHostName";
+			String serverName = "unspecified";
+			try {
+				serverName = AxisUtil.getHttpServletRequest().getServerName();
+			} catch (Exception e) {
+				serverName = IWContext.getInstance().getRequest().getServerName();
+			}
 			StringTokenizer tokenizer = new StringTokenizer(remoteTravelWebs,",");
 			while(tokenizer.hasMoreTokens()){
 				String remoteWeb = tokenizer.nextToken();
 				if(remoteDomainToExclude == null || remoteWeb.indexOf(remoteDomainToExclude)==-1){
-
 					if(remoteWeb.endsWith("/")){
 						remoteWeb = remoteWeb.substring(0,remoteWeb.length()-1);
 					}
-
-					java.rmi.Remote state_port = createServiceStatePortType(remoteWeb);
-					c.add(state_port);
+					String response = FileUtil.getStringFromURL(remoteWeb+webserviceURI+"?method="+methodQuery+"&"+prmCallingServer+"="+serverName);
+					if( response.indexOf("iwtravel-ok")==-1){
+						logError("Webservice method : "+methodQuery+" failed on : "+remoteWeb+" message was : "+response);
+					}
+					else{
+						log("Webservice method : "+methodQuery+" successful for :"+remoteWeb);
+					}
 				}
 				else{
 					log("Skipping round-trip decaching for calling remote server : "+remoteDomainToExclude);
 				}
 			}
-
-			
 		}
-		
-		return c;
 	}
-	protected java.rmi.Remote createServiceStatePortType(String remoteWeb) throws ServiceException, MalformedURLException {
-		String endpoint2 = remoteWeb+"/services/TradeService";
-		TradeServiceServiceLocator state_locator = new TradeServiceServiceLocator();
-		TradeService_PortType state_port = state_locator.getTradeService(new URL(endpoint2));
-		return state_port;
-	}
-	
-//	/**
-//	 * <p>
-//	 * Method for calling methods on remote domains
-//	 * </p>
-//	 * @param remoteDomainToExclude
-//	 * @param methodQuery
-//	 */
-//	protected void executeRemoteService(String remoteDomainToExclude, String methodQuery, String webserviceURI) {
-//		String remoteTravelWebs = getRemoteTravelApplicationUrlCsvList();
-//		if(!"".equals(remoteTravelWebs) && remoteTravelWebs != null){
-////			log("Invalidating REMOTE stored search results");
-//
-//			String prmCallingServer = "remoteCallingHostName";
-//			String serverName = null;
-//			try {
-//				serverName = AxisUtil.getHttpServletRequest().getServerName();
-//			} catch (Exception e) {
-//				try {
-//					serverName = IWContext.getInstance().getRequest().getServerName();
-//				} catch (NullPointerException e1) {
-//					
-//				}
-//			}
-//			StringTokenizer tokenizer = new StringTokenizer(remoteTravelWebs,",");
-//			while(tokenizer.hasMoreTokens()){
-//				String remoteWeb = tokenizer.nextToken();
-//				if(remoteDomainToExclude == null || remoteWeb.indexOf(remoteDomainToExclude)==-1){
-//					if(remoteWeb.endsWith("/")){
-//						remoteWeb = remoteWeb.substring(0,remoteWeb.length()-1);
-//					}
-//					String response = FileUtil.getStringFromURL(remoteWeb+webserviceURI+"?method="+methodQuery+"&"+prmCallingServer+"="+serverName);
-//					if( response.indexOf("iwtravel-ok")==-1){
-//						logError("Webservice method : "+methodQuery+" failed on : "+remoteWeb+" message was : "+response);
-//					}
-//					else{
-//						log("Webservice method : "+methodQuery+" successful for :"+remoteWeb);
-//					}
-//				}
-//				else{
-//					log("Skipping round-trip decaching for calling remote server : "+remoteDomainToExclude);
-//				}
-//			}
-//		}
-//	}
 
 
 }

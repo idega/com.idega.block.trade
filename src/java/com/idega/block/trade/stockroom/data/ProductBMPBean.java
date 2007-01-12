@@ -9,8 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import javax.ejb.FinderException;
-
-import com.idega.block.category.data.ICCategoryBMPBean;
 import com.idega.block.text.business.TextFinder;
 import com.idega.block.text.data.LocalizedText;
 import com.idega.block.text.data.LocalizedTextBMPBean;
@@ -252,6 +250,15 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@param  timestamp  The new modificationDate value
    */
+  private void setModificationDate( IWTimestamp timestamp ) {
+    setModificationDate( timestamp.getTimestamp() );
+  }
+
+  /**
+   *  Sets the modificationDate attribute of the Product object
+   *
+   *@param  timestamp  The new modificationDate value
+   */
   private void setModificationDate( Timestamp timestamp ) {
     setColumn( getColumnNameModificationDate(), timestamp );
   }
@@ -364,7 +371,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
         throw new SQLException(e.getMessage());
       }
     } else {
-      return ( Timeframe[] ) this.findRelated( GenericEntity.getStaticInstance( Timeframe.class ) );
+      return ( Timeframe[] ) this.findRelated( com.idega.block.trade.stockroom.data.TimeframeBMPBean.getStaticInstance( Timeframe.class ) );
     }
   }
 
@@ -523,8 +530,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   public String getProductName(int localeId) {
     LocalizedText text = TextFinder.getLocalizedText(this, localeId);
     if (text == null) {
-			text = TextFinder.getLocalizedText(this, 1);
-		}
+		text = TextFinder.getLocalizedText(this, 1);
+	}
     String name = "";
     if (text != null) {
       name = text.getHeadline();
@@ -574,8 +581,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   public String getProductDescription(int localeId) {
     LocalizedText text = TextFinder.getLocalizedText(this, localeId);
     if (text == null) {
-			text = TextFinder.getLocalizedText(this, 1);
-		}
+		text = TextFinder.getLocalizedText(this, 1);
+	}
     String description = "";
     if (text != null) {
       description = text.getBody();
@@ -617,14 +624,14 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   public String getProductTeaser(int localeId) {
     LocalizedText text = TextFinder.getLocalizedText(this, localeId);
     if (text == null) {
-			text = TextFinder.getLocalizedText(this, 1);
-		}
+		text = TextFinder.getLocalizedText(this, 1);
+	}
     String teaser = "";
     if (text != null) {
       teaser = text.getTitle();
       if (teaser == null) {
-				teaser = "";
-			}
+		teaser = "";
+	}
     }
     return teaser;
   }
@@ -668,7 +675,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   }
 
   public Collection ejbFindProductsOrderedByProductCategory(int supplierId, IWTimestamp from, IWTimestamp to) throws FinderException {
-    return ejbFindProducts(supplierId, -1, from, to, ICCategoryBMPBean.getEntityTableName()+"."+ICCategoryBMPBean.getColumnName(), -1, -1, false);
+    return ejbFindProducts(supplierId, -1, from, to, ProductCategoryBMPBean.getEntityTableName()+"."+ProductCategoryBMPBean.getColumnName(), -1, -1, false);
   }
 
   public Collection ejbFindProducts(int supplierId) throws FinderException {
@@ -683,8 +690,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
       sqlQuery.append(" WHERE ");
       sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
       if (supplierId != -1) {
-				sqlQuery.append(" AND ").append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
-			}
+		sqlQuery.append(" AND ").append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
+	}
       sqlQuery.append(" order by ").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameNumber());
 
     return this.idoFindPKsBySQL(sqlQuery.toString(), lastEntity-firstEntity, firstEntity);
@@ -698,8 +705,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 	      sqlQuery.append(" WHERE ");
 	      sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
 	      if (supplierId != -1) {
-					sqlQuery.append(" AND ").append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
-				}
+			sqlQuery.append(" AND ").append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
+		}
 	      return this.idoGetNumberOfRecords(sqlQuery.toString());
   }
   
@@ -728,9 +735,9 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     	orderString = orderBy;
     }
 
-    Timeframe timeframe = (Timeframe) GenericEntity.getStaticInstance(Timeframe.class);
-    ProductCategory pCat = (ProductCategory) GenericEntity.getStaticInstance(ProductCategory.class);
-    LocalizedText locText = (LocalizedText) GenericEntity.getStaticInstance(LocalizedText.class);
+    Timeframe timeframe = (Timeframe) com.idega.block.trade.stockroom.data.TimeframeBMPBean.getStaticInstance(Timeframe.class);
+    ProductCategory pCat = (ProductCategory) com.idega.block.trade.stockroom.data.ProductCategoryBMPBean.getStaticInstance(ProductCategory.class);
+    LocalizedText locText = (LocalizedText) LocalizedTextBMPBean.getStaticInstance(LocalizedText.class);
     //Service tService = (Service) is.idega.idegaweb.travel.data.ServiceBMPBean.getStaticInstance(Service.class);
 
     String middleTable = EntityControl.getManyToManyRelationShipTableName(Timeframe.class,Product.class);
@@ -776,29 +783,29 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
       }
 
     // Hondla ef supplierId != -1
-    Collection tempProducts = null;
+    Collection tempProducts = null;;
     if (supplierId != -1) {
-			tempProducts = ejbFindProducts(supplierId);
-		}
+		tempProducts = ejbFindProducts(supplierId);
+	}
     if (tempProducts != null) {
-			if (tempProducts.size() > 0) {
-			  timeframeSQL.append(" AND ");
-			  timeframeSQL.append(Ptable+"."+this.getIDColumnName()+" in (");
-			  Iterator iter = tempProducts.iterator();
-			  Object item;
-			  int counter = 0;
-			  while (iter.hasNext()) {
-			    item = iter.next();
-			    ++counter;
-			    if (counter == 1) {
-			      timeframeSQL.append(item.toString() );
-			    }else {
-			      timeframeSQL.append(","+item.toString() );
-			    }
-			  }
-			  timeframeSQL.append(")");
-			}
+		if (tempProducts.size() > 0) {
+		  timeframeSQL.append(" AND ");
+		  timeframeSQL.append(Ptable+"."+this.getIDColumnName()+" in (");
+		  Iterator iter = tempProducts.iterator();
+		  Object item;
+		  int counter = 0;
+		  while (iter.hasNext()) {
+		    item = iter.next();
+		    ++counter;
+		    if (counter == 1) {
+		      timeframeSQL.append(item.toString() );
+		    }else {
+		      timeframeSQL.append(","+item.toString() );
+		    }
+		  }
+		  timeframeSQL.append(")");
 		}
+	}
 
     if (from != null && to != null && useTimeframes) {
       timeframeSQL.append(" AND ");
@@ -815,7 +822,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
       timeframeSQL.append(" AND ")
           .append(locMiddleTable+"."+locText.getIDColumnName()+ " = "+locTxtTable+"."+locText.getIDColumnName())
           .append(" AND ")
-          .append(locMiddleTable+"."+ProductBMPBean.getIdColumnName()+" = "+Ptable+"."+ProductBMPBean.getIdColumnName())
+          .append(locMiddleTable+"."+this.getIdColumnName()+" = "+Ptable+"."+this.getIdColumnName())
           .append(" AND ")
           .append(locTxtTable+"."+LocalizedTextBMPBean.getColumnNameLocaleId()+" = "+localeId);
     }
@@ -940,25 +947,6 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 		query.addCriteria(new MatchCriteria(new Column(table, getColumnNameIsValid()), MatchCriteria.EQUALS, true));
 		query.addCriteria(new MatchCriteria(poolID, MatchCriteria.EQUALS, pool));
 
-		return idoFindPKsByQuery(query);
-	}
-	
-	public Collection ejbFindByPriceCategory(PriceCategory priceCategory) throws IDORelationshipException, FinderException {
-		Table table = new Table(this);
-		Table priceTable = new Table(ProductPrice.class);
-		Table catTable = new Table(priceCategory);
-		
-		Column pk = new Column(table, getIDColumnName());
-		pk.setAsDistinct();
-		SelectQuery query = new SelectQuery(table);
-		query.addColumn(pk);
-		query.addJoin(priceTable, table);
-		query.addJoin(priceTable, catTable);
-		query.addCriteria(new MatchCriteria(new Column(catTable, "SR_PRICE_CATEGORY_ID"), MatchCriteria.EQUALS, priceCategory));
-//		String sql = "select p.sr_product_id from sr_product p, SR_PRODUCT_PRODUCT_CATEGORY pc " +
-//				"WHERE p.is_valid = 'Y' AND pc.sr_product_id = p.sr_product_id " +
-//				"AND pc.sr_product_category_id = "+priceCategory.getPrimaryKey().toString();
-//		return idoFindPKsBySQL(sql);
 		return idoFindPKsByQuery(query);
 	}
 }

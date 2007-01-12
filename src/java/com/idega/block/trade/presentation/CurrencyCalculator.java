@@ -38,6 +38,7 @@ public class CurrencyCalculator extends PresentationObjectContainer {
 	public static  String PARAMETER_TO_CURRENCY = "to";
 	public static  String PARAMETER_PRICE = "price";
 	private String parameterAll = "ALL";
+	private String PARAMETER_REMOTE_CALL = "prm_rc";
 	private String DATE_PLACEHOLDER = "[date]";
 	
 	private IWResourceBundle iwrb;
@@ -177,7 +178,7 @@ public class CurrencyCalculator extends PresentationObjectContainer {
 			
 			if (!this.useRemoteScripting) {
 				table.add(getText(getNewPrice(iwc)), 2, row);
-			} else if (rsh != null){
+			} else {
 				from.setOnChange(rsh.getSubmitEvent(iwc));
 				to.setOnChange  (rsh.getSubmitEvent(iwc));
 				if (this.calculateOnType) {
@@ -190,7 +191,7 @@ public class CurrencyCalculator extends PresentationObjectContainer {
 			Link calc = getLink(this.iwrb.getLocalizedString("calculate", "Calculate"));
 			if (!this.useRemoteScripting) {
 				calc.setToFormSubmit(form);
-			} else if (rsh != null){
+			} else {
 				calc.setOnClick(rsh.getSubmitEvent(iwc));
 			}
 //			table.add(Text.getNonBrakingSpace(), 2, 4);

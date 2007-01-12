@@ -107,20 +107,20 @@ public class ProductCatalogLayoutProductList extends AbstractProductCatalogLayou
       lPrice.addParameter(this.PARAMETER_ORDER_BY, ProductComparator.PRICE);
 
     if (productCategories != null && productCategories.size() > 0) {
-			if (this._productCatalog._hasEditPermission) {
-			  ICCategory pCat;
-			  table.mergeCells(1, row, 2, row);
-			  table.add(this._productCatalog.getCategoryText(this._productCatalog.iwrb.getLocalizedString("categories_in_use","Prodct categories in use :")), 1 ,row);
-			  for (int i = 0; i < productCategories.size(); i++) {
-			    ++row;
-			    pCat = (ICCategory) productCategories.get(i);
-			    table.add(this._productCatalog.getText(pCat.getName()), 2, row);
-			    table.add(Text.NON_BREAKING_SPACE, 2,row);
-			    table.add(this._productCatalog.getProductCategoryEditorLink(pCat), 2, row);
-			  }
-			  ++row;
-			}
+		if (this._productCatalog._hasEditPermission) {
+		  ICCategory pCat;
+		  table.mergeCells(1, row, 2, row);
+		  table.add(this._productCatalog.getCategoryText(this._productCatalog.iwrb.getLocalizedString("categories_in_use","Prodct categories in use :")), 1 ,row);
+		  for (int i = 0; i < productCategories.size(); i++) {
+		    ++row;
+		    pCat = (ICCategory) productCategories.get(i);
+		    table.add(this._productCatalog.getText(pCat.getName()), 2, row);
+		    table.add(Text.NON_BREAKING_SPACE, 2,row);
+		    table.add(this._productCatalog.getProductCategoryEditorLink(pCat), 2, row);
+		  }
+		  ++row;
 		}
+	}
 
 
     if (this._productCatalog._showNumber) {
@@ -170,7 +170,7 @@ public class ProductCatalogLayoutProductList extends AbstractProductCatalogLayou
         }
 
         if (this._productCatalog._showPrice) {
-          if (price != 0 && pPrice != null) {
+          if (price != 0) {
             table.add(this._productCatalog.getText(Integer.toString((int) price)), 3, row);
             if (this._productCatalog._showCurrency)  {
               table.add(this._productCatalog.getText(Text.NON_BREAKING_SPACE), 3, row);

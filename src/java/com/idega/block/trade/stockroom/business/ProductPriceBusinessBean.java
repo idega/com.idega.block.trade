@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.10 2006/10/11 21:35:38 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.4.2.1 2007/01/12 19:32:15 idegaweb Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -9,35 +9,21 @@
  */
 package com.idega.block.trade.stockroom.business;
 
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
-
 import javax.ejb.FinderException;
-import javax.xml.rpc.ServiceException;
-
-import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.block.trade.stockroom.data.PriceCategoryBMPBean;
-import com.idega.block.trade.stockroom.data.PriceCategoryHome;
-import com.idega.block.trade.stockroom.data.Product;
-import com.idega.block.trade.stockroom.data.ProductHome;
 import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.block.trade.stockroom.data.ProductPriceHome;
-import com.idega.block.trade.stockroom.data.Timeframe;
-import com.idega.block.trade.stockroom.data.TravelAddress;
-import com.idega.block.trade.stockroom.webservice.client.TradeService_PortType;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
 import com.idega.business.IBOServiceBean;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
-import com.idega.data.IDORelationshipException;
 import com.idega.data.IDORuntimeException;
 import com.idega.util.IWTimestamp;
 
@@ -45,7 +31,7 @@ import com.idega.util.IWTimestamp;
 public class ProductPriceBusinessBean extends IBOServiceBean  implements ProductPriceBusiness{
 
 	private HashMap mapForProductPriceMap = new HashMap();
-
+	
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int[] visibility, IWTimestamp date) throws FinderException {
 		return getProductPrices(productId, timeframeId, addressId, -1, visibility, null, date);
 	}
@@ -85,6 +71,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		}
 		
 		HashMap priceMap = getPriceMapForProduct(new Integer(productId));
+		
 //		System.out.println("[ProductPriceBusinessBean] mapKey = "+mapKey);
 		
 //		Timer t =  new Timer();
@@ -127,7 +114,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 					if (coll != null && !coll.isEmpty()) {
 						Iterator tmpIter = coll.iterator();
 						while (tmpIter.hasNext()) {
-							prices.add(tmpIter.next());
+							prices.add( tmpIter.next() );
 						}
 					} else {
 						prices.add(price);
@@ -160,116 +147,15 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return t;
 	}
 	
-	public boolean invalidateCache(PriceCategory cat) {
-		try {
-			ProductHome pHome = (ProductHome) IDOLookup.getHome(Product.class);
-			Collection coll = pHome.findByPriceCategory(cat);
-			if (coll != null) {
-				Iterator iter = coll.iterator();
-				while (iter.hasNext()) {
-					invalidateCache( ((Product) iter.next()).getPrimaryKey().toString() );
-				}
-			}
-			return true;
-		} catch (IDOLookupException e) {
-			e.printStackTrace();
-		} catch (IDORelationshipException e) {
-			e.printStackTrace();
-		} catch (FinderException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-	
+
 	public boolean invalidateCache(String productId) {
 		return  invalidateCache(productId, null);
 	}
 
-	public Collection getGroupedCategories(ProductPrice price) throws RemoteException {
-		PriceCategory cat = price.getPriceCategory();
-		Collection cats = getGroupedCategories(cat);
-		Vector v = new Vector();
-
-		if (cats != null && !cats.isEmpty()) {
-			Iterator iter = cats.iterator();
-
-			int timeframeID = -1;
-			int addressID = -1;
-			try {
-				Collection tFrames = price.getTimeframes();
-				if (tFrames != null && !tFrames.isEmpty()) {
-					timeframeID = ((Timeframe) tFrames.iterator().next()).getID();
-				}
-			} catch (IDORelationshipException e) {
-				e.printStackTrace();
-			}
-			try {
-				Collection tAddress =price.getTravelAddresses();
-				if (tAddress != null && !tAddress.isEmpty()) {
-					addressID = ((TravelAddress) tAddress.iterator().next()).getID();
-				}
-			} catch (IDORelationshipException e) {
-				e.printStackTrace();
-			}
-
-			while (iter.hasNext()) {
-				PriceCategory pCat = (PriceCategory) iter.next();
-				try {
-					ProductPrice pp = getStockroomBusiness().getProductPrice(-1, price.getProductId(), ((Integer)pCat.getPrimaryKey()).intValue(), price.getCurrencyId(), IWTimestamp.getTimestampRightNow(), timeframeID, addressID);
-					getStockroomBusiness().getPrice(pp, IWTimestamp.getTimestampRightNow(), timeframeID, addressID);
-					v.add(pCat);
-				} catch (ProductPriceException  p) {
-					System.out.println("[ProductPriceBusiness] Did not find price for the connected category");
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		if (v != null && v.isEmpty()) {
-			v= null;
-		}
-		
-		return v;
-	}
-	public Collection getGroupedCategories(PriceCategory category) {
-		try {
-			Collection coll = getPriceCategoryHome().findGroupedCategories(category);
-			if (coll != null && coll.size() <= 1) {
-				return null;
-			}
-			return coll;
-		} catch (FinderException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	protected PriceCategoryHome getPriceCategoryHome() {
-		try {
-			return (PriceCategoryHome) IDOLookup.getHome(PriceCategory.class);
-		} catch (IDOLookupException e) {
-			throw new IDORuntimeException(e);
-		}
-	}
 	
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) {
 		this.mapForProductPriceMap.put(new Integer(productID), null);
-		
-	    System.out.println("[ProductPriceBusiness] invalidateCache for product "+productID);
-	    try {
-			Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
-			Iterator iter = coll.iterator();
-			while (iter.hasNext()) {
-				((TradeService_PortType) iter.next()).invalidatePriceCache(productID, remoteDomainToExclude);
-			}
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
-
-//		getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "invalidatePriceCache&productID="+productID);
+		getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "invalidatePriceCache&productID="+productID);
 		return true;
 	}
 	

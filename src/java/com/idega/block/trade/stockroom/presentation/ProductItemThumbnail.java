@@ -69,7 +69,7 @@ public class ProductItemThumbnail extends ProductItem {
       }
     }
 
-    if ( file != null && image != null ) {
+    if ( image != null ) {
 			String att = file.getMetaData(ProductEditorWindow.imageAttributeKey);
 	
 			if (att != null) {
@@ -89,8 +89,8 @@ public class ProductItemThumbnail extends ProductItem {
         image.setWidth( this._height );
       }
       if (this._addBorder) {
-				image.setBorder(1);
-			}
+		image.setBorder(1);
+	}
       
 		  if (this._clickableThumbnail) {
 				List images = null;
@@ -125,9 +125,9 @@ public class ProductItemThumbnail extends ProductItem {
 					add(image);
 				}
 			}
-			else {
-				add( image );
-			}
+		else {
+			add( image );
+		}
     }
   }
 

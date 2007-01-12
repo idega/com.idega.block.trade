@@ -36,6 +36,7 @@ import com.idega.presentation.Table;
 import com.idega.presentation.text.Link;
 import com.idega.presentation.text.Text;
 import com.idega.presentation.texteditor.TextEditor;
+import com.idega.presentation.ui.BackButton;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.presentation.ui.HiddenInput;
 import com.idega.presentation.ui.RadioButton;
@@ -121,12 +122,12 @@ public class ProductEditorWindow extends IWAdminWindow {
 
 			displayForm(iwc);
 		}
-		else if (action.equals(ProductEditorWindow.PAR_NEW)) {
+		else if (action.equals(this.PAR_NEW)) {
 			this._product = null;
 			this._productId = -1;
 			displayForm(iwc);
 		}
-		else if (action.equals(ProductEditorWindow.PAR_SAVE)) {
+		else if (action.equals(this.PAR_SAVE)) {
 			if (saveProduct(iwc)) {
 				displayForm(iwc);
 			}
@@ -134,18 +135,18 @@ public class ProductEditorWindow extends IWAdminWindow {
 				displayForm(iwc);
 			}
 		}
-		else if (action.equals(ProductEditorWindow.PAR_DELETE)) {
+		else if (action.equals(this.PAR_DELETE)) {
 			verifyDelete(iwc);
 		}
-		else if (action.equals(ProductEditorWindow.PAR_DEL_VERIFIED)) {
+		else if (action.equals(this.PAR_DEL_VERIFIED)) {
 			if (this._business.deleteProduct(this._product)) {
 				closeWindow();
 			}
 		}
-		else if (action.equals(ProductEditorWindow.PAR_CLOSE)) {
+		else if (action.equals(this.PAR_CLOSE)) {
 			closeWindow();
 		}
-		else if (action.equals(ProductEditorWindow.PAR_ADD_FILE)) {
+		else if (action.equals(this.PAR_ADD_FILE)) {
 			String imageId = iwc.getParameter(PAR_IMAGE);
 			if (imageId != null) {
 				this._business.addImage(this._product, Integer.parseInt(imageId));
@@ -166,7 +167,7 @@ public class ProductEditorWindow extends IWAdminWindow {
 
 		addTitle(this.iwrb.getLocalizedString("product_editor", "Product Editor"));
 		try {
-			String sProductId = iwc.getParameter(ProductEditorWindow.PRODUCT_ID);
+			String sProductId = iwc.getParameter(this.PRODUCT_ID);
 			this._productId = Integer.parseInt(sProductId);
 			if (this._productId != -1) {
 				this._product = getProductBusiness(iwc).getProduct(this._productId);
@@ -190,7 +191,7 @@ public class ProductEditorWindow extends IWAdminWindow {
 */
 		setCurrencies(iwc);
 		String currCurr = getBundle(iwc).getProperty("iw_default_currency", "USD");
-		this._currencies = this._business.getCurrencyDropdown(ProductEditorWindow.PAR_CURRENCY, currCurr);
+		this._currencies = this._business.getCurrencyDropdown(this.PAR_CURRENCY, currCurr);
 		
 		String[] catIds = iwc.getParameterValues(PARAMETER_CATEGORY_ID);
 		if (this._product != null) {
@@ -221,7 +222,7 @@ public class ProductEditorWindow extends IWAdminWindow {
 	private void setCurrencies(IWContext iwc) throws RemoteException {
 		String sLocaleId = iwc.getParameter(getProductBusiness(iwc).getParameterLocaleDrop());
 		if (sLocaleId != null) {
-			this._locale = ICLocaleBusiness.getLocale(Integer.parseInt(sLocaleId));
+			this._locale = ICLocaleBusiness.getLocale(Integer.parseInt(sLocaleId));;
 		}
 		else {
 			this._locale = iwc.getCurrentLocale();
@@ -280,7 +281,7 @@ public class ProductEditorWindow extends IWAdminWindow {
 		localeDrop.setSelectedElement(Integer.toString(this.iLocaleID));
 		super.addLeft(this.iwrb.getLocalizedString("locale", "Locale") + ": ", localeDrop, false);
 
-		super.addHiddenInput(new HiddenInput(ProductEditorWindow.PRODUCT_ID, Integer.toString(this._productId)));
+		super.addHiddenInput(new HiddenInput(this.PRODUCT_ID, Integer.toString(this._productId)));
 
 		//    super.addLeft(iwrb.getLocalizedString("item_number","Item number"), number, true);
 
@@ -350,10 +351,10 @@ public class ProductEditorWindow extends IWAdminWindow {
 		Table imageTable = getImageTable(iwc);
 		super.addRight(this.iwrb.getLocalizedString("images", "Images"), imageTable, true, false);
 
-		SubmitButton saveBtn = new SubmitButton(this.iwrb.getLocalizedImageButton("save", "Save"), ProductEditorWindow.ACTION, ProductEditorWindow.PAR_SAVE);
-		SubmitButton deleteBtn = new SubmitButton(this.iwrb.getLocalizedImageButton("delete", "Delete"), ProductEditorWindow.ACTION, ProductEditorWindow.PAR_DELETE);
-		SubmitButton closeBtn = new SubmitButton(this.iwrb.getLocalizedImageButton("close", "Close"), ProductEditorWindow.ACTION, ProductEditorWindow.PAR_CLOSE);
-		SubmitButton newBtn = new SubmitButton(this.iwrb.getLocalizedImageButton("create_new", "Create new"), ProductEditorWindow.ACTION, ProductEditorWindow.PAR_NEW);
+		SubmitButton saveBtn = new SubmitButton(this.iwrb.getLocalizedImageButton("save", "Save"), this.ACTION, this.PAR_SAVE);
+		SubmitButton deleteBtn = new SubmitButton(this.iwrb.getLocalizedImageButton("delete", "Delete"), this.ACTION, this.PAR_DELETE);
+		SubmitButton closeBtn = new SubmitButton(this.iwrb.getLocalizedImageButton("close", "Close"), this.ACTION, this.PAR_CLOSE);
+		SubmitButton newBtn = new SubmitButton(this.iwrb.getLocalizedImageButton("create_new", "Create new"), this.ACTION, this.PAR_NEW);
 
 		
 		SelectionBox catSel = new SelectionBox(PAR_CATEGORY);
@@ -396,7 +397,7 @@ public class ProductEditorWindow extends IWAdminWindow {
 		if (thumbnailId == null) {
 			thumbnailId = "-1";
 		}
-		String[] categories = iwc.getParameterValues(PAR_CATEGORY);
+		String[] categories = (String[]) iwc.getParameterValues(PAR_CATEGORY);
 
 		boolean returner = false;
 
@@ -511,14 +512,22 @@ public class ProductEditorWindow extends IWAdminWindow {
 		}
 	}
 
+	private void saveFailed(IWContext iwc) {
+		super.addLeft(this.iwrb.getLocalizedString("save_failed", "Save failed"), "");
+
+		BackButton back = new BackButton(this.iwrb.getLocalizedImageButton("back", "Back"));
+
+		super.addSubmitButton(back);
+	}
+
 	private void verifyDelete(IWContext iwc) throws RemoteException {
-		super.addHiddenInput(new HiddenInput(ProductEditorWindow.PRODUCT_ID, Integer.toString(this._productId)));
+		super.addHiddenInput(new HiddenInput(this.PRODUCT_ID, Integer.toString(this._productId)));
 		StringBuffer text = new StringBuffer();
 		text.append(this.iwrb.getLocalizedString("are_you_sure_you_want_to_delete", "Are you sure you want to delete this product")).append(" : ").append(this._product.getProductName(this.iLocaleID));
 		super.addLeft(this.iwrb.getLocalizedString("delete", "Delete"), text.toString());
 
-		SubmitButton ok = new SubmitButton(this.iwrb.getLocalizedImageButton("ok", "OK"), ProductEditorWindow.ACTION, ProductEditorWindow.PAR_DEL_VERIFIED);
-		SubmitButton cancel = new SubmitButton(this.iwrb.getLocalizedImageButton("cancel", "Cancel"), ProductEditorWindow.ACTION, "");
+		SubmitButton ok = new SubmitButton(this.iwrb.getLocalizedImageButton("ok", "OK"), this.ACTION, this.PAR_DEL_VERIFIED);
+		SubmitButton cancel = new SubmitButton(this.iwrb.getLocalizedImageButton("cancel", "Cancel"), this.ACTION, "");
 
 		super.addSubmitButton(ok);
 		super.addSubmitButton(cancel);

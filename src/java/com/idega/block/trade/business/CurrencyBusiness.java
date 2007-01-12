@@ -60,7 +60,7 @@ public class CurrencyBusiness {
 	public static String currencyUrl = null;
 	public static IWTimestamp lastUpdate = null;
 	
-	public static synchronized void getCurrencyMap(IWBundle bundle) throws RemoteException, CreateException {
+	public static void getCurrencyMap(IWBundle bundle) throws RemoteException, CreateException {
 		IWTimestamp stamp = new IWTimestamp();
 		file = null;
 
@@ -103,6 +103,7 @@ public class CurrencyBusiness {
 		}
 		catch (XMLException e) {
 				e.printStackTrace(System.err);
+			rootElement = null;
 		}
 
 		CurrencyHolder holder = null;
@@ -121,30 +122,25 @@ public class CurrencyBusiness {
 
 				holder = new CurrencyHolder();
 				Iterator iter2 = childElement.getChildren().iterator();
-				try {
-					while (iter2.hasNext()) {
-						XMLElement currencyValues = (XMLElement) iter2.next();
-	
-						if (currencyValues.getName().equalsIgnoreCase(currency_name)) {
-							holder.setCurrencyName(currencyValues.getText());
-							holder.setCurrencyAbbreviation(currencyValues.getText());
-						}
-						else if (currencyValues.getName().equalsIgnoreCase(buy_value)) {
-							holder.setBuyValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
-						} else if (currencyValues.getName().equalsIgnoreCase(sell_value)) {
-							holder.setSellValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
-						}
-						else if (currencyValues.getName().equalsIgnoreCase(middle_value)) {
-							holder.setMiddleValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
-						}
-						a++;
-					}
-					holder.setTimestamp(stamp);
-					currencyMap.put(holder.getCurrencyName(), holder);
-				} catch (Exception e) {
-					System.out.println("[CurrencyBusiness] Error getting currency "+holder.getCurrencyName());
-				}
+				while (iter2.hasNext()) {
+					XMLElement currencyValues = (XMLElement) iter2.next();
 
+					if (currencyValues.getName().equalsIgnoreCase(currency_name)) {
+						holder.setCurrencyName(currencyValues.getText());
+						holder.setCurrencyAbbreviation(currencyValues.getText());
+					}
+					else if (currencyValues.getName().equalsIgnoreCase(buy_value)) {
+						holder.setBuyValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
+					} else if (currencyValues.getName().equalsIgnoreCase(sell_value)) {
+						holder.setSellValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
+					}
+					else if (currencyValues.getName().equalsIgnoreCase(middle_value)) {
+						holder.setMiddleValue(Float.parseFloat(TextSoap.findAndReplace(currencyValues.getText(),",", ".")));
+					}
+					a++;
+				}
+				holder.setTimestamp(stamp);
+				currencyMap.put(holder.getCurrencyName(), holder);
 			}
 			addDefaultCurrency();
 
@@ -154,7 +150,7 @@ public class CurrencyBusiness {
 			getValuesFromDatabase();
 		}
 
-		if (getCurrencyHolder(defaultCurrency) == null && currencyMap != null && holder != null) {
+		if (getCurrencyHolder(defaultCurrency) == null && currencyMap != null) {
 			CurrencyHolder defaultHolder = new CurrencyHolder();
 			defaultHolder.setCurrencyName(defaultCurrency);
 			defaultHolder.setCurrencyAbbreviation(defaultCurrency);
@@ -290,36 +286,35 @@ public class CurrencyBusiness {
 						if (holder.getCurrencyAbbreviation() != null) {
 							currency = home.getCurrencyByAbbreviation(holder.getCurrencyAbbreviation());
 						}
-						
-						if (currency == null) {
+						if (currency != null) {
+							update = true;
+						}else {
 							update = false;
 							currency = home.create();
-						} else if (currency.getID() < 1) {
-							update = false;
-							currency = home.create();	
-						} else {
-							update = true;
 						}
 
+						if (currency.getID() < 1 ) {
+							update = false;
+							currency = home.create();	
+						}
 
 					} catch (Exception e) {
 						currency = home.create();
 						update = false;
 					}
-					if (currency != null) {
-						currency.setCurrencyAbbreviation(holder.getCurrencyName());
-						currency.setCurrencyName(holder.getCurrencyName());
-						if (update) {
-							System.out.println("[CurrencyBusiness] Updating existing currency : " + currency.getCurrencyName() + " (id: " + currency.getID() + ")");
-							
-	//						bulk.add(currency, bulk.update);
-							currency.store();
-						}
-						else {
-							System.out.println("[CurrencyBusiness] Creating new currency, name : " + currency.getCurrencyName() + ", abbr : "+currency.getCurrencyAbbreviation());
-	//						bulk.add(currency, bulk.insert);
-							currency.store();
-						}
+					
+					currency.setCurrencyAbbreviation(holder.getCurrencyName());
+					currency.setCurrencyName(holder.getCurrencyName());
+					if (update) {
+						System.out.println("[CurrencyBusiness] Updating existing currency : " + currency.getCurrencyName() + " (id: " + currency.getID() + ")");
+						
+//						bulk.add(currency, bulk.update);
+						currency.store();
+					}
+					else {
+						System.out.println("[CurrencyBusiness] Creating new currency, name : " + currency.getCurrencyName() + ", abbr : "+currency.getCurrencyAbbreviation());
+//						bulk.add(currency, bulk.insert);
+						currency.store();
 					}
 
 //					execute = true;
@@ -363,7 +358,7 @@ public class CurrencyBusiness {
 			while (iter.hasNext()) {
 				currency = (Currency) currencies.get(iter.next());
 				value = (CurrencyValues) values.get(new Integer(currency.getID()));
-				if (value != null) {
+				if (currency != null && value != null) {
 					holder = new CurrencyHolder();
 					holder.setBuyValue(value.getBuyValue());
 					holder.setCurrencyName(currency.getCurrencyAbbreviation());

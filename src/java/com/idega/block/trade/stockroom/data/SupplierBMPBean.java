@@ -6,11 +6,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
-
 import com.idega.block.trade.data.CreditCardInformation;
 import com.idega.block.trade.stockroom.business.SupplierManagerBusiness;
 import com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean;
@@ -29,7 +27,6 @@ import com.idega.data.IDOLookup;
 import com.idega.data.IDOQuery;
 import com.idega.data.IDORelationshipException;
 import com.idega.data.IDORemoveRelationshipException;
-import com.idega.data.MetaDataCapable;
 import com.idega.data.query.AND;
 import com.idega.data.query.Column;
 import com.idega.data.query.Criteria;
@@ -47,12 +44,12 @@ import com.idega.user.data.Group;
  * Title: IW Trade Description: Copyright: Copyright (c) 2001 Company: idega.is
  * 
  * @author 2000 - idega team -<br>
- *             <a href="mailto:gummi@idega.is">Guðmundur Ágúst Sæmundsson </a> <br>
- *             <a href="mailto:gimmi@idega.is">Grímur Jónsson </a>
+ *             <a href="mailto:gummi@idega.is">Guï¿½mundur ï¿½gï¿½st Sï¿½mundsson </a> <br>
+ *             <a href="mailto:gimmi@idega.is">Grï¿½mur Jï¿½nsson </a>
  * @version 1.0
  */
 
-public class SupplierBMPBean extends GenericEntity implements Supplier, MetaDataCapable {
+public class SupplierBMPBean extends GenericEntity implements Supplier{
 
 	private String newName;
 	private static String COLUMN_SUPPLIER_MANAGER_ID = "SUPPLIER_MANAGER_ID";
@@ -72,13 +69,13 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		addAttribute(getIDColumnName());
 		addAttribute(getColumnNameName(), "Name", true, true, String.class);
 		addAttribute(COLUMN_NAME_NAME_ALL_CAPS, "nafn i storun", true, true, String.class);
-		addAttribute(getColumnNameDescription(), "Lýsing", true, true, String.class, 500);
-		addAttribute(getColumnNameGroupID(), "Hópur", true, true, Integer.class, "many_to_one", SupplierStaffGroup.class);
-		addAttribute(getColumnNameIsValid(), "Í notkun", true, true, Boolean.class);
+		addAttribute(getColumnNameDescription(), "Lï¿½sing", true, true, String.class, 500);
+		addAttribute(getColumnNameGroupID(), "Hï¿½pur", true, true, Integer.class, "many_to_one", SupplierStaffGroup.class);
+		addAttribute(getColumnNameIsValid(), "ï¿½ notkun", true, true, Boolean.class);
 		addAttribute(COLUMN_SUPPLIER_MANAGER_ID, "supplier manager", true, true, Integer.class, MANY_TO_ONE, Group.class);
 		addAttribute(COLUMN_ORGANIZATION_ID, "organization ID", true, true, String.class, 20);
 		/* can this be removed */
-		addAttribute(getColumnNameTPosMerchantID(), "ViÝskiptamannanumer", true, true, Integer.class);
+		addAttribute(getColumnNameTPosMerchantID(), "Viï¿½skiptamannanumer", true, true, Integer.class);
 
 		this.addManyToManyRelationShip(Address.class, "SR_SUPPLIER_IC_ADDRESS");
 		this.addManyToManyRelationShip(Phone.class, "SR_SUPPLIER_IC_PHONE");
@@ -89,8 +86,6 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		this.addManyToManyRelationShip(CreditCardInformation.class, "SR_SUPPLIER_CC_INFORMATION");
 
 		this.addManyToOneRelationship(COLUMN_IC_FILE_ID, ICFile.class);
-		
-		addMetaDataRelationship();
 		
 		addIndex("IDX_SUPP_1", new String[]{getIDColumnName(), getColumnNameIsValid()});
 		addIndex("IDX_SUPP_2", new String[]{getColumnNameIsValid()});
@@ -305,15 +300,14 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 	}
 
 	public Settings getSettings() throws FinderException, RemoteException, CreateException {
-		SettingsHome shome = (SettingsHome) IDOLookup.getHome(Settings.class);
 		Collection coll = null;
 		try {
 			coll = this.idoGetRelatedEntities(Settings.class);
 		}
 		catch (IDOException ido) {
 			//throw new CreateException(ido.getMessage());
-			return shome.create(this);
 		}
+		SettingsHome shome = (SettingsHome) IDOLookup.getHome(Settings.class);
 		if (coll.size() == 1) {
 			Iterator iter = coll.iterator();
 			return (Settings) iter.next();
@@ -512,53 +506,6 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		//q.addJoin(table, ccTable);
 		
 		return idoFindPKsByQuery(q);
-	}
-	
-	
-	public Collection ejbFindAllWithCreditCardMerchant(Group supplierManager) throws IDORelationshipException, FinderException {
-		Table table = new Table(this);
-		Table ccTable = new Table(CreditCardInformation.class);
-		Table middleTable = null;
-		
-		IDOEntityDefinition source = table.getEntityDefinition();
-		IDOEntityDefinition destination = ccTable.getEntityDefinition();
-
-		IDOEntityDefinition[] definitions = source.getManyToManyRelatedEntities();
-		if (definitions != null && definitions.length > 0) {
-			for (int i = 0; i < definitions.length; i++) {
-				IDOEntityDefinition definition = definitions[i];
-				if (destination.equals(definition)) {
-					try {
-						String middleTableName = source.getMiddleTableNameForRelation(destination.getSQLTableName());
-						middleTable = new Table(middleTableName);
-					} catch (Exception e) {}
-				}
-			}
-		}
-		
-		if (middleTable == null) {
-			throw new IDORelationshipException("Middletable not found for "+table.getName()+" and "+ccTable.getName());
-		}
-		
-		SelectQuery sub = new SelectQuery(middleTable);
-		sub.addColumn(new Column(middleTable, getIDColumnName()));
-		
-		Column idCol = new Column(table, getIDColumnName());
-		Column suppMan = new Column(table, COLUMN_SUPPLIER_MANAGER_ID);
-		Column isValid = new Column(table, getColumnNameIsValid());
-		
-		SelectQuery q = new SelectQuery(table);
-		q.addColumn(idCol);
-		q.addCriteria(new InCriteria(idCol, sub, false));
-		q.addCriteria(new MatchCriteria(isValid, MatchCriteria.EQUALS, true));
-		q.addCriteria(new MatchCriteria(suppMan, MatchCriteria.EQUALS, supplierManager.getPrimaryKey()));
-		//q.addJoin(table, ccTable);
-		System.out.println(q);
-		return idoFindPKsByQuery(q);
-		
-		// SQL fyrir sub-query sem "kannski" gerir thetta betur.
-		//select * from CC_INFORMATION where CC_INFORMATION_ID in (select i. CC_INFORMATION_ID from cc_information i, CC_KTH_MERCHANT m where i.cc_type ='KORTATHJONUSTAN' AND i.cc_merchant_pk = m.cc_kth_merchant_id AND end_date is null) OR CC_INFORMATION_ID in (select i. CC_INFORMATION_ID from cc_information i, tpos_merchant m where i.cc_type ='TPOS' AND i.cc_merchant_pk = m.tpos_merchant_id AND end_date is null)
-
 	}
 }
 

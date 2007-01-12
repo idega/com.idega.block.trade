@@ -26,6 +26,7 @@ import com.idega.core.localisation.business.ICLocaleBusiness;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDORelationshipException;
 import com.idega.idegaweb.IWBundle;
+import com.idega.idegaweb.IWMainApplication;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.Image;
@@ -128,7 +129,7 @@ public class ProductCatalog extends CategoryBlock {
 		return IW_BUNDLE_IDENTIFIER;
 	}
 	public void clearCache(IWContext iwc) {
-		iwc.getIWMainApplication().getIWCacheManager().invalidateCache(getCacheState(iwc, super.getCachePrefixString(iwc)));
+		IWMainApplication.getIWCacheManager().invalidateCache(getCacheState(iwc, super.getCachePrefixString(iwc)));
 	}
 	private void init(IWContext iwc) {
 		this.bundle = getBundle(iwc);
@@ -573,15 +574,15 @@ public class ProductCatalog extends CategoryBlock {
 		}
 		return list;
 	}
-	void sortList(List products) throws RemoteException {
+	void sortList(List products) {
 		sortList(products, this._orderProductsBy);
 	}
-	void sortList(List products, int orderBy) throws RemoteException {
+	void sortList(List products, int orderBy) {
 		/**
 		 * @todo Caching....
 		 */
 		if (this._orderProductsBy != -1 && products != null) {
-			Collections.sort(products, new ProductComparator(orderBy, this._currentLocale, getProductBusiness()));
+			Collections.sort(products, new ProductComparator(orderBy, this._currentLocale));
 		}
 	}
 	protected String getCacheState(IWContext iwc, String cacheStatePrefix) {

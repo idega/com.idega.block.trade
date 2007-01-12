@@ -108,12 +108,12 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
   private Reseller createReseller(int resellerId, Reseller parentReseller, String name, String userName, String password, String description, int[] addressIds, int[] phoneIds, int[] emailIds, String organizationID) throws Exception {
     boolean isUpdate = false;
     if (resellerId != -1) {
-			isUpdate = true;
-		}
+		isUpdate = true;
+	}
 
     if (description == null) {
-			description = "";
-		}
+		description = "";
+	}
 
 
     if (isUpdate) {
@@ -283,7 +283,7 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
             sql.append(" ORDER BY s."+orderBy);
           }
 
-        suppliers = (Supplier[]) (GenericEntity.getStaticInstance(Supplier.class)).findAll(sql.toString());
+        suppliers = (Supplier[]) (com.idega.block.trade.stockroom.data.SupplierBMPBean.getStaticInstance(Supplier.class)).findAll(sql.toString());
 
     }catch (SQLException sql) {
       sql.printStackTrace(System.err);
@@ -308,7 +308,7 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
         }
       }
       iter = listi.iterator();*/
-    }else {
+    }else if (iter == null) {
       iter = com.idega.util.ListUtil.getEmptyList().iterator();
     }
     return iter;
@@ -337,8 +337,8 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
           buff.append(reseller.getIDColumnName()+" not in (");
           for (int i = 0; i < exclude.length; i++) {
             if (i != 0) {
-							buff.append(", ");
-						}
+				buff.append(", ");
+			}
             buff.append(exclude[i]);
           }
           buff.append(") ");
@@ -483,8 +483,8 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
     Group pGroup = getPermissionGroup(reseller);
     ResellerStaffGroup sGroup = getResellerStaffGroup(reseller);
     if (addToPermissionGroup) {
-			pGroup.addGroup(user);
-		}
+		pGroup.addGroup(user);
+	}
     sGroup.addGroup(user);
   }
 
@@ -494,7 +494,9 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
 	  Collection coll = getUserBusiness().getUsersInGroup(pGroup);
 	  List users = new Vector(coll);
 	  //List users = UserBusiness.getUsersInGroup(pGroup);
-	  java.util.Collections.sort(users, new com.idega.util.GenericUserComparator(com.idega.util.GenericUserComparator.NAME));
+	  if (users != null) {
+	    java.util.Collections.sort(users, new com.idega.util.GenericUserComparator(com.idega.util.GenericUserComparator.NAME));
+	  }
 	  return users;
   }
 
@@ -514,7 +516,9 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
 	  Collection coll = getUserBusiness().getUsersInGroup(sGroup);
 	  List users = new Vector(coll);
 	  //List users = UserBusiness.getUsersInGroup(sGroup);
-	  java.util.Collections.sort(users, new com.idega.util.GenericUserComparator(com.idega.util.GenericUserComparator.NAME));
+	  if (users != null) {
+	     java.util.Collections.sort(users, new com.idega.util.GenericUserComparator(com.idega.util.GenericUserComparator.NAME));
+	  }
 	  return users;
   }
 
@@ -559,16 +563,18 @@ public class ResellerManagerBean extends IBOServiceBean  implements ResellerMana
     int number = 0;
 
     GenericGroup group;
-	String type;
-	  for (int i = 0; i < groups.size(); i++) {
-	    group = (GenericGroup) groups.get(i);
-	    type = group.getGroupType();
-	    if (type != null && type.equals(com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean.GROUP_TYPE_VALUE)) {
-	      isReseller = true;
-	      number= i;
-	      break;
-	    }
-	  }
+    String type;
+    if (groups != null) {
+      for (int i = 0; i < groups.size(); i++) {
+        group = (GenericGroup) groups.get(i);
+        type = group.getGroupType();
+        if (type != null && type.equals(com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean.GROUP_TYPE_VALUE)) {
+          isReseller = true;
+          number= i;
+          break;
+        }
+      }
+    }
 
     if (isReseller) {
     	try {

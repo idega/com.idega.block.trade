@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import javax.ejb.FinderException;
-
 import com.idega.data.GenericEntity;
 
 
@@ -12,7 +11,7 @@ import com.idega.data.GenericEntity;
  * Title:        User
  * Copyright:    Copyright (c) 2002
  * Company:      idega.is
- * @author 2002 - idega team - <a href="mailto:laddi@idega.is">Þórhallur Helgason</a>
+ * @author 2002 - idega team - <a href="mailto:laddi@idega.is">ï¿½ï¿½rhallur Helgason</a>
  * @version 1.0
  */
 
