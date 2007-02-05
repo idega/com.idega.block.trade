@@ -723,8 +723,11 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   public Collection ejbFindProducts(int supplierId, int productCategoryId ,IWTimestamp from, IWTimestamp to, String orderBy, int localeId, int filter, boolean useTimeframes) throws FinderException{
     Collection coll;
 
-    String orderString = com.idega.block.trade.stockroom.data.TimeframeBMPBean.getTimeframeFromColumnName();
-    if (orderBy != null) {
+    String orderString = null;
+    if (from != null && to != null && useTimeframes) {
+    	orderString = com.idega.block.trade.stockroom.data.TimeframeBMPBean.getTimeframeFromColumnName();
+    }
+    if (orderBy != null) {// && from
     	orderString = orderBy;
     }
 
