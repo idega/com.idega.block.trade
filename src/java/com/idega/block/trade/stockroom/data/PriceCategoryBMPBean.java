@@ -62,7 +62,7 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
     addAttribute(getColumnNameVisibility(), "visibility", true, true, Integer.class);
     addAttribute(getColumnNameKey(), "key", true, true, String.class);
 
-    addAttribute(COLUMN_VALUE, "column value", Integer.class);
+    addAttribute(COLUMN_VALUE, "column value", Float.class);
     addOneToOneRelationship(COLUMN_GROUPED_WITH_ID, PriceCategory.class);
     addAttribute(COLUMN_IS_BOOLEAN_CATEGORY, "is boolean", Boolean.class);
     
@@ -85,11 +85,11 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
     }
   }
   
-  public int getValue() {
-	  return getIntColumnValue(COLUMN_VALUE, 1);
+  public float getValue() {
+	  return getFloatColumnValue(COLUMN_VALUE, 1);
   }
   
-  public void setValue(int value) {
+  public void setValue(float value) {
 	  setColumn(COLUMN_VALUE, value);
   }
   

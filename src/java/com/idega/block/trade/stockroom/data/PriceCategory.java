@@ -7,12 +7,12 @@ public interface PriceCategory extends IDOLegacyEntity {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#getValue
 	 */
-	public int getValue();
+	public float getValue();
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#setValue
 	 */
-	public void setValue(int value);
+	public void setValue(float value);
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#getGroupedWith
@@ -138,4 +138,5 @@ public interface PriceCategory extends IDOLegacyEntity {
 	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#setVisibility
 	 */
 	public void setVisibility(int visibility);
+
 }
