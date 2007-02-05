@@ -5,10 +5,14 @@ import java.util.Collection;
 import com.idega.util.IWTimestamp;
 import javax.ejb.FinderException;
 
+import com.idega.block.trade.stockroom.data.PriceCategoryHome;
+import com.idega.block.trade.stockroom.data.Product;
 import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.block.trade.stockroom.data.ProductPriceHome;
 import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.business.IBOService;
+import com.idega.data.IDOLookupException;
+
 import java.rmi.RemoteException;
 
 public interface ProductPriceBusiness extends IBOService {
@@ -17,6 +21,7 @@ public interface ProductPriceBusiness extends IBOService {
 	 */
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int[] visibility, IWTimestamp date) throws FinderException, RemoteException;
 
+	public Collection getCurrenciesInUse(Product product) throws IDOLookupException, FinderException;
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getProductPrices
 	 */
@@ -67,7 +72,7 @@ public interface ProductPriceBusiness extends IBOService {
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getMiscellaneousPrices
 	 */
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId) throws FinderException, RemoteException;
-
+	public PriceCategoryHome getPriceCategoryHome();
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getProductPriceHome
 	 */

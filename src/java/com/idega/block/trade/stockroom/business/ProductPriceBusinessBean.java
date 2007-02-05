@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.10 2006/10/11 21:35:38 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.11 2007/02/05 23:21:27 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -21,6 +21,8 @@ import java.util.Vector;
 import javax.ejb.FinderException;
 import javax.xml.rpc.ServiceException;
 
+import com.idega.block.trade.data.Currency;
+import com.idega.block.trade.data.CurrencyHome;
 import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.block.trade.stockroom.data.PriceCategoryBMPBean;
 import com.idega.block.trade.stockroom.data.PriceCategoryHome;
@@ -57,17 +59,17 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, boolean netbookingOnly, String key, IWTimestamp date) throws FinderException {
 		return getProductPrices(productId, timeframeId, addressId, -1, netbookingOnly, key, date);
 	}
-	
+
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int currencyId, boolean netbookingOnly, String key, IWTimestamp date) throws FinderException {
 		int[] vis;
-	  	if (netbookingOnly) {
-	  		vis = new int[] {PriceCategoryBMPBean.PRICE_VISIBILITY_BOTH_PRIVATE_AND_PUBLIC, PriceCategoryBMPBean.PRICE_VISIBILITY_PUBLIC};	
-	  	}else {
-	  		vis = new int[] {PriceCategoryBMPBean.PRICE_VISIBILITY_BOTH_PRIVATE_AND_PUBLIC, PriceCategoryBMPBean.PRICE_VISIBILITY_PRIVATE};//, PriceCategoryBMPBean.PRICE_VISIBILITY_PUBLIC};	
-	  	}
-	  	return getProductPrices(productId, timeframeId, addressId, currencyId, vis, key, date);
+		if (netbookingOnly) {
+			vis = new int[] {PriceCategoryBMPBean.PRICE_VISIBILITY_BOTH_PRIVATE_AND_PUBLIC, PriceCategoryBMPBean.PRICE_VISIBILITY_PUBLIC};	
+		}else {
+			vis = new int[] {PriceCategoryBMPBean.PRICE_VISIBILITY_BOTH_PRIVATE_AND_PUBLIC, PriceCategoryBMPBean.PRICE_VISIBILITY_PRIVATE};//, PriceCategoryBMPBean.PRICE_VISIBILITY_PUBLIC};	
+		}
+		return getProductPrices(productId, timeframeId, addressId, currencyId, vis, key, date);
 	}
-		
+
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int currencyId, int[] visibility, String key, IWTimestamp date) throws FinderException {
 
 		String visString = "";
@@ -83,13 +85,15 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			mapDateKey += "_"+date.toSQLDateString();
 			lookForDate = true;
 		}
-		
+
 		HashMap priceMap = getPriceMapForProduct(new Integer(productId));
+//		HashMap priceMap = new HashMap();
+//		System.out.println("[ProductPriceBusiness] priceMap set to EMPTY");
 //		System.out.println("[ProductPriceBusinessBean] mapKey = "+mapKey);
-		
+
 //		Timer t =  new Timer();
 //		t.start();
-		
+
 		Collection prices = null;
 
 		// Checking for stored price for this day
@@ -99,12 +103,13 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 				lookForDate = false;
 			}
 		}
-		
+
 		// Checking for stored price in general
 		if (prices == null) {
 			prices = (Collection) priceMap.get(mapKey);
 		}
-		
+
+		prices = null;
 		if (prices == null || lookForDate) {
 			Collection tmp = null;
 			if (prices != null) {
@@ -112,16 +117,16 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			} else {
 				tmp = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 0, currencyId, visibility, key);
 			}
-			
+
 			if (date != null) {
 				prices = new Vector();
 				Date exactDate = date.getDate();
-				
+
 				Iterator iter = tmp.iterator();
 				ProductPrice price;
 				while (iter.hasNext()) {
 					price = (ProductPrice) iter.next();
-					
+
 					Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, currencyId, price.getPriceCategoryID(), exactDate);
 
 					if (coll != null && !coll.isEmpty()) {
@@ -132,7 +137,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 					} else {
 						prices.add(price);
 					}
-					
+
 				}
 				// Adding the new "improved" prices to the map
 				priceMap.put(mapDateKey, prices);
@@ -141,25 +146,25 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 				priceMap.put(mapKey, tmp);
 				prices = tmp;
 			}
-			
+
 		}
-		
+
 //		t.stop();
 //		System.out.println("[ProductPriceBusinessBean] time to get prices = "+t.getTimeString());
-		
+
 		return prices;
 	}
-	
+
 	private HashMap getPriceMapForProduct(Object productID) {
 		HashMap t = (HashMap) this.mapForProductPriceMap.get(productID);
 		if (t == null) {
 			t = new HashMap();
 			this.mapForProductPriceMap.put(productID, t);
 		}
-		
+
 		return t;
 	}
-	
+
 	public boolean invalidateCache(PriceCategory cat) {
 		try {
 			ProductHome pHome = (ProductHome) IDOLookup.getHome(Product.class);
@@ -180,7 +185,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		}
 		return false;
 	}
-	
+
 	public boolean invalidateCache(String productId) {
 		return  invalidateCache(productId, null);
 	}
@@ -228,7 +233,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		if (v != null && v.isEmpty()) {
 			v= null;
 		}
-		
+
 		return v;
 	}
 	public Collection getGroupedCategories(PriceCategory category) {
@@ -243,19 +248,19 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		}
 		return null;
 	}
-	protected PriceCategoryHome getPriceCategoryHome() {
+	public PriceCategoryHome getPriceCategoryHome() {
 		try {
 			return (PriceCategoryHome) IDOLookup.getHome(PriceCategory.class);
 		} catch (IDOLookupException e) {
 			throw new IDORuntimeException(e);
 		}
 	}
-	
+
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) {
 		this.mapForProductPriceMap.put(new Integer(productID), null);
-		
-	    System.out.println("[ProductPriceBusiness] invalidateCache for product "+productID);
-	    try {
+
+		System.out.println("[ProductPriceBusiness] invalidateCache for product "+productID);
+		try {
 			Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
 			Iterator iter = coll.iterator();
 			while (iter.hasNext()) {
@@ -272,11 +277,23 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //		getStockroomBusiness().executeRemoteService(remoteDomainToExclude, "invalidatePriceCache&productID="+productID);
 		return true;
 	}
-	
+
+	public Collection getCurrenciesInUse(Product product) throws IDOLookupException, FinderException {
+		int[] currIDs = getProductPriceHome().getCurrenciesInUse(((Integer)product.getPrimaryKey()).intValue());
+		CurrencyHome cHome = (CurrencyHome) IDOLookup.getHome(Currency.class);
+		Vector v = new Vector();
+		if (currIDs != null) {
+			for (int i = 0; i < currIDs.length; i++) {
+				v.add(cHome.findByPrimaryKey(currIDs[i]));
+			}
+		}
+		return v;
+	}
+
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly) throws FinderException {
 		return getProductPriceHome().findMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1);
 	}
-	
+
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId) throws FinderException {
 		return getProductPriceHome().findProductPrices(productId, timeframeId, addressId, netBookingOnly, 1, currencyId, null);
 	}
@@ -289,7 +306,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			throw new IBORuntimeException(e);
 		}
 	}
-	
+
 	public ProductPriceHome getProductPriceHome() {
 		try {
 			return (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);
