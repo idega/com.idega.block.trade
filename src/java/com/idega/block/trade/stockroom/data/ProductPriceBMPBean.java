@@ -42,6 +42,8 @@ public class ProductPriceBMPBean extends com.idega.data.GenericEntity implements
 
   public static final int PRICETYPE_PRICE = 0;
   public static final int PRICETYPE_DISCOUNT = 1;
+	private static final String COLUMN_FIXED_PRICE = "FIXED_PRICE";
+
 
   public ProductPriceBMPBean(){
           super();
@@ -67,6 +69,7 @@ public class ProductPriceBMPBean extends com.idega.data.GenericEntity implements
     this.addManyToManyRelationShip(Timeframe.class,getProductPriceTableName()+"_TIMEFRAME");
     this.addManyToManyRelationShip(Address.class,getProductPriceTableName()+"_ADDRESS");
     this.addManyToManyRelationShip(TravelAddress.class);
+	  addAttribute(COLUMN_FIXED_PRICE, "is fixed price", Boolean.class);
     
     addIndex("IDX_PRO_PRI_1", new String[]{getColumnNameProductId(), getColumnNamePriceCategoryId(), getColumnNameCurrencyId(), getColumnNameIsValid()});
     addIndex("IDX_PRO_PRI_2", new String[]{getColumnNameProductId(), getColumnNamePriceCategoryId(), getColumnNameIsValid()});
@@ -474,6 +477,7 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 			e.printStackTrace(System.out);	
 		}
 */
+//    System.out.println("SQL : "+SQLQuery.toString());
     return SQLQuery.toString();
   }
 
@@ -496,8 +500,32 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
   public Collection getTravelAddresses() throws IDORelationshipException{
     return this.idoGetRelatedEntities(TravelAddress.class);
   }
+  public TravelAddress getTravelAddresse() throws IDORelationshipException {
+	  Collection coll = getTravelAddresses();
+	  if (coll != null && !coll.isEmpty()) {
+		  return (TravelAddress) coll.iterator().next();
+	  }
+	  return null;
+  }
+
+  
+  public Timeframe getTimeframe() throws IDORelationshipException {
+	  Collection coll = getTimeframes();
+	  if (coll != null && !coll.isEmpty()) {
+		  return (Timeframe) coll.iterator().next();
+	  }
+	  return null;
+  }
   public Collection getTimeframes() throws IDORelationshipException {
     return this.idoGetRelatedEntities(Timeframe.class);
+  }
+  
+  public void setIsFixedPrice(boolean value){
+    setColumn(COLUMN_FIXED_PRICE, value);
+  }
+
+  public boolean isFixedPrice(){
+    return getBooleanColumnValue(COLUMN_FIXED_PRICE, false);
   }
 
   public static String getProductPriceTableName(){return "SR_PRODUCT_PRICE";}

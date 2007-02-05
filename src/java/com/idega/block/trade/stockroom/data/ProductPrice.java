@@ -155,4 +155,10 @@ public interface ProductPrice extends IDOEntity {
 	 * @see com.idega.block.trade.stockroom.data.ProductPriceBMPBean#addTravelAddress
 	 */
 	public void addTravelAddress(Object travelAddressPK) throws IDOAddRelationshipException;
+	public void setIsFixedPrice(boolean value);
+	public boolean isFixedPrice();
+	public TravelAddress getTravelAddresse() throws IDORelationshipException;
+	public Timeframe getTimeframe() throws IDORelationshipException;
+
+	
 }
