@@ -595,7 +595,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 
   public TravelAddress getDepartureAddressFirst(Product product) throws RemoteException, IDOFinderException {
 	  List list = getDepartureAddresses(product, true);
-	  if (list != null) {
+	  if (list != null && !list.isEmpty()) {
 		  return (TravelAddress) list.get(0);
 	  }
 	  return null;
