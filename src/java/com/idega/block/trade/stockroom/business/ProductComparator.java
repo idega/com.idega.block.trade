@@ -2,6 +2,7 @@ package com.idega.block.trade.stockroom.business;
 
 import java.rmi.RemoteException;
 import java.text.Collator;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -9,16 +10,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
+
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
+
 import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.block.trade.stockroom.data.Product;
+import com.idega.block.trade.stockroom.data.ProductCategory;
 import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.block.trade.stockroom.data.Timeframe;
 import com.idega.block.trade.stockroom.data.TravelAddress;
 import com.idega.business.IBOLookup;
 import com.idega.core.localisation.business.ICLocaleBusiness;
 import com.idega.data.IDOFinderException;
+import com.idega.data.IDORelationshipException;
 import com.idega.presentation.IWContext;
 import com.idega.util.IWTimestamp;
 import com.idega.util.IsCollator;
@@ -41,6 +46,7 @@ public class ProductComparator implements Comparator {
   public static final int PRICE = 5;
   public static final int CREATION_DATE = 6;
   public static final int SUPPLIER = 7; 
+  public static final int PRODUCT_CATEGORY = 8; 
 
   private int localeId = -1;
   private int sortBy;
@@ -89,6 +95,8 @@ public class ProductComparator implements Comparator {
           case CREATION_DATE : result = dateSort(o1, o2);
           break;
           case SUPPLIER : result = supplierSort(o1, o2);
+          break;
+          case PRODUCT_CATEGORY : result = productCategorySort(o1, o2);
         }
       }catch (RemoteException rme) {
         rme.printStackTrace(System.err);
@@ -96,6 +104,29 @@ public class ProductComparator implements Comparator {
 
       return result;
   }
+  
+  private int productCategorySort(Object o1, Object o2) throws RemoteException{
+	    Product p1 = (Product) o1;
+	    Product p2 = (Product) o2;
+
+	    Collection c1 = null;
+	    Collection c2 = null;
+		try {
+			c1 = p1.getProductCategories();
+			c2 = p2.getProductCategories();
+		} catch (IDORelationshipException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+	    if (c1 == null && c2 == null) {
+	    	return nameSort(o1, o2);
+	    }
+	    
+	    String one = ((ProductCategory)c1.iterator().next()).getCategoryType();
+	    String two = ((ProductCategory)c2.iterator().next()).getCategoryType();
+	    return this.collator.compare(one, two);
+	  }
 
   private int nameSort(Object o1, Object o2) throws RemoteException{
     Product p1 = (Product) o1;
@@ -143,6 +174,13 @@ public class ProductComparator implements Comparator {
     try {
     	TravelAddress a1 = this.pBus.getDepartureAddressFirst(p1);
     	TravelAddress a2 = this.pBus.getDepartureAddressFirst(p2);
+    	if (a1 == null && a2 == null) {
+    		return 0;
+    	} else if (a1 == null) {
+    		return 1;
+    	} else if (a2 == null) {
+    		return -1;
+    	}
       IWTimestamp s1 = new IWTimestamp(a1.getTime());
       IWTimestamp s2 = new IWTimestamp(a2.getTime());
 
