@@ -6,6 +6,9 @@
   <body>
 
 	<release version="3.1.10" date="2007-02-06">
+		<action dev="gimmi" type="add">
+			New role DISCOUNTS
+		</action>     
 		<action dev="gimmi" type="update">
 			PriceCategory value field changed to Float.
 		</action>     

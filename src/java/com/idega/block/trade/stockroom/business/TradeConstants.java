@@ -1,5 +1,5 @@
 /*
- * $Id: TradeConstants.java,v 1.8 2007/02/05 23:19:07 gimmi Exp $
+ * $Id: TradeConstants.java,v 1.9 2007/03/12 19:52:38 gimmi Exp $
  * Created on 9.2.2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -12,10 +12,10 @@ package com.idega.block.trade.stockroom.business;
 
 /**
  * 
- *  Last modified: $Date: 2007/02/05 23:19:07 $ by $Author: gimmi $
+ *  Last modified: $Date: 2007/03/12 19:52:38 $ by $Author: gimmi $
  * 
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TradeConstants {
 	
@@ -28,4 +28,5 @@ public class TradeConstants {
 	public static final String ROLE_ADVANCED_VOUCHER = "supp_man_adv_voucher";
 	public static final String ROLE_CURRENCY_SETTER = "supp_man_currency_setter";
 	public static final String ROLE_SAVE_CUSTOMER_INFO = "supp_man_save_customer_info";
+	public static final String ROLE_DISCOUNTS = "supp_man_discounts";
 }
