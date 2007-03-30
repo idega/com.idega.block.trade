@@ -3,6 +3,8 @@ package com.idega.block.trade.stockroom.data;
 
 import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDORelationshipException;
+import com.idega.data.MetaDataCapable;
+
 import java.util.Collection;
 import javax.ejb.FinderException;
 import java.sql.Date;
@@ -10,7 +12,7 @@ import com.idega.block.trade.data.Currency;
 import java.sql.Timestamp;
 import com.idega.data.IDOEntity;
 
-public interface ProductPrice extends IDOEntity {
+public interface ProductPrice extends IDOEntity, MetaDataCapable {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductPriceBMPBean#invalidate
 	 */

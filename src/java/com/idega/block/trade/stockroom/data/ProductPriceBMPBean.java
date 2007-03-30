@@ -21,6 +21,7 @@ import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.data.IDOQuery;
 import com.idega.data.IDORelationshipException;
+import com.idega.data.MetaDataCapable;
 import com.idega.data.SimpleQuerier;
 import com.idega.data.query.Column;
 import com.idega.data.query.InCriteria;
@@ -38,7 +39,7 @@ import com.idega.util.text.TextSoap;
  * @version 1.0
  */
 
-public class ProductPriceBMPBean extends com.idega.data.GenericEntity implements ProductPrice{
+public class ProductPriceBMPBean extends com.idega.data.GenericEntity implements ProductPrice, MetaDataCapable{
 
   public static final int PRICETYPE_PRICE = 0;
   public static final int PRICETYPE_DISCOUNT = 1;
@@ -75,6 +76,8 @@ public class ProductPriceBMPBean extends com.idega.data.GenericEntity implements
     addIndex("IDX_PRO_PRI_2", new String[]{getColumnNameProductId(), getColumnNamePriceCategoryId(), getColumnNameIsValid()});
     addIndex("IDX_PRO_PRI_3", new String[]{getColumnNameProductId(), getColumnNameCurrencyId(), getColumnNameIsValid()});
     addIndex("IDX_PRO_PRI_4", getColumnNameProductId());
+    
+    addMetaDataRelationship();
   }
 
 
