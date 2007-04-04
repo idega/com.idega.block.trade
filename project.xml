@@ -194,13 +194,6 @@
       <type>jar</type>
       <url>http://jax-rpc.dev.java.net/</url>
     </dependency>
-    <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
-      <version>2.0.2</version>
-      <type>jar</type>
-      <url>http://ws.apache.org/axis</url>
-    </dependency>
   </dependencies>
   <build>
     <sourceDirectory>src/java</sourceDirectory>
