@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.11 2007/02/05 23:21:27 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.12 2007/04/18 04:02:13 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -224,7 +224,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 					getStockroomBusiness().getPrice(pp, IWTimestamp.getTimestampRightNow(), timeframeID, addressID);
 					v.add(pCat);
 				} catch (ProductPriceException  p) {
-					System.out.println("[ProductPriceBusiness] Did not find price for the connected category");
+//					System.out.println("[ProductPriceBusiness] Did not find price for the connected category");
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
