@@ -7,6 +7,9 @@
 
 	<release version="3.1.12" date="2007-04-18">
 		<action dev="gimmi" type="update">
+			Departure addresses moved to Travel bundle
+		</action>     
+		<action dev="gimmi" type="update">
 			Added timeframe and address columnd to ProductDayInfo
 		</action>     
 	</release>

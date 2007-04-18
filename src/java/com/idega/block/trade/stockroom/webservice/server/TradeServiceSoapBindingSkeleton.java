@@ -28,7 +28,6 @@ public class TradeServiceSoapBindingSkeleton implements com.idega.block.trade.st
 
     static {
         org.apache.axis.description.OperationDesc _oper;
-//        org.apache.axis.description.FaultDesc _fault;
         org.apache.axis.description.ParameterDesc [] _params;
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
@@ -43,19 +42,6 @@ public class TradeServiceSoapBindingSkeleton implements com.idega.block.trade.st
             _myOperations.put("invalidateProductCache", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("invalidateProductCache")).add(_oper);
-        _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
-        };
-        _oper = new org.apache.axis.description.OperationDesc("clearAddressMaps", _params, new javax.xml.namespace.QName("", "clearAddressMapsReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
-        _oper.setElementQName(new javax.xml.namespace.QName("idega:trade", "clearAddressMaps"));
-        _oper.setSoapAction("");
-        _myOperationsList.add(_oper);
-        if (_myOperations.get("clearAddressMaps") == null) {
-            _myOperations.put("clearAddressMaps", new java.util.ArrayList());
-        }
-        ((java.util.List)_myOperations.get("clearAddressMaps")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
@@ -94,12 +80,6 @@ public class TradeServiceSoapBindingSkeleton implements com.idega.block.trade.st
     public java.lang.String invalidateProductCache(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException
     {
         java.lang.String ret = impl.invalidateProductCache(in0, in1);
-        return ret;
-    }
-
-    public java.lang.String clearAddressMaps(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException
-    {
-        java.lang.String ret = impl.clearAddressMaps(in0, in1);
         return ret;
     }
 

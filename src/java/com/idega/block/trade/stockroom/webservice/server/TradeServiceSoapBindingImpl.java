@@ -38,25 +38,6 @@ public class TradeServiceSoapBindingImpl implements com.idega.block.trade.stockr
 		}
 	}
 
-	public java.lang.String clearAddressMaps(java.lang.String productID, java.lang.String remoteCallingHostName) throws java.rmi.RemoteException {
-		ProductBusiness pb;
-		try {
-			pb = (ProductBusiness) IBOLookup.getServiceInstance(IWMainApplication.getDefaultIWApplicationContext(), ProductBusiness.class);
-			//String remoteCallingHostName = com.idega.axis.util.AxisUtil.getHttpServletRequest().getRemoteHost();
-			boolean success = pb.clearAddressMaps(productID, remoteCallingHostName);
-			if(success){
-				return SUCCESS;
-			}
-			else{
-				return FAILED;
-			}
-		}
-		catch (IBOLookupException e) {
-			e.printStackTrace();
-			return "Service failed to decache product = "+productID+". The error message was :"+e.getMessage();
-		}
-	}
-
 	public java.lang.String clearProductCache(java.lang.String supplierID, java.lang.String remoteCallingHostName) throws java.rmi.RemoteException {
 		ProductBusiness pb;
 		try {

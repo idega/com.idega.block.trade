@@ -1,5 +1,5 @@
 /*
- * $Id: StockroomBusiness.java,v 1.48 2006/10/11 21:35:39 gimmi Exp $
+ * $Id: StockroomBusiness.java,v 1.49 2007/04/18 12:22:13 gimmi Exp $
  * Created on 12.5.2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -33,10 +33,10 @@ import com.idega.util.IWTimestamp;
 
 /**
  * 
- *  Last modified: $Date: 2006/10/11 21:35:39 $ by $Author: gimmi $
+ *  Last modified: $Date: 2007/04/18 12:22:13 $ by $Author: gimmi $
  * 
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public interface StockroomBusiness extends IBOService {
 
@@ -167,14 +167,14 @@ public interface StockroomBusiness extends IBOService {
 	 * @see com.idega.block.trade.stockroom.business.StockroomBusinessBean#updateProduct
 	 */
 	public int updateProduct(int productId, int supplierId, Integer fileId, String productName, String number,
-			String productDescription, boolean isValid, int[] addressIds, int discountTypeId) throws Exception,
+			String productDescription, boolean isValid, int discountTypeId) throws Exception,
 			java.rmi.RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.StockroomBusinessBean#createProduct
 	 */
 	public int createProduct(int supplierId, Integer fileId, String productName, String number,
-			String productDescription, boolean isValid, int[] addressIds, int discountTypeId) throws Exception,
+			String productDescription, boolean isValid, int discountTypeId) throws Exception,
 			java.rmi.RemoteException;
 
 	/**

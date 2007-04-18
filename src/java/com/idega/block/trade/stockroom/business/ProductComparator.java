@@ -19,10 +19,8 @@ import com.idega.block.trade.stockroom.data.Product;
 import com.idega.block.trade.stockroom.data.ProductCategory;
 import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.block.trade.stockroom.data.Timeframe;
-import com.idega.block.trade.stockroom.data.TravelAddress;
 import com.idega.business.IBOLookup;
 import com.idega.core.localisation.business.ICLocaleBusiness;
-import com.idega.data.IDOFinderException;
 import com.idega.data.IDORelationshipException;
 import com.idega.presentation.IWContext;
 import com.idega.util.IWTimestamp;
@@ -41,8 +39,6 @@ public class ProductComparator implements Comparator {
 
   public static final int NAME = 1;
   public static final int NUMBER = 2;
-  public static final int DEPARTURETIME = 3;
-  public static final int DEPARTURETIME_NAME = 4;
   public static final int PRICE = 5;
   public static final int CREATION_DATE = 6;
   public static final int SUPPLIER = 7; 
@@ -57,11 +53,9 @@ public class ProductComparator implements Comparator {
   private int currencyId;
   private IWTimestamp time;
   private Collator collator;
-  private ProductBusiness pBus;
   
   public ProductComparator(int toSortBy, Locale locale, ProductBusiness pBus) {
       this.sortBy = toSortBy;
-      this.pBus = pBus;
       this.localeId = ICLocaleBusiness.getLocaleId(locale);
       try {
       		this.collator = Collator.getInstance(locale);
@@ -85,10 +79,6 @@ public class ProductComparator implements Comparator {
           case NAME     : result = nameSort(o1, o2);
           break;
           case NUMBER   : result = numberSort(o1, o2);
-          break;
-          case DEPARTURETIME   : result = departureTimeSort(o1, o2);
-          break;
-          case DEPARTURETIME_NAME   : result = departureTimeNameSort(o1, o2);
           break;
           case PRICE : result = priceSort(o1, o2);
           break;
@@ -156,49 +146,6 @@ public class ProductComparator implements Comparator {
     String two = p2.getNumber()!=null?p2.getNumber():"";
 
     return this.collator.compare(one,two);
-  }
-
-  private int departureTimeNameSort(Object o1, Object o2) throws RemoteException {
-    int result = departureTimeSort(o1, o2);
-    if (result == 0) {
-      return nameSort(o1, o2);
-    }else {
-      return result;
-    }
-  }
-
-  private int departureTimeSort(Object o1, Object o2) {
-    Product p1 = (Product) o1;
-    Product p2 = (Product) o2;
-
-    try {
-    	TravelAddress a1 = this.pBus.getDepartureAddressFirst(p1);
-    	TravelAddress a2 = this.pBus.getDepartureAddressFirst(p2);
-    	if (a1 == null && a2 == null) {
-    		return 0;
-    	} else if (a1 == null) {
-    		return 1;
-    	} else if (a2 == null) {
-    		return -1;
-    	}
-      IWTimestamp s1 = new IWTimestamp(a1.getTime());
-      IWTimestamp s2 = new IWTimestamp(a2.getTime());
-
-      if (s1.isLaterThan(s2)) {
-	return 1;
-      }else if (s2.isLaterThan(s1)){
-	return -1;
-      }else {
-	return 0;
-      }
-    }catch (RemoteException r) {
-      throw new RuntimeException(r.getMessage());
-    }
-	catch (IDOFinderException e) {
-		e.printStackTrace();
-		return 0;
-	}
-
   }
 
   private int priceSort(Object o1, Object o2) {

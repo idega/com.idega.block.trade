@@ -4,7 +4,6 @@ import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +23,6 @@ import com.idega.block.trade.stockroom.data.ProductHome;
 import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.block.trade.stockroom.data.ProductPriceHome;
 import com.idega.block.trade.stockroom.data.Timeframe;
-import com.idega.block.trade.stockroom.data.TravelAddress;
 import com.idega.block.trade.stockroom.presentation.ProductCatalog;
 import com.idega.block.trade.stockroom.webservice.client.TradeService_PortType;
 import com.idega.business.IBOLookup;
@@ -33,14 +31,12 @@ import com.idega.business.IBORuntimeException;
 import com.idega.business.IBOServiceBean;
 import com.idega.core.localisation.business.ICLocaleBusiness;
 import com.idega.core.localisation.presentation.ICLocalePresentation;
-import com.idega.core.location.data.Address;
 import com.idega.data.EntityFinder;
 import com.idega.data.IDOException;
 import com.idega.data.IDOFinderException;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.data.IDORelationshipException;
-import com.idega.data.IDORemoveRelationshipException;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.util.IWTimestamp;
@@ -73,31 +69,31 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   public ProductBusinessBean() {
   }
 
-  public int updateProduct(int productId, int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int[] addressIds, int discountTypeId) throws Exception{
-    return createProduct(productId,supplierId, fileId, productName, number, productDescription, isValid, addressIds, discountTypeId, -1);
+  public int updateProduct(int productId, int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int discountTypeId) throws Exception{
+    return createProduct(productId,supplierId, fileId, productName, number, productDescription, isValid, discountTypeId, -1);
   }
 
   public int updateProduct(int productId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int localeId) throws Exception{
-    return createProduct(productId,-1, fileId, productName, number, productDescription, isValid, null, -1, localeId);
+    return createProduct(productId,-1, fileId, productName, number, productDescription, isValid, -1, localeId);
   }
 
   public int createProduct(Integer fileId, String productName, String number, String productDescription, boolean isValid, int localeId) throws Exception{
-    return createProduct(-1,-1, fileId, productName, number, productDescription, isValid, null, -1, localeId);
+    return createProduct(-1,-1, fileId, productName, number, productDescription, isValid, -1, localeId);
   }
 
   public int createProduct(Integer fileId, String productName, String number, String productDescription, boolean isValid) throws Exception{
-    return createProduct(-1,-1, fileId, productName, number, productDescription, isValid, null, -1, -1);
+    return createProduct(-1,-1, fileId, productName, number, productDescription, isValid, -1, -1);
   }
 
-  public int createProduct(int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int[] addressIds, int discountTypeId) throws Exception{
-    return createProduct(-1,supplierId, fileId, productName, number, productDescription, isValid, addressIds, discountTypeId, -1);
+  public int createProduct(int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int discountTypeId) throws Exception{
+    return createProduct(-1,supplierId, fileId, productName, number, productDescription, isValid, discountTypeId, -1);
   }
 
-  public int createProduct(int productId, int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int[] addressIds, int discountTypeId) throws Exception{
-    return createProduct(productId, supplierId, fileId, productName, number, productDescription, isValid, addressIds, discountTypeId, -1);
+  public int createProduct(int productId, int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int discountTypeId) throws Exception{
+    return createProduct(productId, supplierId, fileId, productName, number, productDescription, isValid, discountTypeId, -1);
   }
 
-  public int createProduct(int productId, int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int[] addressIds, int discountTypeId, int localeId) throws Exception{
+  public int createProduct(int productId, int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int discountTypeId, int localeId) throws Exception{
     Product product= null;
     if (productId == -1) {
       product = getProductHome().create();
@@ -137,56 +133,9 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
       product.setProductDescription(localeId, productDescription);
     }
 
-    product.addTravelAddresses(addressIds);
-    clearAddressMaps(product.getPrimaryKey().toString());
 	  invalidateProductCache(product.getPrimaryKey().toString());
     clearProductCache(Integer.toString(supplierId));
     return ((Integer) product.getPrimaryKey()).intValue();
-  }
-  
-  public boolean clearAddressMaps(String productID, String remoteDomainToExclude) {
-    this.productDepartureAddresses.put(productID+false, null); 
-    this.productDepartureAddresses.put(productID+true, null); 
-    this.productDepartureAddresses2 = new HashMap();
-    System.out.println("[ProductBusiness] clearingAddressMaps for product "+productID);
-    try {
-		Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
-		Iterator iter = coll.iterator();
-		while (iter.hasNext()) {
-			((TradeService_PortType) iter.next()).clearAddressMaps(productID, remoteDomainToExclude);
-		}
-	} catch (RemoteException e) {
-		e.printStackTrace();
-	} catch (MalformedURLException e) {
-		e.printStackTrace();
-	} catch (ServiceException e) {
-		e.printStackTrace();
-	}
-
-	return true;
-  }
-  
-  private boolean clearAddressMaps(String productID) {
-	  return clearAddressMaps(productID, null);
-  }
-
-  public void addTravelAddress(Product product, TravelAddress travelAddress) {
-	  product.addTravelAddress(travelAddress);
-	  clearAddressMaps(product.getPrimaryKey().toString());
-  }
-  
-  public void addArrivalAddress(Product product, Address address) {
-	  product.addArrivalAddress(address);
-  }
-  
-  public void removeTravelAddress(Product product, TravelAddress travelAddress) throws IDORemoveRelationshipException {
-	  product.removeTravelAddress(travelAddress);
-	  clearAddressMaps(product.getPrimaryKey().toString());
-  }
-  
-  public void removeAllTravelAddresses(Product product) throws IDORemoveRelationshipException {
-	  product.removeAllFrom(TravelAddress.class);
-	  clearAddressMaps(product.getPrimaryKey().toString());
   }
   
   public String getProductIdParameter() {
@@ -516,126 +465,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
     return returner;
   }
   
-  public List getDepartureAddresses(Product product, IWTimestamp stamp, boolean ordered) throws RemoteException, FinderException  {
-  		return getDepartureAddresses(product, stamp, ordered, null);
-  }
-  
-  public List getDepartureAddresses(Product product, IWTimestamp stamp, boolean ordered, String key) throws RemoteException, FinderException  {
-  	return getDepartureAddresses(product, stamp, ordered, key, null);
-  } 
-  
-  private HashMap productDepartureAddresses = new HashMap();
-  private HashMap productDepartureAddresses2 = new HashMap();
 
-  public List getDepartureAddresses(Product product, IWTimestamp stamp, boolean ordered, String key, Timeframe[] timeframes) throws RemoteException, FinderException  {
-
-		String tFramesString = null;
-		if (timeframes != null) {
-			for (int i = 0; i < timeframes.length; i++) {
-				tFramesString += timeframes[i].getPrimaryKey().toString();
-			}
-		}
-		
-		String mapKey = product.getPrimaryKey().toString()+stamp.toSQLDateString()+ordered+key+tFramesString;
-		List returner = (List) this.productDepartureAddresses2.get(mapKey);
-		
-//		Collection pPrices;
-		if (returner == null) {
-			returner = new Vector();
-			List list = getDepartureAddresses(product, ordered);
-			TravelAddress ta;
-			boolean add = false;
-			if (list != null && !list.isEmpty()) {
-				if (timeframes == null) {
-					try {
-						timeframes = getTimeframes(product);
-					}
-					catch (SQLException e) {
-						throw new FinderException(e.getMessage());
-					}
-				}
-				Iterator iter = list.iterator();
-				while (iter.hasNext()) {
-					ta = (TravelAddress) iter.next();
-					add = false;
-					for (int i = 0; i < timeframes.length; i++) {
-//						Timer t2 = new Timer();
-						if (getStockroomBusiness().isInTimeframe(new IWTimestamp(timeframes[i].getFrom()), new IWTimestamp(timeframes[i].getTo()), stamp, timeframes[i].getYearly())) {
-							try {
-//								t2.start();
-								boolean b = getProductPriceHome().hasProductPrices(product.getID(), timeframes[i].getID(), ta.getID(), false, key);
-//								t2.stop();
-//								System.out.println("[ProductBusinessBean] check B : " +t2.getTimeString());
-								if (b) {
-//									if (key == null) {
-//									pPrices = getProductPriceHome().findProductPrices(product.getID(), timeframes[i].getID(), ta.getID(), false);
-//									} else {
-//									pPrices = getProductPriceHome().findProductPrices(product.getID(), timeframes[i].getID(), ta.getID(), false, key);
-//									}
-//									
-//									if (pPrices != null && !pPrices.isEmpty()) {
-									add = true;
-									break;
-								}
-							}
-							catch (IDOException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-					if (add) {
-						returner.add(ta);	
-					}
-				}
-			}
-			this.productDepartureAddresses2.put(mapKey, returner);
-		}
-		return returner;
-  }
-
-  public TravelAddress getDepartureAddressFirst(Product product) throws RemoteException, IDOFinderException {
-	  List list = getDepartureAddresses(product, true);
-	  if (list != null && !list.isEmpty()) {
-		  return (TravelAddress) list.get(0);
-	  }
-	  return null;
-  }
-  
-  public List getDepartureAddresses(Product product, boolean ordered) throws RemoteException, IDOFinderException  {
-	  List list  = (List) this.productDepartureAddresses.get(product.getPrimaryKey().toString()+ordered);
-	  if (list == null) {
-		  list = product.getDepartureAddresses(ordered);
-		  if (ordered) {
-			  Collections.sort(list, new TravelAddressComparator(TravelAddressComparator.TIME));
-		  }
-		  this.productDepartureAddresses.put(product.getPrimaryKey().toString()+ordered, list);
-	  }
-	  return list;
-  }
-
-  public TravelAddress getDepartureAddress(Product product) throws RemoteException, IDOFinderException, SQLException{
-      List tempAddresses = getDepartureAddresses(product, false);
-//      List tempAddresses = product.getDepartureAddresses(false);
-      if (tempAddresses.size() > 0) {
-	return ((com.idega.block.trade.stockroom.data.TravelAddressHome)com.idega.data.IDOLookup.getHomeLegacy(TravelAddress.class)).findByPrimaryKeyLegacy(((TravelAddress)tempAddresses.get(0)).getID() );
-      }else {
-	return null;
-      }
-  }
-  public Address[] getArrivalAddresses(Product product) throws RemoteException, IDOFinderException {
-    List addresses = product.getArrivalAddresses();
-    return ( (Address[]) addresses.toArray(new Address[]{}) );
-//    return (Address[]) (product.findRelated( (Address) com.idega.core.data.AddressBMPBean.getStaticInstance(Address.class), com.idega.core.data.AddressBMPBean.getColumnNameAddressTypeId(), Integer.toString(com.idega.core.data.AddressTypeBMPBean.getId(uniqueArrivalAddressType))));
-  }
-
-  public Address getArrivalAddress(Product product) throws RemoteException, IDOFinderException, SQLException{
-    Address[] tempAddresses = getArrivalAddresses(product);
-    if (tempAddresses.length > 0) {
-      return ((com.idega.core.location.data.AddressHome)com.idega.data.IDOLookup.getHomeLegacy(Address.class)).findByPrimaryKeyLegacy(tempAddresses[0].getID());
-    }else {
-      return null;
-    }
-  }
 
   public DropdownMenu getDropdownMenuWithProducts(IWContext iwc, int supplierId) throws RemoteException {
     return getDropdownMenuWithProducts(iwc, supplierId, com.idega.block.trade.stockroom.data.ProductBMPBean.getProductEntityName());

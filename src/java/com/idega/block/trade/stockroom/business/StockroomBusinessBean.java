@@ -539,12 +539,12 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
     */
   }
 
-  public  int updateProduct(int productId, int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int[] addressIds, int discountTypeId) throws Exception{
-    return getProductBusiness().createProduct(productId,supplierId, fileId, productName, number, productDescription, isValid, addressIds, discountTypeId);
+  public  int updateProduct(int productId, int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int discountTypeId) throws Exception{
+    return getProductBusiness().createProduct(productId,supplierId, fileId, productName, number, productDescription, isValid, discountTypeId);
   }
 
-  public  int createProduct(int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int[] addressIds, int discountTypeId) throws Exception{
-    return getProductBusiness().createProduct(-1,supplierId, fileId, productName, number, productDescription, isValid, addressIds, discountTypeId);
+  public  int createProduct(int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int discountTypeId) throws Exception{
+    return getProductBusiness().createProduct(-1,supplierId, fileId, productName, number, productDescription, isValid, discountTypeId);
   }
 
   private ProductBusiness getProductBusiness() throws RemoteException {

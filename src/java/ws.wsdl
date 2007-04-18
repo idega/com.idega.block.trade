@@ -29,14 +29,6 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="clearAddressMapsRequest">
-
-      <wsdl:part name="in0" type="soapenc:string"/>
-
-      <wsdl:part name="in1" type="soapenc:string"/>
-
-   </wsdl:message>
-
    <wsdl:message name="invalidatePriceCacheRequest">
 
       <wsdl:part name="in0" type="soapenc:string"/>
@@ -53,12 +45,6 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="clearAddressMapsResponse">
-
-      <wsdl:part name="clearAddressMapsReturn" type="soapenc:string"/>
-
-   </wsdl:message>
-
    <wsdl:portType name="TradeService">
 
       <wsdl:operation name="invalidateProductCache" parameterOrder="in0 in1">
@@ -66,14 +52,6 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
          <wsdl:input message="impl:invalidateProductCacheRequest" name="invalidateProductCacheRequest"/>
 
          <wsdl:output message="impl:invalidateProductCacheResponse" name="invalidateProductCacheResponse"/>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="clearAddressMaps" parameterOrder="in0 in1">
-
-         <wsdl:input message="impl:clearAddressMapsRequest" name="clearAddressMapsRequest"/>
-
-         <wsdl:output message="impl:clearAddressMapsResponse" name="clearAddressMapsResponse"/>
 
       </wsdl:operation>
 
@@ -110,24 +88,6 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
          </wsdl:input>
 
          <wsdl:output name="invalidateProductCacheResponse">
-
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="idega:trade" use="encoded"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
-      <wsdl:operation name="clearAddressMaps">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="clearAddressMapsRequest">
-
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="idega:trade" use="encoded"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="clearAddressMapsResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="idega:trade" use="encoded"/>
 

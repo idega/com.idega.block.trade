@@ -9,7 +9,6 @@ package com.idega.block.trade.stockroom.webservice.server;
 
 public interface TradeService_PortType extends java.rmi.Remote {
     public java.lang.String invalidateProductCache(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException;
-    public java.lang.String clearAddressMaps(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException;
     public java.lang.String clearProductCache(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException;
     public java.lang.String invalidatePriceCache(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException;
 }
