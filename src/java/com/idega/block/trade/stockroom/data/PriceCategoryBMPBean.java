@@ -21,7 +21,7 @@ import com.idega.data.query.WildCardColumn;
  * Description:
  * Copyright:    Copyright (c) 2001
  * Company:      idega.is
- * @author 2000 - idega team - <br><a href="mailto:gummi@idega.is">Guðmundur Ágúst Sæmundsson</a><br><a href="mailto:gimmi@idega.is">Grímur Jónsson</a>
+ * @author 2000 - idega team - <br><a href="mailto:gummi@idega.is">Guï¿½mundur ï¿½gï¿½st Sï¿½mundsson</a><br><a href="mailto:gimmi@idega.is">Grï¿½mur Jï¿½nsson</a>
  * @version 1.0
  */
 
@@ -50,10 +50,10 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
   public void initializeAttributes(){
     addAttribute(getIDColumnName());
     addAttribute(getColumnNameName(), "Name", true, true, String.class, 255);
-    addAttribute(getColumnNameDescription(), "Lýsing", true, true, String.class, 255);
+    addAttribute(getColumnNameDescription(), "Lysing", true, true, String.class, 255);
     addAttribute(getColumnNameType(),"Type",true,true,String.class,255);
-    addAttribute(getColumnNameExtraInfo(), "Aðrar upplysingar", true, true, String.class, 255);
-    addAttribute(getColumnNameNetbookingCategory(), "Verðflokkur fyrir netbókun", true, true, Boolean.class, 255);
+    addAttribute(getColumnNameExtraInfo(), "Adrar upplysingar", true, true, String.class, 255);
+    addAttribute(getColumnNameNetbookingCategory(), "Verdflokkur fyrir netbokun", true, true, Boolean.class, 255);
     addAttribute(getColumnNameSupplierId(),"supplier_id (owner)", true, true, Integer.class, "many_to_one", Supplier.class);
     addAttribute(getColumnNameParentId(),"parent_id", true, true, Integer.class, "many_to_one", PriceCategory.class);
     addAttribute(getColumnNameIsValid(), "is valid", true, true, Boolean.class);
@@ -74,6 +74,10 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
     addIndex("IDX_PRICECAT_3", new String[]{getIDColumnName(), getColumnNameType(), getColumnNameIsValid(), getColumnNameParentId()});
     addIndex(getColumnNameType());
     addIndex("IDX_PRICECAT_5", new String[]{getColumnNameType(), getColumnNameIsValid()});
+
+	getEntityDefinition().setBeanCachingActiveByDefault(true,true);
+//	getEntityDefinition().setUseFinderCollectionPrefetch(true);
+
   }
 
   public void delete() {

@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.12 2007/04/18 04:02:13 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.13 2007/04/23 15:53:14 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -47,6 +47,7 @@ import com.idega.util.IWTimestamp;
 public class ProductPriceBusinessBean extends IBOServiceBean  implements ProductPriceBusiness{
 
 	private HashMap mapForProductPriceMap = new HashMap();
+	private HashMap mapForMiscellaniousPriceMap = new HashMap();
 
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int[] visibility, IWTimestamp date) throws FinderException {
 		return getProductPrices(productId, timeframeId, addressId, -1, visibility, null, date);
@@ -79,10 +80,11 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			}
 		}
 		boolean lookForDate = false;
-		String mapKey = productId+"_"+timeframeId+"_"+addressId+"_"+currencyId+"_"+visString+"_"+key;
-		String mapDateKey = mapKey;
+		StringBuffer mapKey = new StringBuffer(productId).append("_").append(timeframeId).append("_").append(addressId).append("_").append(currencyId).
+		append("_").append(visString).append("_").append(key);
+		StringBuffer mapDateKey = mapKey;
 		if (date != null) {
-			mapDateKey += "_"+date.toSQLDateString();
+			mapDateKey.append("_").append(date.toSQLDateString());
 			lookForDate = true;
 		}
 
@@ -165,6 +167,15 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return t;
 	}
 
+	private HashMap getMiscMapForProduct(Object productID) {
+		HashMap t = (HashMap) this.mapForMiscellaniousPriceMap.get(productID);
+		if (t == null) {
+			t = new HashMap();
+			mapForMiscellaniousPriceMap.put(productID, t);
+		}
+		return t;
+	}
+	
 	public boolean invalidateCache(PriceCategory cat) {
 		try {
 			ProductHome pHome = (ProductHome) IDOLookup.getHome(Product.class);
@@ -258,6 +269,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) {
 		this.mapForProductPriceMap.put(new Integer(productID), null);
+		this.mapForMiscellaniousPriceMap.put(new Integer(productID), null);
 
 		System.out.println("[ProductPriceBusiness] invalidateCache for product "+productID);
 		try {
@@ -291,11 +303,23 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	}
 
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly) throws FinderException {
-		return getProductPriceHome().findMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1);
+		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1);
+//		return getProductPriceHome().findMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1);
 	}
 
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId) throws FinderException {
-		return getProductPriceHome().findProductPrices(productId, timeframeId, addressId, netBookingOnly, 1, currencyId, null);
+		StringBuffer key = new StringBuffer(productId).append("_").append(timeframeId).append("_").append(addressId)
+		.append("_").append(netBookingOnly).append("_").append(currencyId);
+		
+		Integer pk = new Integer(productId);
+		HashMap miscmap = getMiscMapForProduct(pk);
+		Collection coll = (Collection) miscmap.get(key.toString());
+		if (coll == null) {
+			coll = getProductPriceHome().findMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, currencyId);
+			miscmap.put(key.toString(), coll);
+		}
+		return coll;
+//		return getProductPriceHome().findProductPrices(productId, timeframeId, addressId, netBookingOnly, 1, currencyId, null);
 	}
 
 	protected StockroomBusiness getStockroomBusiness() {
