@@ -5,7 +5,7 @@
   <pomVersion>3</pomVersion>
   <name>idegaWeb Trade Block</name>
   <artifactId>com.idega.block.trade</artifactId>
-  <currentVersion>3.1.13</currentVersion>
+  <currentVersion>3.1.14</currentVersion>
   <versions>
     <version>
       <id>1.0</id>
@@ -86,6 +86,11 @@
       <id>3.1.13</id>
       <name>3.1.13</name>
       <tag>TRADE_3_1_13</tag>
+    </version>
+    <version>
+      <id>3.1.14</id>
+      <name>3.1.14</name>
+      <tag>TRADE_3_1_14</tag>
     </version>
   </versions>
   <branches/>

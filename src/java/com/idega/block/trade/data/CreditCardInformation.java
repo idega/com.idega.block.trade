@@ -1,12 +1,9 @@
 package com.idega.block.trade.data;
 
-import com.idega.data.IDOEntity;
+
 import com.idega.user.data.Group;
+import com.idega.data.IDOEntity;
 
-
-/**
- * @author gimmi
- */
 public interface CreditCardInformation extends IDOEntity {
 
 	/**

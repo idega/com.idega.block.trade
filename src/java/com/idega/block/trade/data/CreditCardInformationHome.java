@@ -1,22 +1,19 @@
 package com.idega.block.trade.data;
 
-import java.util.Collection;
-import javax.ejb.FinderException;
-import com.idega.data.IDOHome;
+
 import com.idega.user.data.Group;
+import java.util.Collection;
+import javax.ejb.CreateException;
+import com.idega.data.IDOHome;
+import javax.ejb.FinderException;
 
-
-/**
- * @author gimmi
- */
 public interface CreditCardInformationHome extends IDOHome {
 
-	public CreditCardInformation create() throws javax.ejb.CreateException;
+	public CreditCardInformation create() throws CreateException;
 
-	public CreditCardInformation findByPrimaryKey(Object pk) throws javax.ejb.FinderException;
+	public CreditCardInformation findByPrimaryKey(Object pk) throws FinderException;
 
-	/**
-	 * @see com.idega.block.trade.data.CreditCardInformationBMPBean#ejbFindBySupplierManager
-	 */
+	public CreditCardInformation findByMerchant(String merchantPK, String merchantType) throws FinderException;
+
 	public Collection findBySupplierManager(Group supplierManager) throws FinderException;
 }
