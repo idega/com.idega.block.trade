@@ -7,6 +7,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -101,6 +102,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
         ProductPrice pPrice = ((com.idega.block.trade.stockroom.data.ProductPriceHome)com.idega.data.IDOLookup.getHome(ProductPrice.class)).findByPrimaryKey(new Integer(productPriceIdToReplace));
           pPrice.invalidate();
           pPrice.store();
+          getPriceMap(productId).clear();
     }
 
     return setPrice(productId, priceCategoryId, currencyId, time, price, priceType, timeframeId, addressId, maxUsage, null);
@@ -130,6 +132,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 		  prPrice.addTravelAddress(new Integer(addressId));
 	  }
 	  getProductPriceBusiness().invalidateCache(Integer.toString(productId));
+      getPriceMap(productId).clear();
 	  return prPrice;
   }
 
@@ -193,136 +196,177 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 		  return 0;
 	  }
   
-	  public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
-    /**@todo: Implement this com.idega.block.trade.stockroom.business.SupplyManager method*/
-    /*skila ver�i ef PRICETYPE_PRICE annars ver�i me� tilliti til afsl�ttar*/
+  	private HashMap priceMap = null;
+  	
+  	private HashMap getPriceMap(int productId) {
+  		if (priceMap == null) {
+  			priceMap = new HashMap();
+  		}
+  		
+  		HashMap pMap = (HashMap) priceMap.get(new Integer(productId));
+  		if (pMap == null) {
+  			pMap = new HashMap();
+  	  		priceMap.put(new Integer(productId), pMap);
+  		}
+  		
+  		return pMap;
+  		
+  	}
+  	
 
-  	try {
-        PriceCategory cat = ((com.idega.block.trade.stockroom.data.PriceCategoryHome)com.idega.data.IDOLookup.getHomeLegacy(PriceCategory.class)).findByPrimaryKeyLegacy(priceCategoryId);
-        ProductPrice ppr = ((ProductPrice)GenericEntity.getStaticInstanceIDO(ProductPrice.class));
-        TravelAddress taddr = ((TravelAddress) GenericEntity.getStaticInstance(TravelAddress.class));
-        Timeframe tfr = ((Timeframe) GenericEntity.getStaticInstance(Timeframe.class));
-        String addrTable = EntityControl.getManyToManyRelationShipTableName(TravelAddress.class, ProductPrice.class);
-        String tfrTable = EntityControl.getManyToManyRelationShipTableName(Timeframe.class, ProductPrice.class);
-		String ppColName = ppr.getEntityDefinition().getPrimaryKeyDefinition().getField().getSQLFieldName();
-		String ppTable = ppr.getEntityDefinition().getSQLTableName();
-		
-        if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_PRICE)){
-          StringBuffer buffer = new StringBuffer();
-            buffer.append("select p.* from "+ppTable+" p");
-            if (timeframeId != -1) {
-              buffer.append(",  "+tfrTable+" tm");
-            }
-            if (addressId != -1) {
-              buffer.append(", "+addrTable+" am");
-            }
-            buffer.append(" where ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameProductId()+" = "+productId);
+  	public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
+  		StringBuffer keyb = new StringBuffer("");
+  		keyb.append(productPriceId).append("_").append(priceCategoryId).append("_").append(currencyId)
+  		.append("_").append(timeframeId).append("_").append(addressId);
+  		if (time != null) {
+  			IWTimestamp stamp = new IWTimestamp(time);
+  			keyb.append("_").append(stamp.toSQLDateString());
+  		}
+  		String key = keyb.toString();
+//  		getPriceMap(productId).clear();
+  		HashMap produPriceMap = getPriceMap(productId);
+  		Object returner = produPriceMap.get(key);
 
-            if (timeframeId != -1) {
-              buffer.append(" and ");
-              buffer.append("tm."+tfr.getIDColumnName()+" = "+timeframeId);
-              buffer.append(" and ");
-              buffer.append("p."+ppColName+" = tm."+ppColName);
-            }
-            if (addressId != -1) {
-              buffer.append(" and ");
-              buffer.append("am."+taddr.getIDColumnName()+" = "+addressId);
-              buffer.append(" and ");
-              buffer.append("p."+ppColName+" = am."+ppColName);
-            }
+  		if (returner == null) {
+  			try {
+  				PriceCategory cat = ((com.idega.block.trade.stockroom.data.PriceCategoryHome)com.idega.data.IDOLookup.getHomeLegacy(PriceCategory.class)).findByPrimaryKeyLegacy(priceCategoryId);
+  				ProductPrice ppr = ((ProductPrice)GenericEntity.getStaticInstanceIDO(ProductPrice.class));
+  				TravelAddress taddr = ((TravelAddress) GenericEntity.getStaticInstance(TravelAddress.class));
+  				Timeframe tfr = ((Timeframe) GenericEntity.getStaticInstance(Timeframe.class));
+  				String addrTable = EntityControl.getManyToManyRelationShipTableName(TravelAddress.class, ProductPrice.class);
+  				String tfrTable = EntityControl.getManyToManyRelationShipTableName(Timeframe.class, ProductPrice.class);
+  				String ppColName = ppr.getEntityDefinition().getPrimaryKeyDefinition().getField().getSQLFieldName();
+  				String ppTable = ppr.getEntityDefinition().getSQLTableName();
 
-            if (productPriceId != -1) {
-              buffer.append(" and ");
-              buffer.append("p."+ppColName+" = "+productPriceId);
-            }
-            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceCategoryId()+" = "+priceCategoryId);
-            buffer.append(" and ");
-            IWTimestamp stamp = new IWTimestamp(time);
-//            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameCurrencyId()+" = "+currencyId);
-//            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" <= '"+stamp.toSQLString(false)+"'");
-            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+" = "+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.PRICETYPE_PRICE);
-            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameCurrencyId()+" = "+currencyId);
-            //buffer.append(" and ");
-            //buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameIsValid()+" = 'Y'");
-            buffer.append(" order by p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+ " desc");
-//          List result = EntityFinder.findAll(ppr,buffer.toString());
-//          List result = EntityFinder.findAll(ppr,buffer.toString());
-	  ProductPriceHome ppHome = (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);
-	  Collection result = ppHome.findBySQL(buffer.toString());
-	
-          if(result != null && result.size() > 0){
-			  Iterator iter = result.iterator();
-			  ProductPrice price = (ProductPrice) iter.next();
-			  return price;
-          }else{
-//        	  System.err.println(buffer.toString());
-            throw new ProductPriceException("No Price Was Found");
-          }
-        }else if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT)){
-          StringBuffer buffer = new StringBuffer();
-            buffer.append("select p.* from "+ppTable+" p");
-            if (timeframeId != -1) {
-              buffer.append(",  "+tfrTable+" tm");
-            }
-            if (addressId != -1) {
-              buffer.append(", "+addrTable+" am");
-            }
-            buffer.append(" where ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameProductId()+" = "+productId);
+  				if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_PRICE)){
+  					StringBuffer buffer = new StringBuffer();
+  					buffer.append("select p.* from "+ppTable+" p");
+  					if (timeframeId != -1) {
+  						buffer.append(",  "+tfrTable+" tm");
+  					}
+  					if (addressId != -1) {
+  						buffer.append(", "+addrTable+" am");
+  					}
+  					buffer.append(" where ");
+  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameProductId()+" = "+productId);
 
-            if (timeframeId != -1) {
-              buffer.append(" and ");
-              buffer.append("tm."+tfr.getIDColumnName()+" = "+timeframeId);
-              buffer.append(" and ");
-              buffer.append("p."+ppColName+" = tm."+ppColName);
-            }
-            if (addressId != -1) {
-              buffer.append(" and ");
-              buffer.append("am."+taddr.getIDColumnName()+" = "+addressId);
-              buffer.append(" and ");
-              buffer.append("p."+ppColName+" = am."+ppColName);
-            }
+  					if (timeframeId != -1) {
+  						buffer.append(" and ");
+  						buffer.append("tm."+tfr.getIDColumnName()+" = "+timeframeId);
+  						buffer.append(" and ");
+  						buffer.append("p."+ppColName+" = tm."+ppColName);
+  					}
+  					if (addressId != -1) {
+  						buffer.append(" and ");
+  						buffer.append("am."+taddr.getIDColumnName()+" = "+addressId);
+  						buffer.append(" and ");
+  						buffer.append("p."+ppColName+" = am."+ppColName);
+  					}
 
-            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceCategoryId()+" = "+priceCategoryId);
-            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" < '"+time.toString()+"'");
-            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+" = "+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.PRICETYPE_DISCOUNT);
-            buffer.append(" and ");
-            buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameCurrencyId()+" = "+currencyId);
-            //buffer.append(" and ");
-            //buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameIsValid()+" = 'Y'");
-            buffer.append(" order by p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+ " desc");
-			  ProductPriceHome ppHome = (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);
-			  Collection result = ppHome.findBySQL(buffer.toString());
-//          List result = EntityFinder.findAll(ppr,buffer.toString());
-          if(result != null && result.size() > 0){
-			  Iterator iter = result.iterator();
-			  ProductPrice price = (ProductPrice) iter.next();
-			  return price;
-          }
-          
-        }else{
-          throw new ProductPriceException("No Price Was Found");
-        }
-    }
-	catch (FinderException e) {
-	      e.printStackTrace(System.err);
-		  return null;
-	}
-	catch (IDOCompositePrimaryKeyException e) {
-	      e.printStackTrace(System.err);
-		  return null;
-	}
-	return null;
+  					if (productPriceId != -1) {
+  						buffer.append(" and ");
+  						buffer.append("p."+ppColName+" = "+productPriceId);
+  					}
+  					buffer.append(" and ");
+  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceCategoryId()+" = "+priceCategoryId);
+  					buffer.append(" and ");
+  					IWTimestamp stamp = new IWTimestamp(time);
+//					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameCurrencyId()+" = "+currencyId);
+//					buffer.append(" and ");
+  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" <= '"+stamp.toSQLString(false)+"'");
+  					buffer.append(" and ");
+  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+" = "+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.PRICETYPE_PRICE);
+  					buffer.append(" and ");
+  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameCurrencyId()+" = "+currencyId);
+  					//buffer.append(" and ");
+  					//buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameIsValid()+" = 'Y'");
+  					buffer.append(" order by p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+ " desc");
+//					List result = EntityFinder.findAll(ppr,buffer.toString());
+//					List result = EntityFinder.findAll(ppr,buffer.toString());
+  					ProductPriceHome ppHome = (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);
+  					Collection result = ppHome.findBySQL(buffer.toString());
 
-  }
+  					if(result != null && result.size() > 0){
+  						Iterator iter = result.iterator();
+  						ProductPrice price = (ProductPrice) iter.next();
+  			  			System.out.println("[StockroomBusiness] putting key = "+key+" as "+price);
+  						getPriceMap(productId).put(key, price);
+  						returner = price;
+  					}else{
+  						getPriceMap(productId).put(key, "no_price");
+  					}
+  				}else if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT)){
+  					StringBuffer buffer = new StringBuffer();
+  					buffer.append("select p.* from "+ppTable+" p");
+  					if (timeframeId != -1) {
+  						buffer.append(",  "+tfrTable+" tm");
+  					}
+  					if (addressId != -1) {
+  						buffer.append(", "+addrTable+" am");
+  					}
+  					buffer.append(" where ");
+  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameProductId()+" = "+productId);
+
+  					if (timeframeId != -1) {
+  						buffer.append(" and ");
+  						buffer.append("tm."+tfr.getIDColumnName()+" = "+timeframeId);
+  						buffer.append(" and ");
+  						buffer.append("p."+ppColName+" = tm."+ppColName);
+  					}
+  					if (addressId != -1) {
+  						buffer.append(" and ");
+  						buffer.append("am."+taddr.getIDColumnName()+" = "+addressId);
+  						buffer.append(" and ");
+  						buffer.append("p."+ppColName+" = am."+ppColName);
+  					}
+
+  					buffer.append(" and ");
+  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceCategoryId()+" = "+priceCategoryId);
+  					buffer.append(" and ");
+  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" < '"+time.toString()+"'");
+  					buffer.append(" and ");
+  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+" = "+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.PRICETYPE_DISCOUNT);
+  					buffer.append(" and ");
+  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameCurrencyId()+" = "+currencyId);
+  					//buffer.append(" and ");
+  					//buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameIsValid()+" = 'Y'");
+  					buffer.append(" order by p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+ " desc");
+  					ProductPriceHome ppHome = (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);
+  					Collection result = ppHome.findBySQL(buffer.toString());
+//					List result = EntityFinder.findAll(ppr,buffer.toString());
+  					if(result != null && result.size() > 0){
+  						Iterator iter = result.iterator();
+  						ProductPrice price = (ProductPrice) iter.next();
+  						returner = price;
+  						getPriceMap(productId).put(key, price);
+  					}
+
+  				}else{
+  					getPriceMap(productId).put(key, "no_price");
+  				}
+  			}
+  			catch (FinderException e) {
+  				e.printStackTrace(System.err);
+  				returner = null;
+  			}
+  			catch (IDOCompositePrimaryKeyException e) {
+  				e.printStackTrace(System.err);
+  				returner = null;
+  			}
+  		}
+
+  		if (returner != null){
+  			if (returner instanceof ProductPrice) {
+  				return (ProductPrice) returner;
+  			} else if (returner instanceof String) {
+				throw new ProductPriceException("No Price Was Found");
+  			}
+  		} else {
+			throw new ProductPriceException("No Price Was Found");
+  		}
+		return null;
+			 
+  	}
 
 
   /**
