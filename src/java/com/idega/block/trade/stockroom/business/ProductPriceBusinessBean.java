@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.13 2007/04/23 15:53:14 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.14 2007/05/03 20:37:28 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -204,6 +204,13 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	public Collection getGroupedCategories(ProductPrice price) throws RemoteException {
 		PriceCategory cat = price.getPriceCategory();
 		Collection cats = getGroupedCategories(cat);
+		
+		Object pk = price.getPrimaryKey();
+		
+		if (priceGroupedCats.containsKey(pk)) {
+			return (Collection) priceGroupedCats.get(pk);
+		}
+		
 		Vector v = new Vector();
 
 		if (cats != null && !cats.isEmpty()) {
@@ -235,7 +242,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 					getStockroomBusiness().getPrice(pp, IWTimestamp.getTimestampRightNow(), timeframeID, addressID);
 					v.add(pCat);
 				} catch (ProductPriceException  p) {
-//					System.out.println("[ProductPriceBusiness] Did not find price for the connected category");
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -245,19 +251,37 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			v= null;
 		}
 
+		priceGroupedCats.put(pk, v);
+		
 		return v;
 	}
+	
+	private HashMap groupedCats = new HashMap();
+	private HashMap priceGroupedCats = new HashMap();
+		
 	public Collection getGroupedCategories(PriceCategory category) {
+		Object pk = category.getPrimaryKey();
+		if (groupedCats.containsKey(pk)) {
+			return (Collection) groupedCats.get(pk);
+		} 
+
 		try {
 			Collection coll = getPriceCategoryHome().findGroupedCategories(category);
 			if (coll != null && coll.size() <= 1) {
+				groupedCats.put(pk, null);
 				return null;
 			}
+			groupedCats.put(pk, coll);
 			return coll;
 		} catch (FinderException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public void clearGroupedCategoriesCache() {
+		groupedCats.clear();
+		priceGroupedCats.clear();
 	}
 	public PriceCategoryHome getPriceCategoryHome() {
 		try {

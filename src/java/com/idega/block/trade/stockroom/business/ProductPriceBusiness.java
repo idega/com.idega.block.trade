@@ -57,6 +57,7 @@ public interface ProductPriceBusiness extends IBOService {
 	 */
 	public Collection getGroupedCategories(ProductPrice price) throws RemoteException;
 	public Collection getGroupedCategories(PriceCategory category) throws RemoteException;
+	public void clearGroupedCategoriesCache();
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#invalidateCache
