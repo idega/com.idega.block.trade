@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.14 2007/05/03 20:37:28 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.15 2007/05/04 11:28:19 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -111,7 +111,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			prices = (Collection) priceMap.get(mapKey);
 		}
 
-		prices = null;
 		if (prices == null || lookForDate) {
 			Collection tmp = null;
 			if (prices != null) {
