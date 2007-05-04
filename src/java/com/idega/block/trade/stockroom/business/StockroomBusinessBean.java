@@ -289,7 +289,6 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   					if(result != null && result.size() > 0){
   						Iterator iter = result.iterator();
   						ProductPrice price = (ProductPrice) iter.next();
-  			  			System.out.println("[StockroomBusiness] putting key = "+key+" as "+price);
   						getPriceMap(productId).put(key, price);
   						returner = price;
   					}else{
