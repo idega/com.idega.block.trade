@@ -11,7 +11,7 @@ import com.idega.util.LocaleUtil;
  * Description:
  * Copyright:    Copyright (c) 2001
  * Company:      idega.is
- * @author 2000 - idega team - <br><a href="mailto:gummi@idega.is">Guðmundur Ágúst Sæmundsson</a><br><a href="mailto:gimmi@idega.is">Grímur Jónsson</a>
+ * @author 2000 - idega team - <br><a href="mailto:gummi@idega.is">Gudmundur Agust Saemundsson</a><br><a href="mailto:gimmi@idega.is">Grimur Jonsson</a>
  * @version 1.0
  */
 
@@ -30,8 +30,8 @@ public class TimeframeBMPBean extends com.idega.data.GenericEntity implements co
     addAttribute(getIDColumnName());
     addAttribute(getNameColumnName(), "Name", true, true, String.class, 255);
     addAttribute(getTimeframeToColumnName(), "Til", true, true, java.sql.Timestamp.class);
-    addAttribute(getTimeframeFromColumnName(), "Frá", true, true, java.sql.Timestamp.class);
-    addAttribute(getYearlyColumnName(), "Árlegt", true, true, Boolean.class);
+    addAttribute(getTimeframeFromColumnName(), "Fra", true, true, java.sql.Timestamp.class);
+    addAttribute(getYearlyColumnName(), "Arlegt", true, true, Boolean.class);
 
     this.addManyToManyRelationShip( Product.class, "SR_PRODUCT_TIMEFRAME" );
   }

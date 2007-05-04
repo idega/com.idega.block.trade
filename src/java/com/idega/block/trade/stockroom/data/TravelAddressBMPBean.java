@@ -11,7 +11,7 @@ import com.idega.util.text.TextSoap;
  * Description:
  * Copyright:    Copyright (c) 2001
  * Company:      idega.is
- * @author 2002 - <a href="mailto:gimmi@idega.is">Grímur Jónsson</a>
+ * @author 2002 - <a href="mailto:gimmi@idega.is">Grimur Jonsson</a>
  * @version 1.0
  */
 
@@ -32,8 +32,8 @@ public class TravelAddressBMPBean extends com.idega.data.GenericEntity implement
     this.addAttribute(getIDColumnName());
 //    this.addAttribute(getColumnNameAddressId(), "addressId", true, true, Integer.class);
     this.addAttribute(getColumnNameTime(), "time", true, true, Timestamp.class);
-    this.addAttribute(getColumnNameAddressTypeId(), "addressutýpa", true, true, Integer.class);
-    this.addAttribute(getColumnNameRefillStock() , "fylla á byrgðir", true, true, Boolean.class);
+    this.addAttribute(getColumnNameAddressTypeId(), "addressutypa", true, true, Integer.class);
+    this.addAttribute(getColumnNameRefillStock() , "fylla a byrgdir", true, true, Boolean.class);
 
     this.addOneToOneRelationship(getColumnNameAddressId(), Address.class);
     this.addManyToManyRelationShip( Product.class, "SR_PRODUCT_SR_ADDRESS" );

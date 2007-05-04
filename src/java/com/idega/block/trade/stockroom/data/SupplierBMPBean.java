@@ -47,8 +47,8 @@ import com.idega.user.data.Group;
  * Title: IW Trade Description: Copyright: Copyright (c) 2001 Company: idega.is
  * 
  * @author 2000 - idega team -<br>
- *             <a href="mailto:gummi@idega.is">Guðmundur Ágúst Sæmundsson </a> <br>
- *             <a href="mailto:gimmi@idega.is">Grímur Jónsson </a>
+ *             <a href="mailto:gummi@idega.is">Gudmundur Agust Saemundsson </a> <br>
+ *             <a href="mailto:gimmi@idega.is">Grimur Jonsson </a>
  * @version 1.0
  */
 
@@ -72,13 +72,13 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		addAttribute(getIDColumnName());
 		addAttribute(getColumnNameName(), "Name", true, true, String.class);
 		addAttribute(COLUMN_NAME_NAME_ALL_CAPS, "nafn i storun", true, true, String.class);
-		addAttribute(getColumnNameDescription(), "Lýsing", true, true, String.class, 500);
-		addAttribute(getColumnNameGroupID(), "Hópur", true, true, Integer.class, "many_to_one", SupplierStaffGroup.class);
-		addAttribute(getColumnNameIsValid(), "Í notkun", true, true, Boolean.class);
+		addAttribute(getColumnNameDescription(), "Lysing", true, true, String.class, 500);
+		addAttribute(getColumnNameGroupID(), "Hpur", true, true, Integer.class, "many_to_one", SupplierStaffGroup.class);
+		addAttribute(getColumnNameIsValid(), "I notkun", true, true, Boolean.class);
 		addAttribute(COLUMN_SUPPLIER_MANAGER_ID, "supplier manager", true, true, Integer.class, MANY_TO_ONE, Group.class);
 		addAttribute(COLUMN_ORGANIZATION_ID, "organization ID", true, true, String.class, 20);
 		/* can this be removed */
-		addAttribute(getColumnNameTPosMerchantID(), "ViÝskiptamannanumer", true, true, Integer.class);
+		addAttribute(getColumnNameTPosMerchantID(), "Vidskiptamannanumer", true, true, Integer.class);
 
 		this.addManyToManyRelationShip(Address.class, "SR_SUPPLIER_IC_ADDRESS");
 		this.addManyToManyRelationShip(Phone.class, "SR_SUPPLIER_IC_PHONE");

@@ -9,7 +9,7 @@ import java.sql.Timestamp;
  * Description:
  * Copyright:    Copyright (c) 2001
  * Company:      idega.is
- * @author 2000 - idega team - <br><a href="mailto:gummi@idega.is">Guðmundur Ágúst Sæmundsson</a><br><a href="mailto:gimmi@idega.is">Grímur Jónsson</a>
+ * @author 2000 - idega team - <br><a href="mailto:gummi@idega.is">Gudmundur Agust Saemundsson</a><br><a href="mailto:gimmi@idega.is">Grimur Jonsson</a>
  * @version 1.0
  */
 
@@ -32,9 +32,9 @@ public class SuppliesBMPBean extends com.idega.data.GenericEntity implements com
   public void initializeAttributes() {
     addAttribute(this.getIDColumnName());
     addAttribute(getColumnNameProductId(),"Vara",true,true,Integer.class,"many-to-one",Product.class);
-    addAttribute(getColumnNameRecordTime(),"Tími færslu",true,true,Timestamp.class);
-    addAttribute(getColumnNameRecord(), "Færsla", true, true, Float.class);
-    addAttribute(getColumnNameCurrentSupplies(), "Núverandi birgðir", true, true, Float.class);
+    addAttribute(getColumnNameRecordTime(),"Timi faerslu",true,true,Timestamp.class);
+    addAttribute(getColumnNameRecord(), "Faersla", true, true, Float.class);
+    addAttribute(getColumnNameCurrentSupplies(), "Nuverandi birgdir", true, true, Float.class);
     addAttribute(getColumnNamePeriod(),"Lota",true,true,Integer.class);
   }
 
