@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.15 2007/05/04 11:28:19 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.16 2007/05/26 17:00:41 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -93,22 +93,20 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //		System.out.println("[ProductPriceBusiness] priceMap set to EMPTY");
 //		System.out.println("[ProductPriceBusinessBean] mapKey = "+mapKey);
 
-//		Timer t =  new Timer();
-//		t.start();
 
 		Collection prices = null;
 
 		// Checking for stored price for this day
 		if (date != null) {
-			if (priceMap.containsKey(mapDateKey)) {
-				prices = (Collection) priceMap.get(mapDateKey);
+			if (priceMap.containsKey(mapDateKey.toString())) {
+				prices = (Collection) priceMap.get(mapDateKey.toString());
 				lookForDate = false;
 			}
 		}
 
 		// Checking for stored price in general
 		if (prices == null) {
-			prices = (Collection) priceMap.get(mapKey);
+			prices = (Collection) priceMap.get(mapKey.toString());
 		}
 
 		if (prices == null || lookForDate) {
@@ -141,10 +139,10 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 
 				}
 				// Adding the new "improved" prices to the map
-				priceMap.put(mapDateKey, prices);
+				priceMap.put(mapDateKey.toString(), prices);
 			} else {
 				// Adding the orginal collection to the map
-				priceMap.put(mapKey, tmp);
+				priceMap.put(mapKey.toString(), tmp);
 				prices = tmp;
 			}
 
