@@ -139,4 +139,13 @@ public interface PriceCategory extends IDOLegacyEntity {
 	 */
 	public void setVisibility(int visibility);
 
+	/**
+	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#getOrderNumber
+	 */
+	public int getOrderNumber();
+
+	/**
+	 * @see com.idega.block.trade.stockroom.data.PriceCategoryBMPBean#setOrderNumber
+	 */
+	public void setOrderNumber(int orderNr);
 }

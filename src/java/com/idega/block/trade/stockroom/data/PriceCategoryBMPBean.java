@@ -11,6 +11,7 @@ import com.idega.data.IDOQuery;
 import com.idega.data.query.Column;
 import com.idega.data.query.MatchCriteria;
 import com.idega.data.query.OR;
+import com.idega.data.query.Order;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
 import com.idega.data.query.WildCardColumn;
@@ -38,6 +39,7 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
 	private static final String COLUMN_VALUE = "CATEGORY_VALUE";
 	private static final String COLUMN_GROUPED_WITH_ID = "GROUPED_WITH_ID";
 	private static final String COLUMN_IS_BOOLEAN_CATEGORY = "IS_BOOLEAN";
+	private static final String COLUMN_ORDER_NR = "ORDER_NR";
 	
   public PriceCategoryBMPBean(){
     super();
@@ -65,7 +67,7 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
     addAttribute(COLUMN_VALUE, "column value", Float.class);
     addOneToOneRelationship(COLUMN_GROUPED_WITH_ID, PriceCategory.class);
     addAttribute(COLUMN_IS_BOOLEAN_CATEGORY, "is boolean", Boolean.class);
-    
+    addAttribute(COLUMN_ORDER_NR, "order_nr", Integer.class);
     this.addManyToManyRelationShip(Address.class);
     this.addTreeRelationShip();
     
@@ -113,6 +115,7 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
 		  OR or = new OR(left, right);
 		  query.addCriteria(or);
 	  }
+	  query.addOrder(new Order(new Column(table, COLUMN_ORDER_NR), true));
 	  return idoFindPKsByQuery(query);
   }
   
@@ -254,7 +257,8 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
 	public Object ejbFindByKey(String key) throws FinderException {
 		IDOQuery query = idoQuery();
 		query.appendSelectAllFrom(this).appendWhereEqualsWithSingleQuotes(getColumnNameIsValid(), "Y")
-		.appendAndEqualsQuoted(getColumnNameKey(), key);
+		.appendAndEqualsQuoted(getColumnNameKey(), key)
+		.appendOrderBy(COLUMN_ORDER_NR);
 		return this.idoFindOnePKByQuery(query);
 	}
 	
@@ -272,10 +276,18 @@ public class PriceCategoryBMPBean extends com.idega.data.GenericEntity implement
 		query.addCriteria(new MatchCriteria(supplier, MatchCriteria.EQUALS, supplierID));
 		query.addCriteria(new MatchCriteria(count, MatchCriteria.EQUALS, countAsPerson));
 		query.addCriteria(new MatchCriteria(valid, MatchCriteria.EQUALS, true));
+		query.addOrder(new Order(new Column(table, COLUMN_ORDER_NR), true));
 		
 		return this.idoFindPKsBySQL(query.toString());
 	}
 	
+	public int getOrderNumber() {
+		return getIntColumnValue(COLUMN_ORDER_NR);
+	}
+	
+	public void setOrderNumber(int orderNr) {
+		setColumn(COLUMN_ORDER_NR, orderNr);
+	}
 
   public static String getColumnNameName() {return "CATEGORY_NAME";}
   public static String getColumnNameDescription() {return "DESCRIPTION";}

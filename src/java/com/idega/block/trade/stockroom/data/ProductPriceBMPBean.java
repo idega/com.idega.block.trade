@@ -461,6 +461,7 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
     } else {
 			SQLQuery.append(" = '").append(categoryKey).append("'");
     }
+    
 //    if (visibility > 0 && visibility != 3) { 
 //			/** visibility == 3, applies applies to both 1 and 2 */
 //    }/*else if (visibility == 3) {
@@ -471,7 +472,7 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 //  	}*/
 
     
-    SQLQuery.append(" ORDER BY "+pTable+"."+getColumnNameCurrencyId()+","+pTable+"."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+","+cTable+"."+com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.getColumnNameName());
+    SQLQuery.append(" ORDER BY "+cTable+".ORDER_NR, "+pTable+"."+getColumnNameCurrencyId()+","+pTable+"."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType());
     
 /*
 		try {
