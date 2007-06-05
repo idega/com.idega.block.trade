@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.16 2007/05/26 17:00:41 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.17 2007/06/05 01:45:03 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -117,7 +117,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 				tmp = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 0, currencyId, visibility, key);
 			}
 
-			if (date != null) {
+			if ( tmp != null && ! tmp.isEmpty() && date != null) {
 				prices = new Vector();
 				Date exactDate = date.getDate();
 
@@ -139,6 +139,15 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 
 				}
 				// Adding the new "improved" prices to the map
+				priceMap.put(mapDateKey.toString(), prices);
+			} else if (date != null) {
+				Date exactDate = date.getDate();
+				Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, currencyId, -1, exactDate);
+				Iterator iter = coll.iterator();
+				prices = new Vector();
+				while (iter.hasNext()) {
+					prices.add(iter.next());
+				}
 				priceMap.put(mapDateKey.toString(), prices);
 			} else {
 				// Adding the orginal collection to the map
