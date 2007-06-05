@@ -559,25 +559,27 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 		if(addressId != -1) {
 			query.append(", " + pamTable + " ta");
 		}
-		query.appendWhereEquals("pp." + getColumnNameProductId(), productId);
-		query.appendAndEquals("pp."+getColumnNameIsValid(), true);
+		query.appendWhereEquals(" pp." + getColumnNameProductId(), productId);
+		query.appendAndEquals(" pp."+getColumnNameIsValid(), true);
 		if(timeframeId != -1) {
-			query.append("AND tf." + getIDColumnName()+"= pp."+getIDColumnName() );
-			query.appendAndEquals("tf." + timeframe.getIDColumnName(), timeframeId);
+			query.append(" AND tf." + getIDColumnName()+"= pp."+getIDColumnName() );
+			query.appendAndEquals(" tf." + timeframe.getIDColumnName(), timeframeId);
 		}
 		if(addressId != -1) {
-			query.append("AND ta." + getIDColumnName()+"= pp."+getIDColumnName() );
-			query.appendAndEquals("ta." + tAddress.getIDColumnName(), addressId);
+			query.append(" AND ta." + getIDColumnName()+"= pp."+getIDColumnName() );
+			query.appendAndEquals(" ta." + tAddress.getIDColumnName(), addressId);
 		}
 		if(currencyId != -1) {
-			query.appendAndEquals("pp." + getColumnNameCurrencyId(), currencyId);
+			query.appendAndEquals(" pp." + getColumnNameCurrencyId(), currencyId);
 		}
 		if(priceCategoryId != -1) {
-			query.appendAndEquals("pp." + getColumnNamePriceCategoryId(), priceCategoryId);
+			query.appendAndEquals(" pp." + getColumnNamePriceCategoryId(), priceCategoryId);
 		}
 		if(date != null) {
-			query.appendAndEquals("pp." + getColumnNameExactDate(), date);
+			query.appendAndEquals(" pp." + getColumnNameExactDate(), date);
 		}
+		
+		query.appendOrderByDescending(getColumnNamePriceDate());
 		return (Integer)idoFindOnePKByQuery(query);
   }
   
