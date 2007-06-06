@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.19 2007/06/06 13:51:53 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.20 2007/06/06 14:17:36 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -102,7 +102,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		if (date != null) {
 			if (priceMap.containsKey(mapDateKey.toString())) {
 				prices = (Collection) priceMap.get(mapDateKey.toString());
-				System.out.println("[ProductPriceBusinessBean] Found by mapDateKey");
 				lookForDate = false;
 			}
 		}
@@ -110,9 +109,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		// Checking for stored price in general
 		if (prices == null) {
 			prices = (Collection) priceMap.get(mapKey.toString());
-			if (prices != null) {
-				System.out.println("[ProductPriceBusinessBean] Found by mapKey");
-			}
 		}
 
 		if (prices == null || lookForDate) {
