@@ -213,7 +213,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   	}
   	
   	public void clearCache(int productID) {
-  		priceMap = null;
+  		getPriceMap(productID).clear();
   	}
   	
 
