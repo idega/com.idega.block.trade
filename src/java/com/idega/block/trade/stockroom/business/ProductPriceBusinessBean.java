@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.18 2007/06/06 00:28:39 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.19 2007/06/06 13:51:53 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -93,8 +93,8 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //		System.out.println("[ProductPriceBusiness] priceMap set to EMPTY");
 //		System.out.println("[ProductPriceBusinessBean] mapKey = "+mapKey);
 
-		System.out.println("[ProductPriceBusinessBean] mapKey = "+mapKey.toString());
-		System.out.println("[ProductPriceBusinessBean] mapDateKey = "+mapDateKey.toString());
+//		System.out.println("[ProductPriceBusinessBean] mapKey = "+mapKey.toString());
+//		System.out.println("[ProductPriceBusinessBean] mapDateKey = "+mapDateKey.toString());
 
 		Collection prices = null;
 
