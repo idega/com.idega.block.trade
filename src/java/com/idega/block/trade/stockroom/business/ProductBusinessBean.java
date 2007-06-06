@@ -447,12 +447,12 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   }
   
   public Timeframe getTimeframe(Product product, Timeframe[] timeframes, IWTimestamp stamp, int travelAddressId) throws RemoteException, EJBException, FinderException {
-		Timeframe returner = null;
+	Timeframe returner = null;
 	  Collection pPrices;
 	  for (int i = 0; i < timeframes.length; i++) {
 	  	returner = timeframes[i];
 	    if (travelAddressId != -1) {
-	    	pPrices = getProductPriceBusiness().getProductPrices(((Integer) product.getPrimaryKey()).intValue() , timeframes[i].getID(), travelAddressId, false, null);
+	    	pPrices = getProductPriceBusiness().getProductPrices(((Integer) product.getPrimaryKey()).intValue() , timeframes[i].getID(), travelAddressId, false, stamp);
 	      if (pPrices == null || pPrices.isEmpty()) {
 	        continue;
 	      }
