@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.17 2007/06/05 01:45:03 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.18 2007/06/06 00:28:39 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -82,7 +82,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		boolean lookForDate = false;
 		StringBuffer mapKey = new StringBuffer(productId).append("_").append(timeframeId).append("_").append(addressId).append("_").append(currencyId).
 		append("_").append(visString).append("_").append(key);
-		StringBuffer mapDateKey = mapKey;
+		StringBuffer mapDateKey = new StringBuffer(mapKey.toString());
 		if (date != null) {
 			mapDateKey.append("_").append(date.toSQLDateString());
 			lookForDate = true;
@@ -93,6 +93,8 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //		System.out.println("[ProductPriceBusiness] priceMap set to EMPTY");
 //		System.out.println("[ProductPriceBusinessBean] mapKey = "+mapKey);
 
+		System.out.println("[ProductPriceBusinessBean] mapKey = "+mapKey.toString());
+		System.out.println("[ProductPriceBusinessBean] mapDateKey = "+mapDateKey.toString());
 
 		Collection prices = null;
 
@@ -100,6 +102,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		if (date != null) {
 			if (priceMap.containsKey(mapDateKey.toString())) {
 				prices = (Collection) priceMap.get(mapDateKey.toString());
+				System.out.println("[ProductPriceBusinessBean] Found by mapDateKey");
 				lookForDate = false;
 			}
 		}
@@ -107,6 +110,9 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		// Checking for stored price in general
 		if (prices == null) {
 			prices = (Collection) priceMap.get(mapKey.toString());
+			if (prices != null) {
+				System.out.println("[ProductPriceBusinessBean] Found by mapKey");
+			}
 		}
 
 		if (prices == null || lookForDate) {
