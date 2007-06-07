@@ -1,5 +1,5 @@
 /*
- * $Id: ProductViewerLayoutHandler.java,v 1.8 2004/06/28 14:07:44 thomas Exp $
+ * $Id: ProductViewerLayoutHandler.java,v 1.9 2007/06/07 21:18:38 palli Exp $
  *
  * Copyright (C) 2001 Idega hf. All Rights Reserved.
  *
@@ -24,32 +24,44 @@ import com.idega.presentation.ui.DropdownMenu;
  * @version 1.0
  */
 public class ProductViewerLayoutHandler implements ICPropertyHandler {
-  /**
-   *
-   */
-  public ProductViewerLayoutHandler() {
-  }
+	/**
+	 * 
+	 */
+	public ProductViewerLayoutHandler() {
+	}
 
-  public List getDefaultHandlerTypes() {
-    return(null);
-  }
+	public List getDefaultHandlerTypes() {
+		return (null);
+	}
 
-  /**
-   *
-   */
-  public PresentationObject getHandlerObject(String name, String value, IWContext iwc) {
-    DropdownMenu menu = new DropdownMenu(name);
-    menu.addMenuElement("","Select:");
-    menu.addMenuElement(ProductViewerLayoutIdega.class.getName(), "Idega Portal");
-		menu.addMenuElement(ProductViewerLayoutStandard.class.getName(), "Standard");
-		menu.addMenuElement(ProductViewerLayoutTeaser.class.getName(), "Teaser");
-    menu.setSelectedElement(value);
-    return(menu);
-  }
+	/**
+	 * 
+	 */
+	public PresentationObject getHandlerObject(String name, String value,
+			IWContext iwc) {
+		DropdownMenu menu = new DropdownMenu(name);
+		menu.addMenuElement("", "Select:");
+		menu.addMenuElement(ProductViewerLayoutIdega.class.getName(),
+				"Idega Portal");
+		menu.addMenuElement(ProductViewerLayoutStandard.class.getName(),
+				"Standard");
+		menu
+				.addMenuElement(ProductViewerLayoutTeaser.class.getName(),
+						"Teaser");
+		menu.setSelectedElement(value);
+		return (menu);
+	}
 
-  /**
-   *
-   */
-  public void onUpdate(String values[], IWContext iwc) {
-  }
+	/**
+	 * 
+	 */
+	public void onUpdate(String values[], IWContext iwc) {
+	}
+
+	public PresentationObject getHandlerObject(String name, String stringValue,
+			IWContext iwc, boolean oldGenerationHandler, String instanceId,
+			String method) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

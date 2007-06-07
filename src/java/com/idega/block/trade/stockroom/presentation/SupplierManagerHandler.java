@@ -1,5 +1,5 @@
 /*
- * $Id: SupplierManagerHandler.java,v 1.3 2006/07/01 20:01:23 gimmi Exp $
+ * $Id: SupplierManagerHandler.java,v 1.4 2007/06/07 21:18:38 palli Exp $
  * Created on 20.5.2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -20,34 +20,35 @@ import com.idega.presentation.PresentationObject;
 import com.idega.presentation.ui.DropdownMenu;
 import com.idega.user.data.Group;
 
-
 public class SupplierManagerHandler implements ICPropertyHandler {
 
 	public List getDefaultHandlerTypes() {
 		return null;
 	}
 
-	public PresentationObject getHandlerObject(String name, String stringValue, IWContext iwc) {
+	public PresentationObject getHandlerObject(String name, String stringValue,
+			IWContext iwc) {
 		DropdownMenu menu = new DropdownMenu(name);
-		
+
 		try {
 			// Add support for another datasource
-			SupplierManagerBusiness bus = (SupplierManagerBusiness) IBOLookup.getServiceInstance(iwc, SupplierManagerBusiness.class);
+			SupplierManagerBusiness bus = (SupplierManagerBusiness) IBOLookup
+					.getServiceInstance(iwc, SupplierManagerBusiness.class);
 			Collection coll = bus.findAllSupplierManagers();
 			Iterator iter = coll.iterator();
 			Group object;
 			while (iter.hasNext()) {
 				object = (Group) iter.next();
-				menu.addMenuElement(object.getPrimaryKey().toString(), object.getName());
+				menu.addMenuElement(object.getPrimaryKey().toString(), object
+						.getName());
 			}
 			if (coll.isEmpty()) {
 				menu.addMenuElement("null", "No SupplierManagers Found");
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		if (stringValue != null) {
 			menu.setSelectedElement(stringValue);
 		}
@@ -55,4 +56,12 @@ public class SupplierManagerHandler implements ICPropertyHandler {
 	}
 
 	public void onUpdate(String[] values, IWContext iwc) {
-	}}
+	}
+
+	public PresentationObject getHandlerObject(String name, String stringValue,
+			IWContext iwc, boolean oldGenerationHandler, String instanceId,
+			String method) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}
