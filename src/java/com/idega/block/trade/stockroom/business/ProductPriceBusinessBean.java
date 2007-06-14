@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.20 2007/06/06 14:17:36 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.21 2007/06/14 03:47:43 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -311,7 +311,9 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 				((TradeService_PortType) iter.next()).invalidatePriceCache(productID, remoteDomainToExclude);
 			}
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			System.out.println("[ProductPriceBusiness] ===================================");
+			System.out.println("[ProductPriceBusiness] WEBSERVICE FAILED (invalidateCache)");
+			System.out.println("[ProductPriceBusiness] ===================================");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (ServiceException e) {
