@@ -230,6 +230,8 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   		HashMap produPriceMap = getPriceMap(productId);
   		Object returner = produPriceMap.get(key);
 
+  		StringBuffer buffer = new StringBuffer();
+
   		if (returner == null) {
   			try {
   				PriceCategory cat = ((com.idega.block.trade.stockroom.data.PriceCategoryHome)com.idega.data.IDOLookup.getHomeLegacy(PriceCategory.class)).findByPrimaryKeyLegacy(priceCategoryId);
@@ -242,7 +244,6 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   				String ppTable = ppr.getEntityDefinition().getSQLTableName();
 
   				if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_PRICE)){
-  					StringBuffer buffer = new StringBuffer();
   					buffer.append("select p.* from "+ppTable+" p");
   					if (timeframeId != -1) {
   						buffer.append(",  "+tfrTable+" tm");
@@ -298,7 +299,6 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   						getPriceMap(productId).put(key, "no_price");
   					}
   				}else if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT)){
-  					StringBuffer buffer = new StringBuffer();
   					buffer.append("select p.* from "+ppTable+" p");
   					if (timeframeId != -1) {
   						buffer.append(",  "+tfrTable+" tm");
@@ -364,6 +364,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 				throw new ProductPriceException("No Price Was Found");
   			}
   		} else {
+  			System.out.println("[StockroomBusiness] : "+buffer.toString());
 			throw new ProductPriceException("No Price Was Found");
   		}
 		return null;
