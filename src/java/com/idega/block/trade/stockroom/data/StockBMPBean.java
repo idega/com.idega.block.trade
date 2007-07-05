@@ -17,9 +17,9 @@ public class StockBMPBean extends com.idega.data.GenericEntity implements com.id
   }
   public void initializeAttributes() {
     addAttribute(getIDColumnName());
-    addAttribute(getColumnNameVariantString(), "strengur smíðaður úr variontum", true, true, String.class);
-    addAttribute(getColumnNameInStock(), "á lager", true, true, Integer.class);
-    addAttribute(getColumnNameMinimumInStock(), "lágmark á lager", true, true, Integer.class);
+    addAttribute(getColumnNameVariantString(), "strengur smidadur ur variontum", true, true, String.class);
+    addAttribute(getColumnNameInStock(), "a lager", true, true, Integer.class);
+    addAttribute(getColumnNameMinimumInStock(), "lagmark a lager", true, true, Integer.class);
     addAttribute(getColumnNameNotifyLevel(), "notify when in_stock is lower", true, true, Integer.class);
     addAttribute(getColumnNameStopSaleLevel(), "stop sale when in_stock is lower", true, true, Integer.class);
   }

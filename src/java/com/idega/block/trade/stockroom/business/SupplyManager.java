@@ -8,7 +8,7 @@ import java.sql.SQLException;
  * Description:
  * Copyright:    Copyright (c) 2001
  * Company:      idega.is
- * @author 2000 - idega team - <br><a href="mailto:gummi@idega.is">Guðmundur Ágúst Sæmundsson</a><br><b><a href="mailto:gimmi@idega.is">Grímur Jónsson</a></b>
+ * @author 2000 - idega team - <br><a href="mailto:gummi@idega.is">Gudmundur Agust Saemundsson</a><br><b><a href="mailto:gimmi@idega.is">Grimur Jonsson</a></b>
  * @version 1.0
  */
 

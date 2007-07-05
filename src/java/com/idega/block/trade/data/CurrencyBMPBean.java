@@ -21,7 +21,7 @@ import com.idega.data.query.Table;
  * Description:
  * Copyright:    Copyright (c) 2001
  * Company:      idega.is
- * @author 2000 - idega team - <br><a href="mailto:gummi@idega.is">Guðmundur Ágúst Sæmundsson</a><br><a href="mailto:gimmi@idega.is">Grímur Jónsson</a>
+ * @author 2000 - idega team - <br><a href="mailto:gummi@idega.is">Gudmundur Agust Saemundsson</a><br><a href="mailto:gimmi@idega.is">Grimur Jonsson</a>
  * @version 1.0
  */
 
@@ -37,7 +37,7 @@ public class CurrencyBMPBean extends com.idega.data.GenericEntity implements Cur
   public void initializeAttributes() {
     this.addAttribute(getIDColumnName());
     this.addAttribute(getColumnNameCurrencyName(),"Nafn",true,true,String.class,255);
-    this.addAttribute(getColumnNameCurrencyAbbreviation(),"Skammstöfun",true,true,String.class,20);
+    this.addAttribute(getColumnNameCurrencyAbbreviation(),"Skammstofun",true,true,String.class,20);
 
   }
 

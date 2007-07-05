@@ -52,11 +52,11 @@ public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, 
   public void initializeAttributes() {
     addAttribute(getIDColumnName());
     addAttribute(getColumnNameName(), "name", true, true, String.class);
-    addAttribute(getColumnNameDescription(), "Lýsing", true, true, String.class);
-    addAttribute(getColumnNameGroupID(),"Hópur", true, true, Integer.class, "many_to_one", ResellerStaffGroup.class);
+    addAttribute(getColumnNameDescription(), "Lysing", true, true, String.class);
+    addAttribute(getColumnNameGroupID(),"Hopur", true, true, Integer.class, "many_to_one", ResellerStaffGroup.class);
     addAttribute(getColumnNameIsValid(),"is valid", true, true, Boolean.class);
-    addAttribute(getColumnNameReferenceNumber(), "Tilvisunarnúmer", true, true, String.class);
-    addAttribute(getColumnNameTPosMerchantID(), "Viðskiptanumer", true, true, Integer.class);
+    addAttribute(getColumnNameReferenceNumber(), "Tilvisunarnumer", true, true, String.class);
+    addAttribute(getColumnNameTPosMerchantID(), "Vidskiptanumer", true, true, Integer.class);
 		addAttribute(COLUMN_SUPPLIER_MANAGER_ID, "supplier manager", true, true, Integer.class, MANY_TO_ONE, Group.class);
 		addAttribute(COLUMN_ORGANIZATION_ID, "organization ID", true, true, String.class, 20);
 

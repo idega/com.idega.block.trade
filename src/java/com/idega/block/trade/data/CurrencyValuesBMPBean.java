@@ -12,7 +12,7 @@ import com.idega.data.GenericEntity;
  * Title:        User
  * Copyright:    Copyright (c) 2002
  * Company:      idega.is
- * @author 2002 - idega team - <a href="mailto:laddi@idega.is">Þórhallur Helgason</a>
+ * @author 2002 - idega team - <a href="mailto:laddi@idega.is">Thorhallur Helgason</a>
  * @version 1.0
  */
 
