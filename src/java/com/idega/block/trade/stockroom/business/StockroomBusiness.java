@@ -1,5 +1,5 @@
 /*
- * $Id: StockroomBusiness.java,v 1.50 2007/06/06 13:51:54 gimmi Exp $
+ * $Id: StockroomBusiness.java,v 1.51 2007/07/05 00:15:01 gimmi Exp $
  * Created on 12.5.2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -33,10 +33,10 @@ import com.idega.util.IWTimestamp;
 
 /**
  * 
- *  Last modified: $Date: 2007/06/06 13:51:54 $ by $Author: gimmi $
+ *  Last modified: $Date: 2007/07/05 00:15:01 $ by $Author: gimmi $
  * 
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  */
 public interface StockroomBusiness extends IBOService {
 
@@ -110,12 +110,14 @@ public interface StockroomBusiness extends IBOService {
 	 */
 	public float getPrice(int productPriceId, int productId, int priceCategoryId, Timestamp time, int timeframeId,
 			int addressId) throws SQLException, RemoteException;
+  	public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException;
     public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException;
   	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.StockroomBusinessBean#getPrice
 	 */
+    public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException;
 	public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time,
 			int timeframeId, int addressId) throws SQLException, RemoteException;
 

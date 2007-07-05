@@ -171,7 +171,10 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   }
 
   public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
-	  ProductPrice price = getProductPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId);
+	  return getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId, null);
+  }
+  public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException  {
+	  ProductPrice price = getProductPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId, exactDate);
 	  return getPrice(price, time, timeframeId, addressId);
   }
 
@@ -216,8 +219,11 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   		getPriceMap(productID).clear();
   	}
   	
-
   	public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
+  		return getProductPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId, null);
+  	}
+  	
+  	public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException  {
   		StringBuffer keyb = new StringBuffer("");
   		keyb.append(productPriceId).append("_").append(priceCategoryId).append("_").append(currencyId)
   		.append("_").append(timeframeId).append("_").append(addressId);
@@ -277,7 +283,11 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   					IWTimestamp stamp = new IWTimestamp(time);
 //					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameCurrencyId()+" = "+currencyId);
 //					buffer.append(" and ");
-  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" <= '"+stamp.toSQLString(false)+"'");
+  					if (exactDate == null) {
+  						buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" <= '"+stamp.toSQLString(false)+"'");
+  					} else {
+  						buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameExactDate()+" = '"+exactDate.toString()+"'");
+  					}
   					buffer.append(" and ");
   					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+" = "+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.PRICETYPE_PRICE);
   					buffer.append(" and ");
@@ -325,7 +335,14 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   					buffer.append(" and ");
   					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceCategoryId()+" = "+priceCategoryId);
   					buffer.append(" and ");
-  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" < '"+time.toString()+"'");
+
+  					if (exactDate == null) {
+  						buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" < '"+time.toString()+"'");
+  					} else {
+  						buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameExactDate()+" = '"+exactDate.toString()+"'");
+  					}
+
+//  					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" < '"+time.toString()+"'");
   					buffer.append(" and ");
   					buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceType()+" = "+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.PRICETYPE_DISCOUNT);
   					buffer.append(" and ");
@@ -361,6 +378,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   			if (returner instanceof ProductPrice) {
   				return (ProductPrice) returner;
   			} else if (returner instanceof String) {
+  				System.out.println("[StockroomBusiness] : "+buffer.toString());
 				throw new ProductPriceException("No Price Was Found");
   			}
   		} else {
