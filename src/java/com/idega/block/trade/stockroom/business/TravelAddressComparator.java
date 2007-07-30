@@ -1,10 +1,17 @@
 package com.idega.block.trade.stockroom.business;
 
-import com.idega.util.IsCollator;
-import com.idega.util.IWTimestamp;
-import java.util.*;
+import java.text.Collator;
+import java.util.Collections;
 import java.util.Comparator;
-import com.idega.block.trade.stockroom.data.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Vector;
+
+import com.idega.block.trade.stockroom.data.Timeframe;
+import com.idega.block.trade.stockroom.data.TravelAddress;
+import com.idega.util.IWTimestamp;
 
 
 /**
@@ -21,16 +28,19 @@ public class TravelAddressComparator implements Comparator {
   public static final int NAME = 1;
   public static final int TIME = 2;
   public static final int NAME_TIME = 3;
-
-
+  public static final int TIME_GROUP_ORDER = 4;
+  
   private int sortBy;
+  private Locale locale;
 
-  public TravelAddressComparator() {
+  public TravelAddressComparator(Locale locale) {
       this.sortBy = NAME_TIME;
+      this.locale = locale;
   }
 
-  public TravelAddressComparator(int toSortBy) {
+  public TravelAddressComparator(Locale locale, int toSortBy) {
       this.sortBy = toSortBy;
+      this.locale = locale;
   }
 
   public void sortBy(int toSortBy) {
@@ -47,6 +57,8 @@ public class TravelAddressComparator implements Comparator {
         break;
         case NAME_TIME   : result = nameTimeSort(o1,o2);
         break;
+        case TIME_GROUP_ORDER   : result = timeGroupOrderSort(o1,o2);
+        break;
       }
 
       return result;
@@ -59,7 +71,7 @@ public class TravelAddressComparator implements Comparator {
     String one = p1.getStreetName()!=null?p1.getStreetName():"";
     String two = p2.getStreetName()!=null?p2.getStreetName():"";
 
-    return IsCollator.getIsCollator().compare(one,two);
+    return Collator.getInstance(locale).compare(one, two);
   }
 
   private int timeSort(Object o1, Object o2) {
@@ -78,6 +90,16 @@ public class TravelAddressComparator implements Comparator {
     }
   }
 
+  private int groupSort(Object o1, Object o2) {
+	    TravelAddress p1 = (TravelAddress) o1;
+	    TravelAddress p2 = (TravelAddress) o2;
+
+	    String one = p1.getGroupName()!=null?p1.getGroupName():"";
+	    String two = p2.getGroupName()!=null?p2.getGroupName():"";
+
+	    return Collator.getInstance(locale).compare(one, two);
+	  }
+
   private int nameTimeSort(Object o1, Object o2) {
     int returner = 0;
 
@@ -87,6 +109,31 @@ public class TravelAddressComparator implements Comparator {
     }
 
     return returner;
+  }
+  
+  private int timeGroupOrderSort(Object o1, Object o2) {
+	  int ret = timeSort(o1, o2);
+	  if (ret != 0) {
+		  return ret;
+	  }
+	  
+	  ret = groupSort(o1, o2);
+	  if (ret != 0) {
+		  return ret;
+	  }
+	  
+	  TravelAddress t1 = (TravelAddress) o1;
+	  TravelAddress t2 = (TravelAddress) o2;
+	  
+	  if (t1.getOrder() > t2.getOrder()) {
+		  return 1;
+	  } else if (t1.getOrder() < t2.getOrder()) {
+		  return -1;
+	  } else {
+		  return 0;
+	  }
+	  
+	  
   }
 
   public boolean equals(Object obj) {

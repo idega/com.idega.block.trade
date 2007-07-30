@@ -2,7 +2,9 @@ package com.idega.block.trade.stockroom.data;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+
 import com.idega.core.location.data.Address;
+import com.idega.data.GenericEntity;
 import com.idega.util.IWTimestamp;
 import com.idega.util.text.TextSoap;
 
@@ -15,11 +17,14 @@ import com.idega.util.text.TextSoap;
  * @version 1.0
  */
 
-public class TravelAddressBMPBean extends com.idega.data.GenericEntity implements com.idega.block.trade.stockroom.data.TravelAddress {
+public class TravelAddressBMPBean extends GenericEntity implements TravelAddress {
 
   public static final int ADDRESS_TYPE_DEPARTURE = 0;
   public static final int ADDRESS_TYPE_ARRIVAL = 1;
 
+  private static final String COLUMN_ORDER = "ORDER_NR";
+  private static final String COLUMN_GROUP_NAME = "GROUP_NAME";
+  
   public TravelAddressBMPBean() {
     super();
   }
@@ -34,6 +39,8 @@ public class TravelAddressBMPBean extends com.idega.data.GenericEntity implement
     this.addAttribute(getColumnNameTime(), "time", true, true, Timestamp.class);
     this.addAttribute(getColumnNameAddressTypeId(), "addressutypa", true, true, Integer.class);
     this.addAttribute(getColumnNameRefillStock() , "fylla a byrgdir", true, true, Boolean.class);
+    addAttribute(COLUMN_ORDER, "Order", Integer.class);
+    addAttribute(COLUMN_GROUP_NAME, "group_name", String.class, 50);
 
     this.addOneToOneRelationship(getColumnNameAddressId(), Address.class);
     this.addManyToManyRelationShip( Product.class, "SR_PRODUCT_SR_ADDRESS" );
@@ -107,7 +114,23 @@ public class TravelAddressBMPBean extends com.idega.data.GenericEntity implement
   public void setRefillStock(boolean replenish) {
     setColumn(getColumnNameRefillStock(), replenish);
   }
+  
+  public void setGroupName(String groupName) {
+	  setColumn(COLUMN_GROUP_NAME, groupName);
+  }
+  
+  public String getGroupName() {
+	  return getStringColumnValue(COLUMN_GROUP_NAME);
+  }
 
+  public void setOrder(int order) {
+	  setColumn(COLUMN_ORDER, order);
+  }
+  
+  public int getOrder() {
+	  return getIntColumnValue(COLUMN_ORDER);
+  }
+  
 
   public static String getTravelAddressTableName() { return "SR_ADDRESS";}
   public static String getColumnNameAddressId() { return "IC_ADDRESS_ID";}
