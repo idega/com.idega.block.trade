@@ -11,7 +11,7 @@
   <groupId>com.idega.block.addon</groupId>
   <name>idegaWeb Trade Block</name>
   <artifactId>com.idega.block.trade</artifactId>
-  <version>4.0.1-SNAPSHOT</version>
+  <version>4.0.1</version>
   <inceptionYear>2000</inceptionYear>
   <description>The trade block</description>
   <scm>
@@ -21,6 +21,7 @@
      -->
     <connection>scm:cvs:ext:civilis@code.idega.com:/idega/cvs:com.idega.block.addon/com.idega.block.trade/</connection>
     <developerConnection>scm:cvs:ext:civilis@code.idega.com:/idega/cvs:com.idega.block.addon/com.idega.block.trade/</developerConnection>
+    <tag>com_idega_block_addon_super-4_0_1</tag>
   </scm>
 
   <developers>
@@ -42,7 +43,7 @@
         <dependency>
       <groupId>com.idega.block.legacy</groupId>
       <artifactId>com.idega.block.category</artifactId>
-      <version>4.0.1-SNAPSHOT</version>
+      <version>4.0.1</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -66,7 +67,7 @@
     <dependency>
       <groupId>com.idega.block.legacy</groupId>
       <artifactId>com.idega.block.text</artifactId>
-      <version>4.0.1-SNAPSHOT</version>
+      <version>4.0.1</version>
       <type>jar</type>
     </dependency>
     <dependency>
