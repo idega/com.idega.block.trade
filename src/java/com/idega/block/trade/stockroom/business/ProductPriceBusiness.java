@@ -68,11 +68,13 @@ public interface ProductPriceBusiness extends IBOService {
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getMiscellaneousPrices
 	 */
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly) throws FinderException, RemoteException;
+	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, IWTimestamp date) throws FinderException, RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getMiscellaneousPrices
 	 */
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId) throws FinderException, RemoteException;
+	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId, IWTimestamp date) throws FinderException, RemoteException;
 	public PriceCategoryHome getPriceCategoryHome();
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getProductPriceHome

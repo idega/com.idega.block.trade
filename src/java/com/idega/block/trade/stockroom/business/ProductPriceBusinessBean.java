@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.21 2007/06/14 03:47:43 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.22 2008/02/26 02:51:29 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -335,24 +335,124 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		}
 		return v;
 	}
-
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly) throws FinderException {
-		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1);
+		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1, null);
+	}
+	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, IWTimestamp stamp) throws FinderException {
+		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1, stamp);
 //		return getProductPriceHome().findMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1);
 	}
 
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId) throws FinderException {
-		StringBuffer key = new StringBuffer(productId).append("_").append(timeframeId).append("_").append(addressId)
-		.append("_").append(netBookingOnly).append("_").append(currencyId);
-		
-		Integer pk = new Integer(productId);
-		HashMap miscmap = getMiscMapForProduct(pk);
-		Collection coll = (Collection) miscmap.get(key.toString());
-		if (coll == null) {
-			coll = getProductPriceHome().findMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, currencyId);
-			miscmap.put(key.toString(), coll);
+		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, currencyId, null);
+	}
+	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId, IWTimestamp date) throws FinderException {
+
+		int[] vis;
+		if (netBookingOnly) {
+			vis = new int[] {PriceCategoryBMPBean.PRICE_VISIBILITY_BOTH_PRIVATE_AND_PUBLIC, PriceCategoryBMPBean.PRICE_VISIBILITY_PUBLIC};	
+		}else {
+			vis = new int[] {PriceCategoryBMPBean.PRICE_VISIBILITY_BOTH_PRIVATE_AND_PUBLIC, PriceCategoryBMPBean.PRICE_VISIBILITY_PRIVATE};//, PriceCategoryBMPBean.PRICE_VISIBILITY_PUBLIC};	
 		}
-		return coll;
+
+		String visString = "";
+		if (vis != null) {
+			for (int i = 0; i < vis.length; i++) {
+				visString += vis[i];
+			}
+		}
+		boolean lookForDate = false;
+		StringBuffer mapKey = new StringBuffer(productId).append("_").append(timeframeId).append("_").append(addressId).append("_").append(currencyId).
+		append("_").append(visString);
+		StringBuffer mapDateKey = new StringBuffer(mapKey.toString());
+		if (date != null) {
+			mapDateKey.append("_").append(date.toSQLDateString());
+			lookForDate = true;
+		}
+
+		HashMap miscMap = getMiscMapForProduct(new Integer(productId));
+//		HashMap priceMap = new HashMap();
+//		System.out.println("[ProductPriceBusiness] priceMap set to EMPTY");
+//		System.out.println("[ProductPriceBusinessBean] mapKey = "+mapKey);
+
+//		System.out.println("[ProductPriceBusinessBean] mapKey = "+mapKey.toString());
+//		System.out.println("[ProductPriceBusinessBean] mapDateKey = "+mapDateKey.toString());
+
+		Collection prices = null;
+
+		// Checking for stored price for this day
+		if (date != null) {
+			if (miscMap.containsKey(mapDateKey.toString())) {
+				prices = (Collection) miscMap.get(mapDateKey.toString());
+				lookForDate = false;
+			}
+		}
+
+		// Checking for stored price in general
+		if (prices == null) {
+			prices = (Collection) miscMap.get(mapKey.toString());
+		}
+
+		if (prices == null || lookForDate) {
+			Collection tmp = null;
+			if (prices != null) {
+				tmp = prices;
+			} else {
+				tmp = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 1, currencyId, vis, null);
+			}
+
+			if ( tmp != null && ! tmp.isEmpty() && date != null) {
+				prices = new Vector();
+				Date exactDate = date.getDate();
+
+				Iterator iter = tmp.iterator();
+				ProductPrice price;
+				while (iter.hasNext()) {
+					price = (ProductPrice) iter.next();
+
+					Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, currencyId, price.getPriceCategoryID(), exactDate);
+
+					if (coll != null && !coll.isEmpty()) {
+						Iterator tmpIter = coll.iterator();
+						while (tmpIter.hasNext()) {
+							prices.add(tmpIter.next());
+						}
+					} else {
+						prices.add(price);
+					}
+
+				}
+				// Adding the new "improved" prices to the map
+				miscMap.put(mapDateKey.toString(), prices);
+			} else if (date != null) {
+				Date exactDate = date.getDate();
+				Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, currencyId, -1, exactDate);
+				Iterator iter = coll.iterator();
+				prices = new Vector();
+				while (iter.hasNext()) {
+					prices.add(iter.next());
+				}
+				miscMap.put(mapDateKey.toString(), prices);
+			} else {
+				// Adding the orginal collection to the map
+				miscMap.put(mapKey.toString(), tmp);
+				prices = tmp;
+			}
+
+		}
+		return prices;
+		
+//		StringBuffer key = new StringBuffer(productId).append("_").append(timeframeId).append("_").append(addressId)
+//		.append("_").append(netBookingOnly).append("_").append(currencyId);
+//		
+//		Integer pk = new Integer(productId);
+//		HashMap miscmap = getMiscMapForProduct(pk);
+//		Collection coll = (Collection) miscmap.get(key.toString());
+//		if (coll == null) {
+//			prices = getProductPriceHome().findMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, currencyId);
+//			miscMap.put(key.toString(), prices);
+//		}
+//		return prices;
 //		return getProductPriceHome().findProductPrices(productId, timeframeId, addressId, netBookingOnly, 1, currencyId, null);
 	}
 
