@@ -299,7 +299,6 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   					buffer.append(" order by p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+ " desc");
 //					List result = EntityFinder.findAll(ppr,buffer.toString());
 //					List result = EntityFinder.findAll(ppr,buffer.toString());
-  					System.out.println(buffer.toString());
   					ProductPriceHome ppHome = (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);
   					Collection result = ppHome.findBySQL(buffer.toString());
 
