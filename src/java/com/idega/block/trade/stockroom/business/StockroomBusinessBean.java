@@ -235,6 +235,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 //  		getPriceMap(productId).clear();
   		HashMap produPriceMap = getPriceMap(productId);
   		Object returner = produPriceMap.get(key);
+  		returner = null;
 
   		StringBuffer buffer = new StringBuffer();
 
@@ -285,6 +286,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 //					buffer.append(" and ");
   					if (exactDate == null) {
   						buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" <= '"+stamp.toSQLString(false)+"'");
+  						buffer.append(" and p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameExactDate()+" is null");
   					} else {
   						buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameExactDate()+" = '"+exactDate.toString()+"'");
   					}
@@ -297,6 +299,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   					buffer.append(" order by p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+ " desc");
 //					List result = EntityFinder.findAll(ppr,buffer.toString());
 //					List result = EntityFinder.findAll(ppr,buffer.toString());
+  					System.out.println(buffer.toString());
   					ProductPriceHome ppHome = (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);
   					Collection result = ppHome.findBySQL(buffer.toString());
 
@@ -338,6 +341,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 
   					if (exactDate == null) {
   						buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNamePriceDate()+" < '"+time.toString()+"'");
+  						buffer.append(" and p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameExactDate()+" is null");
   					} else {
   						buffer.append("p."+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getColumnNameExactDate()+" = '"+exactDate.toString()+"'");
   					}
