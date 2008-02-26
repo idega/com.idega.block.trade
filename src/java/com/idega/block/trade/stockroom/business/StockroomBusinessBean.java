@@ -381,11 +381,11 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   			if (returner instanceof ProductPrice) {
   				return (ProductPrice) returner;
   			} else if (returner instanceof String) {
-  				System.out.println("[StockroomBusiness] : "+buffer.toString());
+  				//System.out.println("[StockroomBusiness] : "+buffer.toString());
 				throw new ProductPriceException("No Price Was Found");
   			}
   		} else {
-  			System.out.println("[StockroomBusiness] : "+buffer.toString());
+  			//System.out.println("[StockroomBusiness] : "+buffer.toString());
 			throw new ProductPriceException("No Price Was Found");
   		}
 		return null;
