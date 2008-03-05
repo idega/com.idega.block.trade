@@ -346,8 +346,8 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 	return this.idoFindPKsBySQL(sql);
   }
   
-  public Collection ejbFindProductPrices(int productId, int timeframeId, int addressId, int currencyId, int priceCategoryId, Date exactDate) throws FinderException {
-	String sql = getSQLQuery(productId, timeframeId, addressId, -1, currencyId, null, null, priceCategoryId, exactDate);
+  public Collection ejbFindProductPrices(int productId, int timeframeId, int addressId, int countAsPersonStatus, int currencyId, int priceCategoryId, Date exactDate) throws FinderException {
+	String sql = getSQLQuery(productId, timeframeId, addressId, countAsPersonStatus, currencyId, null, null, priceCategoryId, exactDate);
 	return this.idoFindPKsBySQL(sql);
   }
 

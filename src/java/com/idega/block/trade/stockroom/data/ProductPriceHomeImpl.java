@@ -99,9 +99,9 @@ public class ProductPriceHomeImpl extends IDOFactory implements ProductPriceHome
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findProductPrices(int productId, int timeframeId, int addressId, int currencyId, int priceCategoryId, Date exactDate) throws FinderException {
+	public Collection findProductPrices(int productId, int timeframeId, int addressId, int countAsPersonStatus, int currencyId, int priceCategoryId, Date exactDate) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductPriceBMPBean) entity).ejbFindProductPrices(productId, timeframeId, addressId, currencyId, priceCategoryId, exactDate);
+		Collection ids = ((ProductPriceBMPBean) entity).ejbFindProductPrices(productId, timeframeId, addressId, countAsPersonStatus, currencyId, priceCategoryId, exactDate);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}

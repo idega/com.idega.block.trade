@@ -37,7 +37,7 @@ public interface ProductPriceHome extends IDOHome {
 
 	public Collection findProductPrices(int productId, int timeframeId, int addressId, int countAsPersonStatus, int currencyId, int[] visibility, String key) throws FinderException;
 
-	public Collection findProductPrices(int productId, int timeframeId, int addressId, int currencyId, int priceCategoryId, Date exactDate) throws FinderException;
+	public Collection findProductPrices(int productId, int timeframeId, int addressId, int countAsPersonStatus, int currencyId, int priceCategoryId, Date exactDate) throws FinderException;
 
 	public int[] getCurrenciesInUse(int productId);
 

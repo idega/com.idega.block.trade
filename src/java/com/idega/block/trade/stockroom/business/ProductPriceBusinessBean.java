@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.22 2008/02/26 02:51:29 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.23 2008/03/05 23:43:49 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -128,7 +128,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 				while (iter.hasNext()) {
 					price = (ProductPrice) iter.next();
 
-					Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, currencyId, price.getPriceCategoryID(), exactDate);
+					Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 0, currencyId, price.getPriceCategoryID(), exactDate);
 
 					if (coll != null && !coll.isEmpty()) {
 						Iterator tmpIter = coll.iterator();
@@ -144,7 +144,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 				priceMap.put(mapDateKey.toString(), prices);
 			} else if (date != null) {
 				Date exactDate = date.getDate();
-				Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, currencyId, -1, exactDate);
+				Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 0, currencyId, -1, exactDate);
 				Iterator iter = coll.iterator();
 				prices = new Vector();
 				while (iter.hasNext()) {
@@ -243,10 +243,10 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 				e.printStackTrace();
 			}
 
-			while (iter.hasNext()) {
+ 			while (iter.hasNext()) {
 				PriceCategory pCat = (PriceCategory) iter.next();
 				try {
-					ProductPrice pp = getStockroomBusiness().getProductPrice(-1, price.getProductId(), ((Integer)pCat.getPrimaryKey()).intValue(), price.getCurrencyId(), IWTimestamp.getTimestampRightNow(), timeframeID, addressID);
+					ProductPrice pp = getStockroomBusiness().getProductPrice(-1, price.getProductId(), ((Integer)pCat.getPrimaryKey()).intValue(), price.getCurrencyId(), IWTimestamp.getTimestampRightNow(), timeframeID, addressID, price.getExactDate());
 					getStockroomBusiness().getPrice(pp, IWTimestamp.getTimestampRightNow(), timeframeID, addressID);
 					v.add(pCat);
 				} catch (ProductPriceException  p) {
@@ -410,7 +410,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 				while (iter.hasNext()) {
 					price = (ProductPrice) iter.next();
 
-					Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, currencyId, price.getPriceCategoryID(), exactDate);
+					Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 1, currencyId, price.getPriceCategoryID(), exactDate);
 
 					if (coll != null && !coll.isEmpty()) {
 						Iterator tmpIter = coll.iterator();
@@ -426,7 +426,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 				miscMap.put(mapDateKey.toString(), prices);
 			} else if (date != null) {
 				Date exactDate = date.getDate();
-				Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, currencyId, -1, exactDate);
+				Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 1, currencyId, -1, exactDate);
 				Iterator iter = coll.iterator();
 				prices = new Vector();
 				while (iter.hasNext()) {
