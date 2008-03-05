@@ -500,7 +500,7 @@
     <key>
       <name>REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST</name>
       <type>java.lang.String</type>
-      <value>http://www.citycentre.is/</value>
+      <value />
     </key>
   </map>
 </pxml>
