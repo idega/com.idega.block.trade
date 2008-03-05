@@ -189,7 +189,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 				  return price.getPrice();
 			  }
 		  } else if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT)){
-				  float pr = getPrice(-1, price.getProductId(),cat.getParentId(),price.getCurrencyId(),time, timeframeId, addressId);
+				  float pr = getPrice(-1, price.getProductId(),cat.getParentId(),price.getCurrencyId(),time, timeframeId, addressId, price.getExactDate());
 				  float disc = price.getPrice();
 				  return pr*((100-disc) /100);
 
