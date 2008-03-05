@@ -16,8 +16,14 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Iterator;
+
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
+
+import com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean;
+import com.idega.block.trade.stockroom.data.SupplierStaffGroupBMPBean;
+import com.idega.business.IBOLookup;
+import com.idega.business.IBOLookupException;
 import com.idega.core.component.data.ICObject;
 import com.idega.core.data.ICApplicationBinding;
 import com.idega.core.data.ICApplicationBindingHome;
@@ -26,6 +32,7 @@ import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWBundleStartable;
+import com.idega.user.business.GroupBusiness;
 import com.idega.util.EventTimer;
 import com.idega.util.database.PoolManager;
 
@@ -48,7 +55,22 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 		// -- Fix for working properly on Interebase with entity-auto-create-on.
 		this.timer.start(3*60*1000);
 		System.out.println("Trade bundle starter: starting");
+		createGroupTypes(bundle);
 	}
+	
+	private void createGroupTypes(IWBundle bundle) {
+		try {
+			GroupBusiness gb = (GroupBusiness) IBOLookup.getServiceInstance(bundle.getApplication().getIWApplicationContext(), GroupBusiness.class);
+			gb.createGroupTypeOrUpdate(SupplierStaffGroupBMPBean.GROUP_TYPE_VALUE, false);
+			gb.createGroupTypeOrUpdate(ResellerStaffGroupBMPBean.GROUP_TYPE_VALUE, false);
+		} catch (IBOLookupException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	
 	/**
 	 * @param bundle
