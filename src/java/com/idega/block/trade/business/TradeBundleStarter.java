@@ -20,6 +20,8 @@ import java.util.Iterator;
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 
+import com.idega.block.trade.stockroom.business.SupplierManagerBusiness;
+import com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean;
 import com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean;
 import com.idega.block.trade.stockroom.data.SupplierStaffGroupBMPBean;
 import com.idega.business.IBOLookup;
@@ -63,6 +65,17 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 			GroupBusiness gb = (GroupBusiness) IBOLookup.getServiceInstance(bundle.getApplication().getIWApplicationContext(), GroupBusiness.class);
 			gb.createGroupTypeOrUpdate(SupplierStaffGroupBMPBean.GROUP_TYPE_VALUE, false);
 			gb.createGroupTypeOrUpdate(ResellerStaffGroupBMPBean.GROUP_TYPE_VALUE, false);
+			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_ADMINISTRATOR_GROUP_DESCRIPTION, true);
+			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_MANAGER_ADMIN_GROUP_TYPE, true);
+			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_MANAGER_BOOKING_STAFF_TYPE, true);
+			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_MANAGER_CASHIER_STAFF_TYPE, true);
+			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_MANAGER_GROUP_TYPE, true);
+			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_MANAGER_GROUP_TYPE_COLLECTION, true);
+			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_MANAGER_PARTNER_STAFF_TYPE, true);
+			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_MANAGER_RESELLER_GROUP_TYPE, true);
+			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_MANAGER_SUPPLIER_GROUP_TYPE, true);
+			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_MANAGER_TRAVEL_AGENT_STAFF_TYPE, true);
+			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_MANAGER_USER_GROUP_TYPE, true);
 		} catch (IBOLookupException e) {
 			e.printStackTrace();
 		} catch (RemoteException e) {

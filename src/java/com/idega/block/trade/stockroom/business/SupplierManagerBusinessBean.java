@@ -47,16 +47,16 @@ import com.idega.util.IWTimestamp;
  */
 public class SupplierManagerBusinessBean extends IBOServiceBean  implements SupplierManagerBusiness{
 	
-	private static String SUPPLIER_MANAGER_GROUP_TYPE_COLLECTION = "supplier_manager_coll";
-	private static String SUPPLIER_MANAGER_GROUP_TYPE = "supplier_manager";
-	private static String SUPPLIER_MANAGER_USER_GROUP_TYPE = "supplier_manager_user";
-	private static String SUPPLIER_MANAGER_ADMIN_GROUP_TYPE = "supplier_manager_admin";
-	private static String SUPPLIER_MANAGER_RESELLER_GROUP_TYPE = "supplier_manager_reseller";
-	private static String SUPPLIER_MANAGER_SUPPLIER_GROUP_TYPE = "supplier_manager_supplier";
-	private static String SUPPLIER_MANAGER_BOOKING_STAFF_TYPE = "supplier_manager_b_staff";
-	private static String SUPPLIER_MANAGER_CASHIER_STAFF_TYPE = "supplier_manager_c_staff";
-	private static String SUPPLIER_MANAGER_TRAVEL_AGENT_STAFF_TYPE = "supplier_manager_ta_staff";
-	private static String SUPPLIER_MANAGER_PARTNER_STAFF_TYPE = "supplier_manager_partner_staff";
+	public static String SUPPLIER_MANAGER_GROUP_TYPE_COLLECTION = "supplier_manager_coll";
+	public static String SUPPLIER_MANAGER_GROUP_TYPE = "supplier_manager";
+	public static String SUPPLIER_MANAGER_USER_GROUP_TYPE = "supplier_manager_user";
+	public static String SUPPLIER_MANAGER_ADMIN_GROUP_TYPE = "supplier_manager_admin";
+	public static String SUPPLIER_MANAGER_RESELLER_GROUP_TYPE = "supplier_manager_reseller";
+	public static String SUPPLIER_MANAGER_SUPPLIER_GROUP_TYPE = "supplier_manager_supplier";
+	public static String SUPPLIER_MANAGER_BOOKING_STAFF_TYPE = "supplier_manager_b_staff";
+	public static String SUPPLIER_MANAGER_CASHIER_STAFF_TYPE = "supplier_manager_c_staff";
+	public static String SUPPLIER_MANAGER_TRAVEL_AGENT_STAFF_TYPE = "supplier_manager_ta_staff";
+	public static String SUPPLIER_MANAGER_PARTNER_STAFF_TYPE = "supplier_manager_partner_staff";
 	
 	public Group updateSupplierManager(Object pk, String name, String description, String email, String phone, String address) throws IDOLookupException, FinderException {
 		GroupHome gHome = (GroupHome) IDOLookup.getHome(Group.class);
