@@ -14,13 +14,12 @@ import java.sql.Timestamp;
 import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDORelationshipException;
 import java.util.Collection;
-import javax.ejb.FinderException;
 import com.idega.util.IWTimestamp;
+import javax.ejb.FinderException;
 import java.util.List;
 import com.idega.data.IDOLegacyEntity;
-import com.idega.data.IDOEntity;
 
-public interface Product extends IDOEntity, IDOLegacyEntity, MetaDataCapable {
+public interface Product extends IDOLegacyEntity, MetaDataCapable {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#invalidate
 	 */
@@ -154,7 +153,8 @@ public interface Product extends IDOEntity, IDOLegacyEntity, MetaDataCapable {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#setProductCategories
 	 */
-	public void setProductCategories(int[] categoryIds) throws RemoteException, FinderException, IDORemoveRelationshipException;
+	public void setProductCategories(int[] categoryIds) throws RemoteException,
+			FinderException, IDORemoveRelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#addCategory
@@ -164,17 +164,20 @@ public interface Product extends IDOEntity, IDOLegacyEntity, MetaDataCapable {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#removeCategory
 	 */
-	public void removeCategory(ProductCategory productCategory) throws IDORemoveRelationshipException;
+	public void removeCategory(ProductCategory productCategory)
+			throws IDORemoveRelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#removeAllFrom
 	 */
-	public void removeAllFrom(Class entityInterface) throws IDORemoveRelationshipException;
+	public void removeAllFrom(Class entityInterface)
+			throws IDORemoveRelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#addTravelAddresses
 	 */
-	public void addTravelAddresses(int[] addressIds) throws RemoteException, FinderException, IDOAddRelationshipException;
+	public void addTravelAddresses(int[] addressIds) throws RemoteException,
+			FinderException, IDOAddRelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#addTravelAddress
@@ -184,7 +187,8 @@ public interface Product extends IDOEntity, IDOLegacyEntity, MetaDataCapable {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#removeTravelAddress
 	 */
-	public void removeTravelAddress(TravelAddress address) throws IDORemoveRelationshipException;
+	public void removeTravelAddress(TravelAddress address)
+			throws IDORemoveRelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#getProductName
@@ -199,7 +203,8 @@ public interface Product extends IDOEntity, IDOLegacyEntity, MetaDataCapable {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#getProductName
 	 */
-	public String getProductName(int localeId, int localeIDIfNull, String returnIfNull);
+	public String getProductName(int localeId, int localeIDIfNull,
+			String returnIfNull);
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#setProductName
@@ -229,7 +234,8 @@ public interface Product extends IDOEntity, IDOLegacyEntity, MetaDataCapable {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#getDepartureAddresses
 	 */
-	public List getDepartureAddresses(boolean ordered) throws IDOFinderException;
+	public List getDepartureAddresses(boolean ordered)
+			throws IDOFinderException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#addArrivalAddress
@@ -259,12 +265,14 @@ public interface Product extends IDOEntity, IDOLegacyEntity, MetaDataCapable {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#addTimeframe
 	 */
-	public void addTimeframe(Timeframe frame) throws IDOAddRelationshipException;
+	public void addTimeframe(Timeframe frame)
+			throws IDOAddRelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#removeTimeframe
 	 */
-	public void removeTimeframe(Timeframe frame) throws IDORemoveRelationshipException;
+	public void removeTimeframe(Timeframe frame)
+			throws IDORemoveRelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#addText

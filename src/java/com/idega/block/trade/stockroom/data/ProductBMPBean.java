@@ -675,6 +675,11 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 	  return ejbFindProducts(supplierId, -1, -1);
   }
   
+  public Collection ejbFindProducts(int supplierId, int productCategoryId, int firstEntity, int lastEntity) throws FinderException {
+	  StringBuffer SQL = getSQL(supplierId, productCategoryId, null, null,null, -1, false);
+	    return this.idoFindPKsBySQL(SQL.toString(), lastEntity-firstEntity, firstEntity);
+  }
+  
   public Collection ejbFindProducts(int supplierId, int firstEntity, int lastEntity) throws FinderException {
     String pTable = com.idega.block.trade.stockroom.data.ProductBMPBean.getProductEntityName();
 
@@ -683,23 +688,38 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
       sqlQuery.append(" WHERE ");
       sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
       if (supplierId != -1) {
-				sqlQuery.append(" AND ").append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
-			}
+			sqlQuery.append(" AND ").append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
+		}
+      
       sqlQuery.append(" order by ").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameNumber());
 
     return this.idoFindPKsBySQL(sqlQuery.toString(), lastEntity-firstEntity, firstEntity);
   }
 
+
   public int ejbHomeGetProductCount(int supplierId) throws IDOException {
+	  return ejbHomeGetProductCount(supplierId, -1);
+  }
+  
+  public int ejbHomeGetProductCount(int supplierId, int productCategoryId) throws IDOException {
 	    String pTable = com.idega.block.trade.stockroom.data.ProductBMPBean.getProductEntityName();
+	    ProductCategory pCat = (ProductCategory) GenericEntity.getStaticInstance(ProductCategory.class);
+	    String catMiddle = EntityControl.getManyToManyRelationShipTableName(ProductCategory.class,Product.class);
 
 	    StringBuffer sqlQuery = new StringBuffer();
-	      sqlQuery.append("SELECT count(*) FROM ").append(pTable);
-	      sqlQuery.append(" WHERE ");
-	      sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
+	      sqlQuery.append("SELECT count(*) FROM ").append(pTable).append(" p, ").append(catMiddle);
+	      sqlQuery.append(" c WHERE ");
+	      sqlQuery.append("p.").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
+    	  sqlQuery.append(" AND ");
+    	  sqlQuery.append("c."+getIdColumnName() +" = p."+getIdColumnName());
 	      if (supplierId != -1) {
-					sqlQuery.append(" AND ").append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
+					sqlQuery.append(" AND ").append("p.").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
 				}
+	      if (productCategoryId != -1) {
+	    	  sqlQuery.append(" AND ");
+	    	  sqlQuery.append("c."+pCat.getIDColumnName() +" = "+productCategoryId);
+	        }
+
 	      return this.idoGetNumberOfRecords(sqlQuery.toString());
   }
   
@@ -723,7 +743,19 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   public Collection ejbFindProducts(int supplierId, int productCategoryId ,IWTimestamp from, IWTimestamp to, String orderBy, int localeId, int filter, boolean useTimeframes) throws FinderException{
     Collection coll;
 
-    String orderString = null;
+    StringBuffer timeframeSQL = getSQL(supplierId, productCategoryId, from, to,
+			orderBy, localeId, useTimeframes);
+
+//    System.out.println(timeframeSQL.toString());
+    coll = this.idoFindPKsBySQL(timeframeSQL.toString());
+//    products = EntityFinder.getInstance().findAll(Product.class,timeframeSQL.toString());
+    return coll;
+  }
+
+private StringBuffer getSQL(int supplierId, int productCategoryId,
+		IWTimestamp from, IWTimestamp to, String orderBy, int localeId,
+		boolean useTimeframes) throws FinderException {
+	String orderString = null;
     if (from != null && to != null && useTimeframes) {
     	orderString = com.idega.block.trade.stockroom.data.TimeframeBMPBean.getTimeframeFromColumnName();
     }
@@ -838,12 +870,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     }else if (from != null && to != null) {
       timeframeSQL.append(" ORDER BY "+orderString);
     }
-
-//    System.out.println(timeframeSQL.toString());
-    coll = this.idoFindPKsBySQL(timeframeSQL.toString());
-//    products = EntityFinder.getInstance().findAll(Product.class,timeframeSQL.toString());
-    return coll;
-  }
+	return timeframeSQL;
+}
 
   public List getDepartureAddresses(boolean ordered) throws IDOFinderException  {
     List list = EntityFinder.getInstance().findRelated(this, TravelAddress.class, com.idega.block.trade.stockroom.data.TravelAddressBMPBean.getColumnNameAddressTypeId(), Integer.toString(com.idega.block.trade.stockroom.data.TravelAddressBMPBean.ADDRESS_TYPE_DEPARTURE) );

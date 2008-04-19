@@ -5,6 +5,7 @@ import com.idega.data.IDOException;
 import com.idega.data.IDORelationshipException;
 import java.util.Collection;
 import javax.ejb.CreateException;
+import java.sql.SQLException;
 import com.idega.data.IDOCompositePrimaryKeyException;
 import com.idega.util.IWTimestamp;
 import javax.ejb.FinderException;
@@ -24,23 +25,49 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 		return (Product) super.findByPrimaryKeyIDO(pk);
 	}
 
-	public Collection findProductsOrderedByProductCategory(int supplierId) throws FinderException {
+	public Product createLegacy() {
+		try {
+			return create();
+		} catch (CreateException ce) {
+			throw new RuntimeException(ce.getMessage());
+		}
+	}
+
+	public Product findByPrimaryKey(int id) throws FinderException {
+		return (Product) super.findByPrimaryKeyIDO(id);
+	}
+
+	public Product findByPrimaryKeyLegacy(int id) throws SQLException {
+		try {
+			return findByPrimaryKey(id);
+		} catch (FinderException fe) {
+			throw new SQLException(fe.getMessage());
+		}
+	}
+
+	public Collection findProductsOrderedByProductCategory(int supplierId)
+			throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProductsOrderedByProductCategory(supplierId);
+		Collection ids = ((ProductBMPBean) entity)
+				.ejbFindProductsOrderedByProductCategory(supplierId);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findProductsOrderedByProductCategory(int supplierId, IWTimestamp stamp) throws FinderException {
+	public Collection findProductsOrderedByProductCategory(int supplierId,
+			IWTimestamp stamp) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProductsOrderedByProductCategory(supplierId, stamp);
+		Collection ids = ((ProductBMPBean) entity)
+				.ejbFindProductsOrderedByProductCategory(supplierId, stamp);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findProductsOrderedByProductCategory(int supplierId, IWTimestamp from, IWTimestamp to) throws FinderException {
+	public Collection findProductsOrderedByProductCategory(int supplierId,
+			IWTimestamp from, IWTimestamp to) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProductsOrderedByProductCategory(supplierId, from, to);
+		Collection ids = ((ProductBMPBean) entity)
+				.ejbFindProductsOrderedByProductCategory(supplierId, from, to);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
@@ -52,65 +79,103 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findProducts(int supplierId, int firstEntity, int lastEntity) throws FinderException {
+	public Collection findProducts(int supplierId, int productCategoryId,
+			int firstEntity, int lastEntity) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId, firstEntity, lastEntity);
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId,
+				productCategoryId, firstEntity, lastEntity);
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public Collection findProducts(int supplierId, int firstEntity,
+			int lastEntity) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId,
+				firstEntity, lastEntity);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
 	public int getProductCount(int supplierId) throws IDOException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		int theReturn = ((ProductBMPBean) entity).ejbHomeGetProductCount(supplierId);
+		int theReturn = ((ProductBMPBean) entity)
+				.ejbHomeGetProductCount(supplierId);
 		this.idoCheckInPooledEntity(entity);
 		return theReturn;
 	}
 
-	public Collection findProducts(int supplierId, int productCategoryId, IWTimestamp from, IWTimestamp to) throws FinderException {
+	public int getProductCount(int supplierId, int productCategoryId)
+			throws IDOException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId, productCategoryId, from, to);
+		int theReturn = ((ProductBMPBean) entity).ejbHomeGetProductCount(
+				supplierId, productCategoryId);
+		this.idoCheckInPooledEntity(entity);
+		return theReturn;
+	}
+
+	public Collection findProducts(int supplierId, int productCategoryId,
+			IWTimestamp from, IWTimestamp to) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId,
+				productCategoryId, from, to);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findProducts(int supplierId, int productCategoryId, IWTimestamp from, IWTimestamp to, String orderBy) throws FinderException {
+	public Collection findProducts(int supplierId, int productCategoryId,
+			IWTimestamp from, IWTimestamp to, String orderBy)
+			throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId, productCategoryId, from, to, orderBy);
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId,
+				productCategoryId, from, to, orderBy);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
 	public int getProductFilterNotConnectedToAnyProductCategory() {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		int theReturn = ((ProductBMPBean) entity).ejbHomeGetProductFilterNotConnectedToAnyProductCategory();
+		int theReturn = ((ProductBMPBean) entity)
+				.ejbHomeGetProductFilterNotConnectedToAnyProductCategory();
 		this.idoCheckInPooledEntity(entity);
 		return theReturn;
 	}
 
-	public Collection findProducts(int supplierId, int productCategoryId, IWTimestamp from, IWTimestamp to, String orderBy, int localeId, int filter) throws FinderException {
+	public Collection findProducts(int supplierId, int productCategoryId,
+			IWTimestamp from, IWTimestamp to, String orderBy, int localeId,
+			int filter) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId, productCategoryId, from, to, orderBy, localeId, filter);
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId,
+				productCategoryId, from, to, orderBy, localeId, filter);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findProducts(int supplierId, int productCategoryId, IWTimestamp from, IWTimestamp to, String orderBy, int localeId, int filter, boolean useTimeframes) throws FinderException {
+	public Collection findProducts(int supplierId, int productCategoryId,
+			IWTimestamp from, IWTimestamp to, String orderBy, int localeId,
+			int filter, boolean useTimeframes) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId, productCategoryId, from, to, orderBy, localeId, filter, useTimeframes);
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId,
+				productCategoryId, from, to, orderBy, localeId, filter,
+				useTimeframes);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findBySupplyPool(SupplyPool pool) throws IDORelationshipException, FinderException, IDOCompositePrimaryKeyException {
+	public Collection findBySupplyPool(SupplyPool pool)
+			throws IDORelationshipException, FinderException,
+			IDOCompositePrimaryKeyException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Collection ids = ((ProductBMPBean) entity).ejbFindBySupplyPool(pool);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findByPriceCategory(PriceCategory priceCategory) throws IDORelationshipException, FinderException {
+	public Collection findByPriceCategory(PriceCategory priceCategory)
+			throws IDORelationshipException, FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindByPriceCategory(priceCategory);
+		Collection ids = ((ProductBMPBean) entity)
+				.ejbFindByPriceCategory(priceCategory);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
