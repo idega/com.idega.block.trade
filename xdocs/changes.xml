@@ -4,7 +4,11 @@
     <author email="gimmi@idega.com">Grimur Jonsson</author>
   </properties>
   <body>
-
+	<release version="3.1.20" date="2008-04-23">
+		<action dev="gimmi" type="update">
+			Changed a find method in  ProductBMPBean
+		</action>     
+	</release>
 	<release version="3.1.19" date="2008-03-05">
 		<action dev="gimmi" type="update">
 			Changed one findPrice method to include the parameter countAsPerson
