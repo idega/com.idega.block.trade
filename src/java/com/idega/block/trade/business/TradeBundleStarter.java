@@ -20,7 +20,6 @@ import java.util.Iterator;
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 
-import com.idega.block.trade.stockroom.business.SupplierManagerBusiness;
 import com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean;
 import com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean;
 import com.idega.block.trade.stockroom.data.SupplierStaffGroupBMPBean;
