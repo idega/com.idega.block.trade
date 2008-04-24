@@ -63,11 +63,11 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findProductsOrderedByProductCategory(int supplierId,
+	public Collection findProductsOrderedByProductCategory(int supplierId, int productCategoryId,
 			IWTimestamp from, IWTimestamp to) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Collection ids = ((ProductBMPBean) entity)
-				.ejbFindProductsOrderedByProductCategory(supplierId, from, to);
+				.ejbFindProductsOrderedByProductCategory(supplierId, productCategoryId, from, to);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}

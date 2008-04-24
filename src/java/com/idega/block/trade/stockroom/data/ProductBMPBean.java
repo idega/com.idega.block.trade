@@ -660,15 +660,15 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   }
 
   public Collection ejbFindProductsOrderedByProductCategory(int supplierId) throws FinderException {
-    return ejbFindProductsOrderedByProductCategory(supplierId, null, null);
+    return ejbFindProductsOrderedByProductCategory(supplierId, -1, null, null);
   }
 
   public Collection ejbFindProductsOrderedByProductCategory(int supplierId, IWTimestamp stamp) throws FinderException {
-    return ejbFindProductsOrderedByProductCategory(supplierId, stamp, null);
+    return ejbFindProductsOrderedByProductCategory(supplierId, -1, stamp, null);
   }
 
-  public Collection ejbFindProductsOrderedByProductCategory(int supplierId, IWTimestamp from, IWTimestamp to) throws FinderException {
-    return ejbFindProducts(supplierId, -1, from, to, ICCategoryBMPBean.getEntityTableName()+"."+ICCategoryBMPBean.getColumnName(), -1, -1, false);
+  public Collection ejbFindProductsOrderedByProductCategory(int supplierId, int productCategoryId, IWTimestamp from, IWTimestamp to) throws FinderException {
+    return ejbFindProducts(supplierId, productCategoryId, from, to, ICCategoryBMPBean.getEntityTableName()+"."+ICCategoryBMPBean.getColumnName(), -1, -1, false);
   }
 
   public Collection ejbFindProducts(int supplierId) throws FinderException {

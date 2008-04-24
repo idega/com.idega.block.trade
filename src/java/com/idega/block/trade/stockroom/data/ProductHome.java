@@ -28,7 +28,7 @@ public interface ProductHome extends IDOHome {
 	public Collection findProductsOrderedByProductCategory(int supplierId,
 			IWTimestamp stamp) throws FinderException;
 
-	public Collection findProductsOrderedByProductCategory(int supplierId,
+	public Collection findProductsOrderedByProductCategory(int supplierId, int productCategoryId, 
 			IWTimestamp from, IWTimestamp to) throws FinderException;
 
 	public Collection findProducts(int supplierId) throws FinderException;
