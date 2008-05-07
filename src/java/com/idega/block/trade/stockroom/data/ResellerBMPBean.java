@@ -16,6 +16,7 @@ import com.idega.core.contact.data.Phone;
 import com.idega.core.location.data.Address;
 import com.idega.data.EntityFinder;
 import com.idega.data.GenericEntity;
+import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOException;
 import com.idega.data.IDOLookup;
 import com.idega.data.TreeableEntity;
@@ -261,15 +262,16 @@ public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, 
     super.insert();
   }
 
-  public Settings getSettings() throws FinderException, RemoteException, CreateException {
+  public Settings getSettings() throws FinderException, RemoteException, CreateException, IDOAddRelationshipException {
     SettingsHome shome = (SettingsHome)IDOLookup.getHome(Settings.class);
     Collection coll = null;
     try{
       coll = this.idoGetRelatedEntities(Settings.class);
     }
     catch(IDOException ido){
-        return shome.create(this);
-      //throw new CreateException(ido.getMessage());
+    	Settings sett = shome.create();
+    	sett.setReseller(this);
+    	return sett;
     }
     if (coll.size() == 1) {
       Iterator iter = coll.iterator();
@@ -286,7 +288,10 @@ public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, 
       }
       return null;
     } else {
-      return shome.create(this);
+	  	Settings sett = shome.create();
+		sett.setReseller(this);
+		return sett;
+//	    return shome.create(this);
     }
   }
 

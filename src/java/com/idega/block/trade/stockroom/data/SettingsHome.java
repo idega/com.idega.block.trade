@@ -1,10 +1,12 @@
 package com.idega.block.trade.stockroom.data;
 
 
-public interface SettingsHome extends com.idega.data.IDOHome
-{
- public Settings create() throws javax.ejb.CreateException, java.rmi.RemoteException;
- public Settings findByPrimaryKey(Object pk) throws javax.ejb.FinderException, java.rmi.RemoteException;
- public Settings create(com.idega.data.IDOLegacyEntity p0)throws javax.ejb.CreateException, java.rmi.RemoteException;
+import javax.ejb.CreateException;
+import com.idega.data.IDOHome;
+import javax.ejb.FinderException;
 
+public interface SettingsHome extends IDOHome {
+	public Settings create() throws CreateException;
+
+	public Settings findByPrimaryKey(Object pk) throws FinderException;
 }

@@ -304,7 +304,7 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		return getIntColumnValue(getColumnNameTPosMerchantID());
 	}
 
-	public Settings getSettings() throws FinderException, RemoteException, CreateException {
+	public Settings getSettings() throws FinderException, RemoteException, CreateException, IDOAddRelationshipException {
 		SettingsHome shome = (SettingsHome) IDOLookup.getHome(Settings.class);
 		Collection coll = null;
 		try {
@@ -312,7 +312,10 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		}
 		catch (IDOException ido) {
 			//throw new CreateException(ido.getMessage());
-			return shome.create(this);
+//			return shome.create(this);
+	    	Settings sett = shome.create();
+	    	sett.setSupplier(this);
+	    	return sett;
 		}
 		if (coll.size() == 1) {
 			Iterator iter = coll.iterator();
@@ -330,7 +333,10 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 			return null;
 		}
 		else {
-			return shome.create(this);
+	    	Settings sett = shome.create();
+	    	sett.setSupplier(this);
+	    	return sett;
+//			return shome.create(this);
 		}
 	}
 

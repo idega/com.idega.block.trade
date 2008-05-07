@@ -1,38 +1,20 @@
 package com.idega.block.trade.stockroom.data;
 
 
-public class SettingsHomeImpl extends com.idega.data.IDOFactory implements SettingsHome
-{
- protected Class getEntityInterfaceClass(){
-  return Settings.class;
- }
+import javax.ejb.CreateException;
+import javax.ejb.FinderException;
+import com.idega.data.IDOFactory;
 
-
-public Settings create(com.idega.data.IDOLegacyEntity p0)throws javax.ejb.CreateException{
-	com.idega.data.IDOEntity entity = this.idoCheckOutPooledEntity();
-	Object pk = ((SettingsBMPBean)entity).ejbCreate(p0);
-	((SettingsBMPBean)entity).ejbPostCreate(p0);
-	this.idoCheckInPooledEntity(entity);
-	try{
-		return this.findByPrimaryKey(pk);
+public class SettingsHomeImpl extends IDOFactory implements SettingsHome {
+	public Class getEntityInterfaceClass() {
+		return Settings.class;
 	}
-	catch(javax.ejb.FinderException fe){
-		throw new com.idega.data.IDOCreateException(fe);
+
+	public Settings create() throws CreateException {
+		return (Settings) super.createIDO();
 	}
-	catch(Exception e){
-		throw new com.idega.data.IDOCreateException(e);
+
+	public Settings findByPrimaryKey(Object pk) throws FinderException {
+		return (Settings) super.findByPrimaryKeyIDO(pk);
 	}
-}
-
- public Settings create() throws javax.ejb.CreateException{
-  return (Settings) super.createIDO();
- }
-
-
- public Settings findByPrimaryKey(Object pk) throws javax.ejb.FinderException{
-  return (Settings) super.findByPrimaryKeyIDO(pk);
- }
-
-
-
 }

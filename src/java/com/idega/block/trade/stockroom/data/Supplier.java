@@ -1,5 +1,5 @@
 /*
- * $Id: Supplier.java,v 1.26 2005/06/18 15:59:00 gimmi Exp $
+ * $Id: Supplier.java,v 1.27 2008/05/07 02:37:08 gimmi Exp $
  * Created on 18.6.2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -13,9 +13,11 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
+
 import com.idega.block.trade.data.CreditCardInformation;
 import com.idega.core.contact.data.Email;
 import com.idega.core.file.data.ICFile;
@@ -29,10 +31,10 @@ import com.idega.user.data.Group;
 
 /**
  * 
- *  Last modified: $Date: 2005/06/18 15:59:00 $ by $Author: gimmi $
+ *  Last modified: $Date: 2008/05/07 02:37:08 $ by $Author: gimmi $
  * 
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public interface Supplier extends IDOLegacyEntity {
 
@@ -154,7 +156,7 @@ public interface Supplier extends IDOLegacyEntity {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#getSettings
 	 */
-	public Settings getSettings() throws FinderException, RemoteException, CreateException;
+	public Settings getSettings() throws FinderException, RemoteException, CreateException, IDOAddRelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#setCreditCardInformation

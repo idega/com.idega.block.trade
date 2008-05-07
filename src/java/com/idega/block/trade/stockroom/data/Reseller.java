@@ -3,10 +3,13 @@ package com.idega.block.trade.stockroom.data;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.List;
+
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
+
 import com.idega.core.contact.data.Email;
 import com.idega.core.location.data.Address;
+import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOLegacyEntity;
 import com.idega.data.TreeableEntity;
 import com.idega.user.data.Group;
@@ -135,7 +138,7 @@ public interface Reseller extends IDOLegacyEntity, TreeableEntity {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ResellerBMPBean#getSettings
 	 */
-	public Settings getSettings() throws FinderException, RemoteException, CreateException;
+	public Settings getSettings() throws FinderException, RemoteException, CreateException, IDOAddRelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ResellerBMPBean#getOrganizationID
