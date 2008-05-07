@@ -1,5 +1,5 @@
 /*
- * $Id: StockroomBusiness.java,v 1.51 2007/07/05 00:15:01 gimmi Exp $
+ * $Id: StockroomBusiness.java,v 1.52 2008/05/07 02:36:49 gimmi Exp $
  * Created on 12.5.2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -33,10 +33,10 @@ import com.idega.util.IWTimestamp;
 
 /**
  * 
- *  Last modified: $Date: 2007/07/05 00:15:01 $ by $Author: gimmi $
+ *  Last modified: $Date: 2008/05/07 02:36:49 $ by $Author: gimmi $
  * 
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  */
 public interface StockroomBusiness extends IBOService {
 
@@ -198,5 +198,6 @@ public interface StockroomBusiness extends IBOService {
 
 	public Collection getService_PortTypes(String remoteDomainToExclude) throws ServiceException, MalformedURLException;
   	public void clearCache(int productID);
+  	public float getOnlineDiscount(ProductPrice price);
 
 }

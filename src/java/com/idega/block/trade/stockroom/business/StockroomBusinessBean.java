@@ -26,6 +26,7 @@ import com.idega.block.trade.stockroom.data.ProductPriceHome;
 import com.idega.block.trade.stockroom.data.Reseller;
 import com.idega.block.trade.stockroom.data.ResellerHome;
 import com.idega.block.trade.stockroom.data.ResellerStaffGroup;
+import com.idega.block.trade.stockroom.data.Settings;
 import com.idega.block.trade.stockroom.data.Supplier;
 import com.idega.block.trade.stockroom.data.SupplierHome;
 import com.idega.block.trade.stockroom.data.SupplierStaffGroupBMPBean;
@@ -194,11 +195,36 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 				  return pr*((100-disc) /100);
 
 			  }
-
 		  }
 		  return 0;
 	  }
-  
+  	
+  	private HashMap onlineDiscountMap = null;
+  	
+  	public float getOnlineDiscount(ProductPrice price) {
+  		if (onlineDiscountMap == null) {
+  			onlineDiscountMap = new HashMap();
+  		}
+  		
+  		Float f = (Float) onlineDiscountMap.get(price.getPrimaryKey());
+  		if (f == null) {
+			try {
+				Settings settings = getProductBusiness().getProduct(price.getProductId()).getSupplier().getSettings();
+	  			f = new Float(settings.getGlobalOnlineDiscount());
+	  			onlineDiscountMap.put(price.getPrimaryKey(), f);
+			} catch (IDOAddRelationshipException e) {
+				e.printStackTrace();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			} catch (FinderException e) {
+				e.printStackTrace();
+			} catch (CreateException e) {
+				e.printStackTrace();
+			}
+  		}
+  		return f.floatValue();
+  	}
+  	
   	private HashMap priceMap = null;
   	
   	private HashMap getPriceMap(int productId) {
