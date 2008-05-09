@@ -493,11 +493,6 @@
       <value>ISK</value>
     </key>
     <key>
-      <name>datasource</name>
-      <type>java.lang.String</type>
-      <value>travel</value>
-    </key>
-    <key>
       <name>REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST</name>
       <type>java.lang.String</type>
       <value />
