@@ -35,6 +35,7 @@ import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWBundleStartable;
 import com.idega.user.business.GroupBusiness;
 import com.idega.util.EventTimer;
+import com.idega.util.database.ConnectionBroker;
 import com.idega.util.database.PoolManager;
 
 public class TradeBundleStarter implements IWBundleStartable,ActionListener{
