@@ -122,7 +122,7 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 			}
 		}
 		
-		if (dataSource != null && PoolManager.getInstance().hasDatasource(dataSource)) {
+		if (dataSource != null && (PoolManager.getInstance().hasDatasource(dataSource) || ConnectionBroker.getDataSource(dataSource) != null)) {
 			try {
 				Collection entities = bundle.getDataObjects();
 				if (entities != null){
