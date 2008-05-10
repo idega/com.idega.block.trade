@@ -123,8 +123,8 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 			}
 		}
 		
-		if (dataSource != null && (PoolManager.getInstance().hasDatasource(dataSource) || ConnectionBroker.getDataSource(dataSource) != null)) {
-			try {
+		try {
+			if (dataSource != null && (PoolManager.getInstance().hasDatasource(dataSource) || ConnectionBroker.getDataSource(dataSource) != null)) {
 				Collection entities = bundle.getDataObjects();
 				if (entities != null){
 					Iterator iter = entities.iterator();
@@ -143,9 +143,9 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 						}
 					}
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
