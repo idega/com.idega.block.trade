@@ -43,7 +43,7 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 	private IWBundle bundle_;
 	private EventTimer timer;
 	public static final String IW_CURRENCY_TIMER = "iw_currency_timer";
-	public static final String DATASOURCE = "travel.datasource";
+	public static final String DATASOURCE = "default";
 	
 	public TradeBundleStarter() {
 	}
