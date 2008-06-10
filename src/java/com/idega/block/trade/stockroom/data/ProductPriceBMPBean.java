@@ -28,6 +28,7 @@ import com.idega.data.query.InCriteria;
 import com.idega.data.query.MatchCriteria;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
+import com.idega.data.query.WildCardColumn;
 import com.idega.util.text.TextSoap;
 
 /**
@@ -72,12 +73,14 @@ public class ProductPriceBMPBean extends com.idega.data.GenericEntity implements
     this.addManyToManyRelationShip(TravelAddress.class);
 	  addAttribute(COLUMN_FIXED_PRICE, "is fixed price", Boolean.class);
     
-    addIndex("IDX_PRO_PRI_1", new String[]{getColumnNameProductId(), getColumnNamePriceCategoryId(), getColumnNameCurrencyId(), getColumnNameIsValid()});
-    addIndex("IDX_PRO_PRI_2", new String[]{getColumnNameProductId(), getColumnNamePriceCategoryId(), getColumnNameIsValid()});
-    addIndex("IDX_PRO_PRI_3", new String[]{getColumnNameProductId(), getColumnNameCurrencyId(), getColumnNameIsValid()});
-    addIndex("IDX_PRO_PRI_4", getColumnNameProductId());
+//    addIndex("IDX_PRO_PRI_1", new String[]{getColumnNameProductId(), getColumnNamePriceCategoryId(), getColumnNameCurrencyId(), getColumnNameIsValid()});
+//    addIndex("IDX_PRO_PRI_2", new String[]{getColumnNameProductId(), getColumnNamePriceCategoryId(), getColumnNameIsValid()});
+//    addIndex("IDX_PRO_PRI_3", new String[]{getColumnNameProductId(), getColumnNameCurrencyId(), getColumnNameIsValid()});
+//    addIndex("IDX_PRO_PRI_4", getColumnNameProductId());
+    addIndex("PRO_PRICE_1", new String[]{getColumnNamePriceCategoryId(), getColumnNameProductId(), getColumnNameIsValid(), getColumnNameExactDate(), getColumnNameCurrencyId(), getColumnNamePriceType()});
     
     addMetaDataRelationship();
+	getEntityDefinition().setUseFinderCollectionPrefetch(true);
   }
 
 
@@ -604,7 +607,7 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 	  
 	  Table table = new Table(this);
 	  SelectQuery query = new SelectQuery(table);
-	  query.addColumn(new Column(table, getIDColumnName()));
+	  query.addColumn(new WildCardColumn(table));
 	  query.addCriteria(new MatchCriteria(new Column(table, getColumnNameProductId()), MatchCriteria.EQUALS, productId));
 	  query.addCriteria(new MatchCriteria(new Column(table, getColumnNamePriceCategoryId()), MatchCriteria.EQUALS, priceCategoryID));
 	  query.addCriteria(new MatchCriteria(new Column(table, getColumnNameCurrencyId()), MatchCriteria.EQUALS, currencyID));
