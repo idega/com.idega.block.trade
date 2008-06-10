@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.23 2008/03/05 23:43:49 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.24 2008/06/10 20:05:11 eiki Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -302,6 +303,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) {
 		this.mapForProductPriceMap.put(new Integer(productID), null);
 		this.mapForMiscellaniousPriceMap.put(new Integer(productID), null);
+		this.mapForFloatPrices.put(new Integer(productID), null);
 
 		System.out.println("[ProductPriceBusiness] invalidateCache for product "+productID);
 		try {
@@ -324,6 +326,53 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return true;
 	}
 
+	private HashMap mapForFloatPrices = new HashMap();
+
+	private HashMap getFloatPriceMapForProduct(Object productID) {
+		HashMap t = (HashMap) this.mapForFloatPrices.get(productID);
+		if (t == null) {
+			t = new HashMap();
+			this.mapForFloatPrices.put(productID, t);
+		}
+
+		return t;
+	}
+
+  	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
+//		if (price != null) {
+//			HashMap map = getFloatPriceMapForProduct(new Integer(price.getProductId())); 
+//			String key = price.getPrimaryKey()+"_"+timeframeId+"_"+addressId;
+//			Float fValue = (Float) map.get(key);
+//			if (fValue == null) {
+//				float value = getStockroomBusiness().getPrice(price, time, timeframeId, addressId);
+//				map.put(key, new Float(value));
+//				return value;
+//			} else {
+//				return fValue.floatValue();
+//			}
+//		} else {
+//			System.out.println("[ProductPriceBUsiness] Wrong usage of getPrice method, need to have productPriceId");
+			return getStockroomBusiness().getPrice(price, time, timeframeId, addressId);
+//		}
+  	}
+	public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException  {
+//		if (productPriceId != -1) {
+//			HashMap map = getFloatPriceMapForProduct(new Integer(productId)); 
+//			String key = productPriceId+"_"+productId+"_"+currencyId+"_"+timeframeId+"_"+addressId;
+//			Float fValue = (Float) map.get(key);
+//			if (fValue == null) {
+//				float value = getStockroomBusiness().getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId);
+//				map.put(key, new Float(value));
+//				return value;
+//			} else {
+//				return fValue.floatValue();
+//			}
+//		} else {
+//			System.out.println("[ProductPriceBUsiness] Wrong usage of getPrice method, need to have productPriceId");
+			return getStockroomBusiness().getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId);
+//		}
+	}
+	
 	public Collection getCurrenciesInUse(Product product) throws IDOLookupException, FinderException {
 		int[] currIDs = getProductPriceHome().getCurrenciesInUse(((Integer)product.getPrimaryKey()).intValue());
 		CurrencyHome cHome = (CurrencyHome) IDOLookup.getHome(Currency.class);

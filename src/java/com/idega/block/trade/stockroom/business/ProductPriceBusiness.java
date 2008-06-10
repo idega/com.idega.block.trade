@@ -1,19 +1,22 @@
 package com.idega.block.trade.stockroom.business;
 
 
+import java.rmi.RemoteException;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collection;
-import com.idega.util.IWTimestamp;
+
 import javax.ejb.FinderException;
 
+import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.block.trade.stockroom.data.PriceCategoryHome;
 import com.idega.block.trade.stockroom.data.Product;
 import com.idega.block.trade.stockroom.data.ProductPrice;
 import com.idega.block.trade.stockroom.data.ProductPriceHome;
-import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.business.IBOService;
 import com.idega.data.IDOLookupException;
-
-import java.rmi.RemoteException;
+import com.idega.util.IWTimestamp;
 
 public interface ProductPriceBusiness extends IBOService {
 	/**
@@ -80,4 +83,8 @@ public interface ProductPriceBusiness extends IBOService {
 	 * @see com.idega.block.trade.stockroom.business.ProductPriceBusinessBean#getProductPriceHome
 	 */
 	public ProductPriceHome getProductPriceHome() throws RemoteException;
+	public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException;
+  	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException;
+
+
 }
