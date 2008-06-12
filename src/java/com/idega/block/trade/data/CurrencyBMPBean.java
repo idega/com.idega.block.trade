@@ -38,7 +38,7 @@ public class CurrencyBMPBean extends com.idega.data.GenericEntity implements Cur
     this.addAttribute(getIDColumnName());
     this.addAttribute(getColumnNameCurrencyName(),"Nafn",true,true,String.class,255);
     this.addAttribute(getColumnNameCurrencyAbbreviation(),"Skammstofun",true,true,String.class,20);
-
+    addIndex("CURRENY_IDX_1", new String[]{"TR_CURRENCY_ID","BUY_VALUE","SELL_VALUE","MIDDLE_VALUE","CURRENCY_DATE"});
   }
 
   public String getEntityName() {
