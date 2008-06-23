@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.23.2.1 2008/06/10 19:38:21 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.23.2.2 2008/06/23 19:47:30 gimmi Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -303,7 +303,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) {
 		this.mapForProductPriceMap.put(new Integer(productID), null);
 		this.mapForMiscellaniousPriceMap.put(new Integer(productID), null);
-		this.mapForFloatPrices.put(new Integer(productID), null);
+//		this.mapForFloatPrices.put(new Integer(productID), null);
 
 		System.out.println("[ProductPriceBusiness] invalidateCache for product "+productID);
 		try {
@@ -326,17 +326,17 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return true;
 	}
 
-	private HashMap mapForFloatPrices = new HashMap();
-
-	private HashMap getFloatPriceMapForProduct(Object productID) {
-		HashMap t = (HashMap) this.mapForFloatPrices.get(productID);
-		if (t == null) {
-			t = new HashMap();
-			this.mapForFloatPrices.put(productID, t);
-		}
-
-		return t;
-	}
+//	private HashMap mapForFloatPrices = new HashMap();
+//
+//	private HashMap getFloatPriceMapForProduct(Object productID) {
+//		HashMap t = (HashMap) this.mapForFloatPrices.get(productID);
+//		if (t == null) {
+//			t = new HashMap();
+//			this.mapForFloatPrices.put(productID, t);
+//		}
+//
+//		return t;
+//	}
 
   	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
 //		if (price != null) {
@@ -369,7 +369,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //			}
 //		} else {
 //			System.out.println("[ProductPriceBUsiness] Wrong usage of getPrice method, need to have productPriceId");
-			return getStockroomBusiness().getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId);
+			return getStockroomBusiness().getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId, exactDate);
 //		}
 	}
 	
