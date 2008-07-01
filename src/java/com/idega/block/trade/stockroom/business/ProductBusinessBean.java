@@ -171,6 +171,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   public boolean invalidateProductCache(String productID, String remoteDomainToExclude) {
 	  this.products.remove(productID);
 	  this.timeframeMap.remove(productID);
+	  this.publicDisplay.remove(productID);
 	    System.out.println("[ProductBusiness] invalidateProductCache for product "+productID);
 	    try {
 			Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
@@ -544,5 +545,46 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 	catch (IBOLookupException e) {
 		throw new IBORuntimeException(e);
 	}
+  }
+  
+  private HashMap publicDisplay = new HashMap();
+  
+  public Boolean getPublicDisplay(Product product) {
+	  if (product != null) {
+		  return (Boolean) publicDisplay.get(product.getPrimaryKey().toString());
+	  }
+	  return null;
+  }
+  
+  public void setPublicDisplay(Product product, boolean display) {
+	  publicDisplay.put(product.getPrimaryKey().toString(), new Boolean(display));
+  }
+  
+  public boolean displayProductForPublic(Product product) {
+	  Boolean returner = getPublicDisplay(product);
+	  if (returner == null) {
+		  if (product != null && product.getIsValid()) {
+			  try {
+				Collection prodCats = product.getProductCategories();
+				Collection suppProdCats = product.getSupplier().getProductCategories();
+				Iterator iter = prodCats.iterator();
+				boolean catInUse = false;
+				while (!catInUse && iter.hasNext()) {
+					catInUse = suppProdCats.contains(((ProductCategory) iter.next()));
+				}
+				setPublicDisplay(product, catInUse);
+				return catInUse;
+			} catch (IDORelationshipException e) {
+				e.printStackTrace();
+				return false;
+			}
+		  } else {
+			  setPublicDisplay(product, false);
+			  return false;
+		  }
+	  } else {
+		  return returner.booleanValue();
+	  }
+	  
   }
 }
