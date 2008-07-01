@@ -31,7 +31,7 @@ public class SupplyPoolBMPBean extends GenericEntity  implements SupplyPool{
 	public void initializeAttributes() {
 		addAttribute(getIDColumnName());
 		addAttribute(COLUMN_NAME, "nafn", true, true, String.class);
-		addAttribute(COLUMN_DESCRIPTION, "làsing", true, true, String.class);
+		addAttribute(COLUMN_DESCRIPTION, "lysing", true, true, String.class);
 		addAttribute(COLUMN_IS_DELETED, "valid", true, true, Boolean.class);
 		
 		this.addManyToManyRelationShip(Product.class);

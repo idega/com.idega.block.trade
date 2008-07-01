@@ -15,7 +15,7 @@ import com.idega.data.IDORemoveRelationshipException;
  * Description:
  * Copyright:    Copyright (c) 2001
  * Company:      idega.is
- * @author       <a href="mailto:gimmi@idega.is">Grimur Jónsson</a>
+ * @author       <a href="mailto:gimmi@idega.is">Grimur Jonsson</a>
  * @version 1.0
  */
 
