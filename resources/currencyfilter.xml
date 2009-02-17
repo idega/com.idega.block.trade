@@ -1,8 +1,8 @@
 <idega>
-<siteurl>http://www.sedlabanki.is/gengi.asp</siteurl>
-<currency>myntnafn</currency>
-<buyvalue>kaupgengi</buyvalue>
-<sellvalue>solugengi</sellvalue>
-<middlevalue>midgengi</middlevalue>
-<default>ISK</default>
+	<siteurl>http://www.sedlabanki.is/?PageID=289</siteurl>
+	<currency>myntnafn</currency>
+	<buyvalue>kaupgengi</buyvalue>
+	<sellvalue>solugengi</sellvalue>
+	<middlevalue>midgengi</middlevalue>
+	<default>ISK</default>
 </idega>
