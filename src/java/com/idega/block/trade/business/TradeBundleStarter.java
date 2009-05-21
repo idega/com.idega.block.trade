@@ -96,20 +96,7 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 		if (dataSource == null) {
 			dataSource = bundle.getProperty("datasource");
 			if (dataSource != null) {
-				try {
-					ICApplicationBindingHome abHome = (ICApplicationBindingHome) IDOLookup.getHome(ICApplicationBinding.class);
-					ICApplicationBinding ab = abHome.create();
-					ab.setKey(DATASOURCE);
-					ab.setValue(dataSource);
-					ab.setBindingType("travel.binding");
-					ab.store();
-				}
-				catch (IDOLookupException e1) {
-					e1.printStackTrace();
-				}
-				catch (CreateException e) {
-					e.printStackTrace();
-				}
+				settings.setProperty(DATASOURCE, dataSource, "travel.binding");
 			}
 		}
 		
