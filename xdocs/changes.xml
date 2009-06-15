@@ -4,6 +4,13 @@
     <author email="gimmi@idega.com">Grimur Jonsson</author>
   </properties>
   <body>
+  
+  	<release version="3.1.22" date="2008-06-10">
+		<action dev="eiki" type="update">
+			Speed improvements and Mysql fixes, travel has been moved to mysql only
+		</action>     
+	</release>
+	
 	<release version="3.1.21" date="2008-05-06">
 		<action dev="gimmi" type="update">
 			Online discount

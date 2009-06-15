@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.24 2008/06/10 20:05:11 eiki Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.25 2009/06/15 14:07:54 eiki Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -303,8 +303,9 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) {
 		this.mapForProductPriceMap.put(new Integer(productID), null);
 		this.mapForMiscellaniousPriceMap.put(new Integer(productID), null);
-		this.mapForFloatPrices.put(new Integer(productID), null);
+//		this.mapForFloatPrices.put(new Integer(productID), null);
 
+//TODO DO IN SEPERATE THREAD!
 		System.out.println("[ProductPriceBusiness] invalidateCache for product "+productID);
 		try {
 			Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
@@ -326,17 +327,18 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return true;
 	}
 
-	private HashMap mapForFloatPrices = new HashMap();
+//	private HashMap mapForFloatPrices = new HashMap();
+//
+//	private HashMap getFloatPriceMapForProduct(Object productID) {
+//		HashMap t = (HashMap) this.mapForFloatPrices.get(productID);
+//		if (t == null) {
+//			t = new HashMap();
+//			this.mapForFloatPrices.put(productID, t);
+//		}
+//
+//		return t;
+//	}
 
-	private HashMap getFloatPriceMapForProduct(Object productID) {
-		HashMap t = (HashMap) this.mapForFloatPrices.get(productID);
-		if (t == null) {
-			t = new HashMap();
-			this.mapForFloatPrices.put(productID, t);
-		}
-
-		return t;
-	}
 
   	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
 //		if (price != null) {

@@ -78,6 +78,7 @@ public class ProductPriceBMPBean extends com.idega.data.GenericEntity implements
 //    addIndex("IDX_PRO_PRI_3", new String[]{getColumnNameProductId(), getColumnNameCurrencyId(), getColumnNameIsValid()});
 //    addIndex("IDX_PRO_PRI_4", getColumnNameProductId());
     addIndex("PRO_PRICE_1", new String[]{getColumnNamePriceCategoryId(), getColumnNameProductId(), getColumnNameIsValid(), getColumnNameExactDate(), getColumnNameCurrencyId(), getColumnNamePriceType()});
+    addIndex("PRO_PRICE_2", new String[]{getColumnNamePriceDate()});
     
     addMetaDataRelationship();
 	getEntityDefinition().setUseFinderCollectionPrefetch(true);
@@ -148,7 +149,7 @@ public class ProductPriceBMPBean extends com.idega.data.GenericEntity implements
         CurrencyHolder holder = CurrencyBusiness.getCurrencyHolder(currency.getCurrencyName());
         if (holder != null) {
         	if (currId != holder.getCurrencyID() && holder.getCurrencyID() > 0) {
-	          System.out.println("[ProductPriceBMPBean] Backwards compatability : changing currencyId from 1 to "+holder.getCurrencyID());
+	          System.out.println("[ProductPriceBMPBean] Backwards compatability : changing currencyId from "+currId+" to "+holder.getCurrencyID());
 	          this.setCurrencyId(holder.getCurrencyID());
 	          this.store();
         	}
