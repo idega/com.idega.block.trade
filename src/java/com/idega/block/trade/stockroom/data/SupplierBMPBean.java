@@ -334,9 +334,9 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		}
 		else {
 	    	Settings sett = shome.create();
+	    	sett.store();	
 	    	sett.setSupplier(this);
 	    	return sett;
-//			return shome.create(this);
 		}
 	}
 

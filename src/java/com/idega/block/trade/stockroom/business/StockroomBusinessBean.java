@@ -709,32 +709,15 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 	
 	private String getRemoteTravelApplicationUrlCsvList() {
 		if (remoteTravelApplications == null) {
-			try {
-				ICApplicationBindingHome abHome = (ICApplicationBindingHome) IDOLookup.getHome(ICApplicationBinding.class);
-				String icABKey = "RemoteTravelAppUrl";
-				try {
-					ICApplicationBinding binding = abHome.findByPrimaryKey(icABKey);
-					remoteTravelApplications = binding.getValue();
-				}
-				catch (FinderException e) {
-					try {
-						IWBundle bundle =  getIWMainApplication().getBundle("com.idega.block.trade");
-						String remoteTravelWebs = bundle.getProperty(REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST,"");
-		
-						ICApplicationBinding binding = abHome.create();
-						binding.setKey(icABKey);
-						binding.setBindingType("travel.binding");
-						binding.setValue(remoteTravelWebs);
-						binding.store();
-						remoteTravelApplications = remoteTravelWebs;
-					}
-					catch (CreateException e1) {
-						e1.printStackTrace();
-					}
-				}
-			}
-			catch (IDOLookupException e) {
-				e.printStackTrace();
+			String icABKey = "RemoteTravelAppUrl";
+			remoteTravelApplications = getIWApplicationContext().getApplicationSettings().getProperty(icABKey);
+
+			if (remoteTravelApplications == null) {
+				IWBundle bundle =  getIWMainApplication().getBundle("com.idega.block.trade");
+				String remoteTravelWebs = bundle.getProperty(REMOTE_TRAVEL_APPLICATION_URL_CSV_LIST,"");
+
+				getIWApplicationContext().getApplicationSettings().setProperty(icABKey, remoteTravelWebs, "travel.binding");
+				remoteTravelApplications = remoteTravelWebs;
 			}
 		}
 

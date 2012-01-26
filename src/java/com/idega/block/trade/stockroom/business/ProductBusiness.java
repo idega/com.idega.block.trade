@@ -327,6 +327,7 @@ public interface ProductBusiness extends IBOService {
 	 */
 	public ProductPriceBusiness getProductPriceBusiness()
 			throws RemoteException;
-	  public boolean displayProductForPublic(Product product);
+	 
+	public boolean displayProductForPublic(Product product);
 
 }

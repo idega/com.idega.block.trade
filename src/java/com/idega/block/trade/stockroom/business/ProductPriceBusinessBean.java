@@ -1,5 +1,5 @@
 /*
- * $Id: ProductPriceBusinessBean.java,v 1.23.2.2 2008/06/23 19:47:30 gimmi Exp $
+ * $Id: ProductPriceBusinessBean.java,v 1.25 2009/06/15 14:07:54 eiki Exp $
  * Created on Aug 10, 2005
  *
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
@@ -43,6 +43,7 @@ import com.idega.data.IDOLookupException;
 import com.idega.data.IDORelationshipException;
 import com.idega.data.IDORuntimeException;
 import com.idega.util.IWTimestamp;
+import com.idega.util.ListUtil;
 
 
 public class ProductPriceBusinessBean extends IBOServiceBean  implements ProductPriceBusiness{
@@ -112,9 +113,9 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			prices = (Collection) priceMap.get(mapKey.toString());
 		}
 
-		if (prices == null || lookForDate) {
+		if (ListUtil.isEmpty(prices) || lookForDate) {
 			Collection tmp = null;
-			if (prices != null) {
+			if (!ListUtil.isEmpty(prices)) {
 				tmp = prices;
 			} else {
 				tmp = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 0, currencyId, visibility, key);
@@ -305,6 +306,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		this.mapForMiscellaniousPriceMap.put(new Integer(productID), null);
 //		this.mapForFloatPrices.put(new Integer(productID), null);
 
+//TODO DO IN SEPERATE THREAD!
 		System.out.println("[ProductPriceBusiness] invalidateCache for product "+productID);
 		try {
 			Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
@@ -338,7 +340,8 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //		return t;
 //	}
 
-  	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
+
+	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
 //		if (price != null) {
 //			HashMap map = getFloatPriceMapForProduct(new Integer(price.getProductId())); 
 //			String key = price.getPrimaryKey()+"_"+timeframeId+"_"+addressId;
@@ -369,7 +372,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //			}
 //		} else {
 //			System.out.println("[ProductPriceBUsiness] Wrong usage of getPrice method, need to have productPriceId");
-			return getStockroomBusiness().getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId, exactDate);
+			return getStockroomBusiness().getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId);
 //		}
 	}
 	

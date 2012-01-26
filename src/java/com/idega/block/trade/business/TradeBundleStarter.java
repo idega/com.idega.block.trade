@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.ejb.CreateException;
-import javax.ejb.FinderException;
 
 import com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean;
 import com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean;
@@ -33,6 +32,7 @@ import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWBundleStartable;
+import com.idega.idegaweb.IWMainApplicationSettings;
 import com.idega.user.business.GroupBusiness;
 import com.idega.util.EventTimer;
 import com.idega.util.database.ConnectionBroker;
@@ -90,36 +90,13 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 	 */
 	private void checkDataSource(IWBundle bundle) {
 		// Switching the datasource
-		String dataSource = null;
-		try {
-			ICApplicationBindingHome abHome = (ICApplicationBindingHome) IDOLookup.getHome(ICApplicationBinding.class);
-			ICApplicationBinding ab = abHome.findByPrimaryKey(DATASOURCE);
-			dataSource = ab.getValue();
-		}
-		catch (IDOLookupException e1) {
-			e1.printStackTrace();
-		}
-		catch (FinderException e) {
-			e.printStackTrace();
-		}
+		IWMainApplicationSettings settings = bundle.getApplication().getIWApplicationContext().getApplicationSettings();
+		String dataSource = settings.getProperty(DATASOURCE);
 		
 		if (dataSource == null) {
 			dataSource = bundle.getProperty("datasource");
 			if (dataSource != null) {
-				try {
-					ICApplicationBindingHome abHome = (ICApplicationBindingHome) IDOLookup.getHome(ICApplicationBinding.class);
-					ICApplicationBinding ab = abHome.create();
-					ab.setKey(DATASOURCE);
-					ab.setValue(dataSource);
-					ab.setBindingType("travel.binding");
-					ab.store();
-				}
-				catch (IDOLookupException e1) {
-					e1.printStackTrace();
-				}
-				catch (CreateException e) {
-					e.printStackTrace();
-				}
+				settings.setProperty(DATASOURCE, dataSource, "travel.binding");
 			}
 		}
 		
