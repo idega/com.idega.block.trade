@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -662,6 +663,10 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 	}
 
 	public boolean isBetween(IWTimestamp from, IWTimestamp to, IWTimestamp stampToCheck, boolean yearly, boolean bordersCount) {
+		if(stampToCheck == null){
+			getLogger().log(Level.WARNING, "Time stamp to check is not provided");
+			return false;
+		}
 		from.setAsDate();
 		to.setAsDate();
 		if (yearly) {
