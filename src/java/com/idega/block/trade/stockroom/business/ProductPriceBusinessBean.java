@@ -372,7 +372,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //			}
 //		} else {
 //			System.out.println("[ProductPriceBUsiness] Wrong usage of getPrice method, need to have productPriceId");
-			return getStockroomBusiness().getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId);
+			return getStockroomBusiness().getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId, exactDate);
 //		}
 	}
 	
