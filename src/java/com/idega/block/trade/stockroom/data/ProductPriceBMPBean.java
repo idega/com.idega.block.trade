@@ -546,6 +546,7 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
   public static String getColumnNameIsValid() {return "IS_VALID";}
   public static String getColumnNameMaxUsage() {return "MAX_USAGE";}
   public static String getColumnNameExactDate() {return "EXACT_DATE";}
+  public static String getIdColumnName() { return getProductPriceTableName()+"_ID";}
   
   public Integer ejbFindByData(int productId,int timeframeId,int addressId,int currencyId,int priceCategoryId,Date date)throws FinderException{
  
