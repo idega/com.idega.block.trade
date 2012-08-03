@@ -539,8 +539,10 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 	    }
 	    try{
 	  	    TxText productText = getText();
-	  	    ContentHelper contentHelper = ContentFinder.getContentHelper(productText.getContentId(), localeId, getDatasource());
-	  	    name = contentHelper.getLocalizedText().getHeadline();
+	  	    if(productText != null){
+		  	    ContentHelper contentHelper = ContentFinder.getContentHelper(productText.getContentId(), localeId, getDatasource());
+		  	    name = contentHelper.getLocalizedText().getHeadline();
+	  	    }
 	    }catch (Exception e) {
 	    	getLogger().log(Level.WARNING, "failed getting name for product " + getPrimaryKey() + " and locale ID " + localeId, e);
 	  	}
