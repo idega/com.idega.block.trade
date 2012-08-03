@@ -533,22 +533,19 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 		}
     String name = "";
     if (text != null) {
-      name = text.getHeadline();
+    	name = text.getHeadline();
+	    if(!StringUtil.isEmpty(name)){
+	    	return name;
+	    }
+	    try{
+	  	    TxText productText = getText();
+	  	    ContentHelper contentHelper = ContentFinder.getContentHelper(productText.getContentId(), localeId, getDatasource());
+	  	    name = contentHelper.getLocalizedText().getHeadline();
+	    }catch (Exception e) {
+	    	getLogger().log(Level.WARNING, "failed getting name for product " + getPrimaryKey() + " and locale ID " + localeId, e);
+	  	}
     }
-    if (text != null) {
-        name = text.getHeadline();
-      }
-      if(!StringUtil.isEmpty(name)){
-      	return name;
-      }
-      try{
-  	    TxText productText = getText();
-  	    ContentHelper contentHelper  = ContentFinder.getContentHelper(productText.getContentId(), localeId, getDatasource());
-  	    name = contentHelper.getLocalizedText().getHeadline();
-      }catch (Exception e) {
-  		getLogger().log(Level.WARNING, "failed getting name", e);
-  	}
-      return name == null ? CoreConstants.EMPTY : name;
+    return name == null ? CoreConstants.EMPTY : name;
   }
   
   public String getProductName(int localeId, int localeIDIfNull, String returnIfNull) {
