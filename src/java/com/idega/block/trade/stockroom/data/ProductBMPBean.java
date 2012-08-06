@@ -527,25 +527,27 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   }
   
   public String getProductName(int localeId) {
-    LocalizedText text = TextFinder.getLocalizedText(this, localeId);
-    if (text == null) {
-			text = TextFinder.getLocalizedText(this, 1);
-		}
-    String name = "";
-    if (text != null) {
-      name = text.getHeadline();
-    }
-    if(!StringUtil.isEmpty(name)){
-    	return name;
-    }
-    try{
-	    TxText productText = getText();
-	    ContentHelper contentHelper  = ContentFinder.getContentHelper(productText.getContentId(), localeId, getDatasource());
-	    name = contentHelper.getLocalizedText().getHeadline();
-    }catch (Exception e) {
-		getLogger().log(Level.WARNING, "failed getting name", e);
-	}
-    return name == null ? CoreConstants.EMPTY : name;
+	  LocalizedText text = TextFinder.getLocalizedText(this, localeId);
+	    if (text == null) {
+				text = TextFinder.getLocalizedText(this, 1);
+			}
+	    String name = "";
+	    if (text != null) {
+	    	name = text.getHeadline();
+		    if(!StringUtil.isEmpty(name)){
+		    	return name;
+		    }
+		    try{
+		  	    TxText productText = getText();
+		  	    if(productText != null){
+			  	    ContentHelper contentHelper = ContentFinder.getContentHelper(productText.getContentId(), localeId, getDatasource());
+			  	    name = contentHelper.getLocalizedText().getHeadline();
+		  	    }
+		    }catch (Exception e) {
+		    	getLogger().log(Level.WARNING, "failed getting name for product " + getPrimaryKey() + " and locale ID " + localeId, e);
+		  	}
+	    }
+	    return name == null ? CoreConstants.EMPTY : name;
   }
   
   public String getProductName(int localeId, int localeIDIfNull, String returnIfNull) {
