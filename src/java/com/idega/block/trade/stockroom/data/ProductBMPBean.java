@@ -8,9 +8,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+
 import javax.ejb.FinderException;
 
 import com.idega.block.category.data.ICCategoryBMPBean;
+import com.idega.block.text.business.ContentFinder;
+import com.idega.block.text.business.ContentHelper;
 import com.idega.block.text.business.TextFinder;
 import com.idega.block.text.data.LocalizedText;
 import com.idega.block.text.data.LocalizedTextBMPBean;
@@ -36,7 +40,9 @@ import com.idega.data.query.MatchCriteria;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
 import com.idega.data.query.WildCardColumn;
+import com.idega.util.CoreConstants;
 import com.idega.util.IWTimestamp;
+import com.idega.util.StringUtil;
 
 /**
  *  Title: IW Trade Description: Copyright: Copyright (c) 2001 Company: idega.is
@@ -521,15 +527,27 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   }
   
   public String getProductName(int localeId) {
-    LocalizedText text = TextFinder.getLocalizedText(this, localeId);
-    if (text == null) {
-			text = TextFinder.getLocalizedText(this, 1);
-		}
-    String name = "";
-    if (text != null) {
-      name = text.getHeadline();
-    }
-    return name;
+	  LocalizedText text = TextFinder.getLocalizedText(this, localeId);
+	    if (text == null) {
+				text = TextFinder.getLocalizedText(this, 1);
+			}
+	    String name = "";
+	    if (text != null) {
+	    	name = text.getHeadline();
+		    if(!StringUtil.isEmpty(name)){
+		    	return name;
+		    }
+		    try{
+		  	    TxText productText = getText();
+		  	    if(productText != null){
+			  	    ContentHelper contentHelper = ContentFinder.getContentHelper(productText.getContentId(), localeId, getDatasource());
+			  	    name = contentHelper.getLocalizedText().getHeadline();
+		  	    }
+		    }catch (Exception e) {
+		    	getLogger().log(Level.WARNING, "failed getting name for product " + getPrimaryKey() + " and locale ID " + localeId, e);
+		  	}
+	    }
+	    return name == null ? CoreConstants.EMPTY : name;
   }
   
   public String getProductName(int localeId, int localeIDIfNull, String returnIfNull) {

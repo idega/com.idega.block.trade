@@ -43,6 +43,7 @@ import com.idega.data.IDOLookupException;
 import com.idega.data.IDORelationshipException;
 import com.idega.data.IDORuntimeException;
 import com.idega.util.IWTimestamp;
+import com.idega.util.ListUtil;
 
 
 public class ProductPriceBusinessBean extends IBOServiceBean  implements ProductPriceBusiness{
@@ -50,18 +51,22 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	private HashMap mapForProductPriceMap = new HashMap();
 	private HashMap mapForMiscellaniousPriceMap = new HashMap();
 
+	@Override
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int[] visibility, IWTimestamp date) throws FinderException {
 		return getProductPrices(productId, timeframeId, addressId, -1, visibility, null, date);
 	}
 
+	@Override
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, boolean netbookingOnly, IWTimestamp date) throws FinderException {
 		return getProductPrices(productId, timeframeId, addressId, -1, netbookingOnly, null, date);
 	}
 
+	@Override
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, boolean netbookingOnly, String key, IWTimestamp date) throws FinderException {
 		return getProductPrices(productId, timeframeId, addressId, -1, netbookingOnly, key, date);
 	}
 
+	@Override
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int currencyId, boolean netbookingOnly, String key, IWTimestamp date) throws FinderException {
 		int[] vis;
 		if (netbookingOnly) {
@@ -72,6 +77,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return getProductPrices(productId, timeframeId, addressId, currencyId, vis, key, date);
 	}
 
+	@Override
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int currencyId, int[] visibility, String key, IWTimestamp date) throws FinderException {
 
 		String visString = "";
@@ -112,9 +118,9 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			prices = (Collection) priceMap.get(mapKey.toString());
 		}
 
-		if (prices == null || lookForDate) {
+		if (ListUtil.isEmpty(prices) || lookForDate) {
 			Collection tmp = null;
-			if (prices != null) {
+			if (!ListUtil.isEmpty(prices)) {
 				tmp = prices;
 			} else {
 				tmp = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 0, currencyId, visibility, key);
@@ -185,6 +191,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return t;
 	}
 	
+	@Override
 	public boolean invalidateCache(PriceCategory cat) {
 		try {
 			ProductHome pHome = (ProductHome) IDOLookup.getHome(Product.class);
@@ -206,10 +213,12 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return false;
 	}
 
+	@Override
 	public boolean invalidateCache(String productId) {
 		return  invalidateCache(productId, null);
 	}
 
+	@Override
 	public Collection getGroupedCategories(ProductPrice price) throws RemoteException {
 		PriceCategory cat = price.getPriceCategory();
 		Collection cats = getGroupedCategories(cat);
@@ -268,6 +277,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	private HashMap groupedCats = new HashMap();
 	private HashMap priceGroupedCats = new HashMap();
 		
+	@Override
 	public Collection getGroupedCategories(PriceCategory category) {
 		Object pk = category.getPrimaryKey();
 		if (groupedCats.containsKey(pk)) {
@@ -288,10 +298,12 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return null;
 	}
 	
+	@Override
 	public void clearGroupedCategoriesCache() {
 		groupedCats.clear();
 		priceGroupedCats.clear();
 	}
+	@Override
 	public PriceCategoryHome getPriceCategoryHome() {
 		try {
 			return (PriceCategoryHome) IDOLookup.getHome(PriceCategory.class);
@@ -300,6 +312,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		}
 	}
 
+	@Override
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) {
 		this.mapForProductPriceMap.put(new Integer(productID), null);
 		this.mapForMiscellaniousPriceMap.put(new Integer(productID), null);
@@ -340,7 +353,8 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //	}
 
 
-  	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
+  	@Override
+	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
 //		if (price != null) {
 //			HashMap map = getFloatPriceMapForProduct(new Integer(price.getProductId())); 
 //			String key = price.getPrimaryKey()+"_"+timeframeId+"_"+addressId;
@@ -357,6 +371,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			return getStockroomBusiness().getPrice(price, time, timeframeId, addressId);
 //		}
   	}
+	@Override
 	public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException  {
 //		if (productPriceId != -1) {
 //			HashMap map = getFloatPriceMapForProduct(new Integer(productId)); 
@@ -375,6 +390,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //		}
 	}
 	
+	@Override
 	public Collection getCurrenciesInUse(Product product) throws IDOLookupException, FinderException {
 		int[] currIDs = getProductPriceHome().getCurrenciesInUse(((Integer)product.getPrimaryKey()).intValue());
 		CurrencyHome cHome = (CurrencyHome) IDOLookup.getHome(Currency.class);
@@ -386,17 +402,21 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		}
 		return v;
 	}
+	@Override
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly) throws FinderException {
 		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1, null);
 	}
+	@Override
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, IWTimestamp stamp) throws FinderException {
 		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1, stamp);
 //		return getProductPriceHome().findMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1);
 	}
 
+	@Override
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId) throws FinderException {
 		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, currencyId, null);
 	}
+	@Override
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId, IWTimestamp date) throws FinderException {
 
 		int[] vis;
@@ -516,6 +536,7 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		}
 	}
 
+	@Override
 	public ProductPriceHome getProductPriceHome() {
 		try {
 			return (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);
