@@ -73,26 +73,32 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 	}
 
 	public Collection findProducts(int supplierId) throws FinderException {
+		return findProducts(true, supplierId);
+	}
+	public Collection findProducts(boolean onlyValidProducts, int supplierId) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId);
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(onlyValidProducts, supplierId);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findProducts(int supplierId, int productCategoryId,
-			int firstEntity, int lastEntity) throws FinderException {
+	public Collection findProducts(int supplierId, int productCategoryId, int firstEntity, int lastEntity) throws FinderException {
+		return findProducts(true, supplierId, productCategoryId, firstEntity, lastEntity);
+	}
+	public Collection findProducts(boolean onlyValidProducts, int supplierId, int productCategoryId, int firstEntity, int lastEntity)
+			throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId,
-				productCategoryId, firstEntity, lastEntity);
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(onlyValidProducts, supplierId, productCategoryId, firstEntity, lastEntity);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findProducts(int supplierId, int firstEntity,
-			int lastEntity) throws FinderException {
+	public Collection findProducts(int supplierId, int firstEntity, int lastEntity) throws FinderException {
+		return findProducts(true, supplierId, firstEntity, lastEntity);
+	}
+	public Collection findProducts(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId,
-				firstEntity, lastEntity);
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(onlyValidProducts, supplierId, firstEntity, lastEntity);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}

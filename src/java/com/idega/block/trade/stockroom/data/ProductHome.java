@@ -32,12 +32,13 @@ public interface ProductHome extends IDOHome {
 			IWTimestamp from, IWTimestamp to) throws FinderException;
 
 	public Collection findProducts(int supplierId) throws FinderException;
+	public Collection findProducts(boolean onlyValidProducts, int supplierId) throws FinderException;
 
-	public Collection findProducts(int supplierId, int productCategoryId,
-			int firstEntity, int lastEntity) throws FinderException;
+	public Collection findProducts(int supplierId, int productCategoryId, int firstEntity, int lastEntity) throws FinderException;
+	public Collection findProducts(boolean onlyValidProducts, int supplierId, int productCategoryId, int firstEntity, int lastEntity) throws FinderException;
 
-	public Collection findProducts(int supplierId, int firstEntity,
-			int lastEntity) throws FinderException;
+	public Collection findProducts(int supplierId, int firstEntity, int lastEntity) throws FinderException;
+	public Collection findProducts(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity) throws FinderException;
 
 	public int getProductCount(int supplierId) throws IDOException;
 

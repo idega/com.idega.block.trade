@@ -689,25 +689,29 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     return ejbFindProducts(supplierId, productCategoryId, from, to, ICCategoryBMPBean.getEntityTableName()+"."+ICCategoryBMPBean.getColumnName(), -1, -1, false);
   }
 
-  public Collection ejbFindProducts(int supplierId) throws FinderException {
-	  return ejbFindProducts(supplierId, -1, -1);
+  public Collection ejbFindProducts(boolean onlyValidProducts, int supplierId) throws FinderException {
+	  return ejbFindProducts(onlyValidProducts, supplierId, -1, -1);
   }
   
-  public Collection ejbFindProducts(int supplierId, int productCategoryId, int firstEntity, int lastEntity) throws FinderException {
-	  StringBuffer SQL = getSQL(supplierId, productCategoryId, null, null,null, -1, false);
-	    return this.idoFindPKsBySQL(SQL.toString(), lastEntity-firstEntity, firstEntity);
+  public Collection ejbFindProducts(boolean onlyValidProducts, int supplierId, int productCategoryId, int firstEntity, int lastEntity) throws FinderException {
+	  StringBuffer SQL = getSQL(onlyValidProducts, supplierId, productCategoryId, null, null,null, -1, false);
+	  return this.idoFindPKsBySQL(SQL.toString(), lastEntity-firstEntity, firstEntity);
   }
   
-  public Collection ejbFindProducts(int supplierId, int firstEntity, int lastEntity) throws FinderException {
+  public Collection ejbFindProducts(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity) throws FinderException {
     String pTable = com.idega.block.trade.stockroom.data.ProductBMPBean.getProductEntityName();
 
     StringBuffer sqlQuery = new StringBuffer();
       sqlQuery.append("SELECT * FROM ").append(pTable);
       sqlQuery.append(" WHERE ");
-      sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
+      if (onlyValidProducts)
+    	  sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
+      
       if (supplierId != -1) {
-			sqlQuery.append(" AND ").append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
-		}
+    	  if (onlyValidProducts)
+    		  sqlQuery.append(" AND ");
+    	  sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
+      }
       
       sqlQuery.append(" order by ").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameNumber());
 
@@ -761,7 +765,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   public Collection ejbFindProducts(int supplierId, int productCategoryId ,IWTimestamp from, IWTimestamp to, String orderBy, int localeId, int filter, boolean useTimeframes) throws FinderException{
     Collection coll;
 
-    StringBuffer timeframeSQL = getSQL(supplierId, productCategoryId, from, to,
+    StringBuffer timeframeSQL = getSQL(true, supplierId, productCategoryId, from, to,
 			orderBy, localeId, useTimeframes);
 
 //    System.out.println(timeframeSQL.toString());
@@ -770,7 +774,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     return coll;
   }
 
-private StringBuffer getSQL(int supplierId, int productCategoryId,
+private StringBuffer getSQL(boolean onlyValidProducts, int supplierId, int productCategoryId,
 		IWTimestamp from, IWTimestamp to, String orderBy, int localeId,
 		boolean useTimeframes) throws FinderException {
 	String orderString = null;
@@ -811,7 +815,13 @@ private StringBuffer getSQL(int supplierId, int productCategoryId,
 
       timeframeSQL.append(", "+catMiddle+", "+catTable);
       timeframeSQL.append(" WHERE ");
-      timeframeSQL.append(Ptable+"."+com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()+" = 'Y'");
+      
+      if (onlyValidProducts) {
+    	  timeframeSQL.append(Ptable+"."+com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()+" = 'Y'");
+      } else {
+    	  timeframeSQL.append(Ptable+"."+com.idega.block.trade.stockroom.data.ProductBMPBean.getIdColumnName() + " is not null");
+      }
+      
       if (from != null && to != null && useTimeframes) {
         timeframeSQL.append(" AND ");
         timeframeSQL.append(Ttable+"."+timeframe.getIDColumnName()+" = "+middleTable+"."+timeframe.getIDColumnName());
@@ -831,7 +841,7 @@ private StringBuffer getSQL(int supplierId, int productCategoryId,
     // Hondla ef supplierId != -1
     Collection tempProducts = null;
     if (supplierId != -1) {
-			tempProducts = ejbFindProducts(supplierId);
+			tempProducts = ejbFindProducts(onlyValidProducts, supplierId);
 		}
     if (tempProducts != null) {
 			if (tempProducts.size() > 0) {
