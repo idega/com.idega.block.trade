@@ -720,10 +720,15 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 
 
   public int ejbHomeGetProductCount(int supplierId) throws IDOException {
-	  return ejbHomeGetProductCount(supplierId, -1);
+	  return ejbHomeGetProductCount(true, supplierId, -1);
   }
-  
+  public int ejbHomeGetProductCount(boolean onlyValidProducts, int supplierId) throws IDOException {
+	  return ejbHomeGetProductCount(onlyValidProducts, supplierId, -1);
+  }
   public int ejbHomeGetProductCount(int supplierId, int productCategoryId) throws IDOException {
+	  return ejbHomeGetProductCount(true, supplierId, productCategoryId);
+  }
+  public int ejbHomeGetProductCount(boolean onlyValidProducts, int supplierId, int productCategoryId) throws IDOException {
 	    String pTable = com.idega.block.trade.stockroom.data.ProductBMPBean.getProductEntityName();
 	    ProductCategory pCat = (ProductCategory) GenericEntity.getStaticInstance(ProductCategory.class);
 	    String catMiddle = EntityControl.getManyToManyRelationShipTableName(ProductCategory.class,Product.class);
@@ -731,8 +736,10 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 	    StringBuffer sqlQuery = new StringBuffer();
 	      sqlQuery.append("SELECT count(*) FROM ").append(pTable).append(" p, ").append(catMiddle);
 	      sqlQuery.append(" c WHERE ");
-	      sqlQuery.append("p.").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
-    	  sqlQuery.append(" AND ");
+	      if (onlyValidProducts) {
+	    	  sqlQuery.append("p.").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
+	    	  sqlQuery.append(" AND ");
+	      }
     	  sqlQuery.append("c."+getIdColumnName() +" = p."+getIdColumnName());
 	      if (supplierId != -1) {
 					sqlQuery.append(" AND ").append("p.").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);

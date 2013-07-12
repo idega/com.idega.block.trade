@@ -41,6 +41,7 @@ public interface ProductHome extends IDOHome {
 	public Collection findProducts(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity) throws FinderException;
 
 	public int getProductCount(int supplierId) throws IDOException;
+	public int getProductCount(boolean onlyValidProducts, int supplierId) throws IDOException;
 
 	public int getProductCount(int supplierId, int productCategoryId)
 			throws IDOException;

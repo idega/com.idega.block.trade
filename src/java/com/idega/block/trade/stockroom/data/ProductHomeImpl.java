@@ -104,9 +104,11 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 	}
 
 	public int getProductCount(int supplierId) throws IDOException {
+		return getProductCount(true, supplierId);
+	}
+	public int getProductCount(boolean onlyValidProducts, int supplierId) throws IDOException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		int theReturn = ((ProductBMPBean) entity)
-				.ejbHomeGetProductCount(supplierId);
+		int theReturn = ((ProductBMPBean) entity).ejbHomeGetProductCount(onlyValidProducts, supplierId);
 		this.idoCheckInPooledEntity(entity);
 		return theReturn;
 	}
@@ -114,8 +116,7 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 	public int getProductCount(int supplierId, int productCategoryId)
 			throws IDOException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		int theReturn = ((ProductBMPBean) entity).ejbHomeGetProductCount(
-				supplierId, productCategoryId);
+		int theReturn = ((ProductBMPBean) entity).ejbHomeGetProductCount(supplierId, productCategoryId);
 		this.idoCheckInPooledEntity(entity);
 		return theReturn;
 	}
