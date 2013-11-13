@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
 import javax.ejb.CreateException;
+
 import com.idega.block.trade.data.Currency;
 import com.idega.block.trade.data.CurrencyHome;
 import com.idega.block.trade.data.CurrencyValues;
@@ -25,7 +27,6 @@ import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWMainApplication;
-import com.idega.presentation.IWContext;
 import com.idega.util.FileUtil;
 import com.idega.util.IWTimestamp;
 import com.idega.util.text.TextSoap;
@@ -57,10 +58,10 @@ public class CurrencyBusiness {
 	public static String fileString;
 	public static HashMap currencyMap;
 	public static String defaultCurrency = CurrencyHolder.ICELANDIC_KRONA;
-	
+
 	public static String currencyUrl = null;
 	public static IWTimestamp lastUpdate = null;
-	
+
 	public static synchronized void getCurrencyMap(IWBundle bundle) throws RemoteException, CreateException {
 		IWTimestamp stamp = new IWTimestamp();
 		file = null;
@@ -83,12 +84,12 @@ public class CurrencyBusiness {
 		if (fileString != null) {
 			try {
 				/** @todo setja Abbreviation inn */
-				url = (String) TextSoap.FindAllBetween(fileString, siteURL, siteEndURL).firstElement();
-				currency_name = (String) TextSoap.FindAllBetween(fileString, currency, currencyEnd).firstElement();
-				buy_value = (String) TextSoap.FindAllBetween(fileString, buyValue, buyEndValue).firstElement();
-				sell_value = (String) TextSoap.FindAllBetween(fileString, sellValue, sellEndValue).firstElement();
-				middle_value = (String) TextSoap.FindAllBetween(fileString, middleValue, middleEndValue).firstElement();
-				defaultCurrency = (String) TextSoap.FindAllBetween(fileString, currencyDefault, currencyDefaultEnd).firstElement();
+				url = TextSoap.FindAllBetween(fileString, siteURL, siteEndURL).get(0);
+				currency_name = TextSoap.FindAllBetween(fileString, currency, currencyEnd).get(0);
+				buy_value = TextSoap.FindAllBetween(fileString, buyValue, buyEndValue).get(0);
+				sell_value = TextSoap.FindAllBetween(fileString, sellValue, sellEndValue).get(0);
+				middle_value = TextSoap.FindAllBetween(fileString, middleValue, middleEndValue).get(0);
+				defaultCurrency = TextSoap.FindAllBetween(fileString, currencyDefault, currencyDefaultEnd).get(0);
 			}
 			catch (Exception e) {
 				e.printStackTrace(System.err);
@@ -125,7 +126,7 @@ public class CurrencyBusiness {
 				try {
 					while (iter2.hasNext()) {
 						XMLElement currencyValues = (XMLElement) iter2.next();
-	
+
 						if (currencyValues.getName().equalsIgnoreCase(currency_name)) {
 							holder.setCurrencyName(currencyValues.getText());
 							holder.setCurrencyAbbreviation(currencyValues.getText());
@@ -291,13 +292,13 @@ public class CurrencyBusiness {
 						if (holder.getCurrencyAbbreviation() != null) {
 							currency = home.getCurrencyByAbbreviation(holder.getCurrencyAbbreviation());
 						}
-						
+
 						if (currency == null) {
 							update = false;
 							currency = home.create();
 						} else if (currency.getID() < 1) {
 							update = false;
-							currency = home.create();	
+							currency = home.create();
 						} else {
 							update = true;
 						}
@@ -312,7 +313,7 @@ public class CurrencyBusiness {
 						currency.setCurrencyName(holder.getCurrencyName());
 						if (update) {
 							System.out.println("[CurrencyBusiness] Updating existing currency : " + currency.getCurrencyName() + " (id: " + currency.getID() + ")");
-							
+
 	//						bulk.add(currency, bulk.update);
 							currency.store();
 						}
@@ -330,7 +331,7 @@ public class CurrencyBusiness {
 				}
 			}
 		}
-		
+
 /*
 		if (execute) {
 			try {
@@ -382,7 +383,7 @@ public class CurrencyBusiness {
 
 	public static List getCurrencyList() {
 		Vector vector = new Vector();
-		
+
 		if (getCurrencyMap() != null) {
 			Iterator iter = getCurrencyMap().keySet().iterator();
 			while (iter.hasNext()) {
@@ -391,10 +392,10 @@ public class CurrencyBusiness {
 			Collections.sort(vector, new CurrencyComparator());
 
 			return vector;
-		} 
+		}
 		return null;
 	}
-	
+
 	public static String getCurrencyUrl() {
 		return currencyUrl;
 	}
