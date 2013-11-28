@@ -192,7 +192,8 @@ public interface ProductBusiness extends IBOService {
 			throws FinderException, RemoteException, RemoteException;
 	public Collection getProduct(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity)
 			throws FinderException, RemoteException, RemoteException;
-
+	public Collection getProduct(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity,boolean onlyEnabled)
+	throws FinderException, RemoteException, RemoteException;
 	/**
 	 * @see com.idega.block.trade.stockroom.business.ProductBusinessBean#getProducts
 	 */

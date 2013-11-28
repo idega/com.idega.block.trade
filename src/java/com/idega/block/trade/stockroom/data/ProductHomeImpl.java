@@ -102,6 +102,12 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
+	public Collection findProducts(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity,boolean onlyEnabled) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(onlyValidProducts, supplierId, firstEntity, lastEntity,onlyEnabled);
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
 
 	public int getProductCount(int supplierId) throws IDOException {
 		return getProductCount(true, supplierId);

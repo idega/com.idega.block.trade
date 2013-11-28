@@ -69,4 +69,7 @@ public interface ProductHome extends IDOHome {
 
 	public Collection findByPriceCategory(PriceCategory priceCategory)
 			throws IDORelationshipException, FinderException;
+
+	public Collection findProducts(boolean onlyValidProducts, int supplierId,
+			int firstEntity, int lastEntity, boolean onlyEnabled) throws FinderException;
 }

@@ -60,6 +60,8 @@ public interface Product extends IDOLegacyEntity, MetaDataCapable {
 	 */
 	public void setDiscountTypeId(int discountTypeId);
 
+	 public void setDisabled( boolean disabled );
+	 public boolean getDisabled();
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#setNumber
 	 */

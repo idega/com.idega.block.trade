@@ -62,6 +62,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   private final int FILTER_NOT_CONNECTED_TO_CATEGORY = 0;
   private static final String COLUMN_REFUNDABLE = "refundable";
   private static final String COLUMN_VOUCHER_COMMENT = "VOUCHER_COMMENT";
+  private static final String COLUMN_DISABLED = "DISABLED";
   
   /**
    *  Constructor for the Product object
@@ -104,11 +105,14 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     this.addManyToManyRelationShip( ICFile.class );
     addMetaDataRelationship();
     
+    addAttribute( COLUMN_DISABLED, "Disabled", true, true, Boolean.class );
+    
     addIndex("IDX_PROD_1", new String[]{getColumnNameSupplierId(), getColumnNameIsValid()});
     addIndex("IDX_PROD_2", new String[]{getIDColumnName(), getColumnNameSupplierId(), getColumnNameIsValid()});
   }
 
 
+  
   public void invalidate() throws IDOException{
     this.setIsValid( false );
     this.store();
@@ -216,6 +220,10 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   public void setIsValid( boolean valid ) {
     this.setColumn( getColumnNameIsValid(), valid );
   }
+  
+  public void setDisabled( boolean disabled ) {
+	   this.setColumn( COLUMN_DISABLED, disabled );
+  }
 
   /**
    *  Sets the discountTypeId attribute of the Product object
@@ -315,6 +323,9 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     return this.getBooleanColumnValue( getColumnNameIsValid() );
   }
 
+  public boolean getDisabled() {
+	   return this.getBooleanColumnValue( COLUMN_DISABLED );
+  }
 
   /**
    *  Gets the discountTypeId attribute of the Product object
@@ -699,24 +710,39 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   }
   
   public Collection ejbFindProducts(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity) throws FinderException {
-    String pTable = com.idega.block.trade.stockroom.data.ProductBMPBean.getProductEntityName();
-
-    StringBuffer sqlQuery = new StringBuffer();
-      sqlQuery.append("SELECT * FROM ").append(pTable);
-      sqlQuery.append(" WHERE ");
-      if (onlyValidProducts)
-    	  sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
-      
-      if (supplierId != -1) {
-    	  if (onlyValidProducts)
-    		  sqlQuery.append(" AND ");
-    	  sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
-      }
-      
-      sqlQuery.append(" order by ").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameNumber());
-
-    return this.idoFindPKsBySQL(sqlQuery.toString(), lastEntity-firstEntity, firstEntity);
+	  return ejbFindProducts(onlyValidProducts,supplierId,firstEntity,lastEntity,true);
   }
+  public Collection ejbFindProducts(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity,boolean onlyEnabled) throws FinderException {
+	    String pTable = com.idega.block.trade.stockroom.data.ProductBMPBean.getProductEntityName();
+
+	    StringBuffer sqlQuery = new StringBuffer();
+	      sqlQuery.append("SELECT * FROM ").append(pTable);
+	      sqlQuery.append(" WHERE ");
+	      if (onlyValidProducts){
+	    	  	if(onlyEnabled){
+	    	  		// Do not need to check if disabled
+	    	  		sqlQuery.append(pTable).append(".")
+	  				.append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid())
+	  				.append(" = 'Y'");
+	    	  	}else{
+	    	  		// When deleting disabling too
+	    	  		sqlQuery.append("((").append(pTable).append(".")
+	  				.append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid())
+	  				.append(" = 'Y') OR (").append(pTable).append(".")
+	  				.append(COLUMN_DISABLED)
+	  				.append(" = 'Y'))");
+	    	  	}
+	      }
+	      if (supplierId != -1) {
+	    	  if (onlyValidProducts)
+	    		  sqlQuery.append(" AND ");
+	    	  sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
+	      }
+	      
+	      sqlQuery.append(" order by ").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameNumber());
+
+	    return this.idoFindPKsBySQL(sqlQuery.toString(), lastEntity-firstEntity, firstEntity);
+	  }
 
 
   public int ejbHomeGetProductCount(int supplierId) throws IDOException {

@@ -344,6 +344,10 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   public Collection getProduct(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity) throws FinderException, RemoteException {
 	  return getProductHome().findProducts(onlyValidProducts, supplierId, firstEntity, lastEntity);
   }
+  public Collection getProduct(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity,boolean onlyEnabled) throws FinderException, RemoteException {
+	  return getProductHome().findProducts(onlyValidProducts, supplierId, firstEntity, lastEntity,onlyEnabled);
+  }
+
 
 
   public List getProducts() throws RemoteException, FinderException{
