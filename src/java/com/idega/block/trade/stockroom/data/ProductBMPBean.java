@@ -19,6 +19,7 @@ import com.idega.block.text.business.TextFinder;
 import com.idega.block.text.data.LocalizedText;
 import com.idega.block.text.data.LocalizedTextBMPBean;
 import com.idega.block.text.data.TxText;
+import com.idega.block.trade.data.VoucherAd;
 import com.idega.block.trade.stockroom.business.TimeframeComparator;
 import com.idega.core.file.data.ICFile;
 import com.idega.core.location.data.Address;
@@ -748,13 +749,19 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   public int ejbHomeGetProductCount(int supplierId) throws IDOException {
 	  return ejbHomeGetProductCount(true, supplierId, -1);
   }
+  public int ejbHomeGetProductCount(boolean onlyValidProducts, int supplierId,boolean onlyEnabled) throws IDOException {
+	  return ejbHomeGetProductCount(onlyValidProducts, supplierId, -1,onlyEnabled);
+  }
   public int ejbHomeGetProductCount(boolean onlyValidProducts, int supplierId) throws IDOException {
 	  return ejbHomeGetProductCount(onlyValidProducts, supplierId, -1);
   }
   public int ejbHomeGetProductCount(int supplierId, int productCategoryId) throws IDOException {
 	  return ejbHomeGetProductCount(true, supplierId, productCategoryId);
   }
-  public int ejbHomeGetProductCount(boolean onlyValidProducts, int supplierId, int productCategoryId) throws IDOException {
+  public int ejbHomeGetProductCount(boolean onlyValidProducts, int supplierId, int productCategoryId) throws IDOException{
+	  return ejbHomeGetProductCount(onlyValidProducts, supplierId, productCategoryId, true);
+  }
+  public int ejbHomeGetProductCount(boolean onlyValidProducts, int supplierId, int productCategoryId,boolean onlyEnabled) throws IDOException {
 	    String pTable = com.idega.block.trade.stockroom.data.ProductBMPBean.getProductEntityName();
 	    ProductCategory pCat = (ProductCategory) GenericEntity.getStaticInstance(ProductCategory.class);
 	    String catMiddle = EntityControl.getManyToManyRelationShipTableName(ProductCategory.class,Product.class);
@@ -762,9 +769,20 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 	    StringBuffer sqlQuery = new StringBuffer();
 	      sqlQuery.append("SELECT count(*) FROM ").append(pTable).append(" p, ").append(catMiddle);
 	      sqlQuery.append(" c WHERE ");
-	      if (onlyValidProducts) {
-	    	  sqlQuery.append("p.").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
-	    	  sqlQuery.append(" AND ");
+	      if (onlyValidProducts){
+	    	  	if(onlyEnabled){
+	    	  		// Do not need to check if disabled
+	    	  		sqlQuery.append("p.")
+	  				.append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid())
+	  				.append(" = 'Y'");
+	    	  	}else{
+	    	  		// When deleting disabling too
+	    	  		sqlQuery.append("((").append("p.")
+	  				.append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid())
+	  				.append(" = 'Y') OR (").append("p.")
+	  				.append(COLUMN_DISABLED)
+	  				.append(" = 'Y'))  AND ");
+	    	  	}
 	      }
     	  sqlQuery.append("c."+getIdColumnName() +" = p."+getIdColumnName());
 	      if (supplierId != -1) {
@@ -1052,5 +1070,12 @@ private StringBuffer getSQL(boolean onlyValidProducts, int supplierId, int produ
 //				"AND pc.sr_product_category_id = "+priceCategory.getPrimaryKey().toString();
 //		return idoFindPKsBySQL(sql);
 		return idoFindPKsByQuery(query);
+	}
+
+	public Collection getVoucherAds()  throws IDORelationshipException {
+		return idoGetRelatedEntities(VoucherAd.class);
+	}
+	public void addVoucherAd(VoucherAd voucherAd) throws IDOAddRelationshipException {
+		idoAddTo(voucherAd);
 	}
 }

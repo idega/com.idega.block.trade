@@ -12,6 +12,7 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 
 import com.idega.block.trade.data.CreditCardInformation;
+import com.idega.block.trade.data.VoucherAd;
 import com.idega.block.trade.stockroom.business.SupplierManagerBusiness;
 import com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean;
 import com.idega.business.IBOLookup;
@@ -86,7 +87,6 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 
 		this.addManyToManyRelationShip(ProductCategory.class, "SR_SUPPLIER_PRODUCT_CATEGORY");
 		this.addManyToManyRelationShip(Reseller.class);
-		this.addManyToManyRelationShip(CreditCardInformation.class, "SR_SUPPLIER_CC_INFORMATION");
 
 		this.addManyToOneRelationship(COLUMN_IC_FILE_ID, ICFile.class);
 		
@@ -95,6 +95,8 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		addIndex("IDX_SUPP_1", new String[]{getIDColumnName(), getColumnNameIsValid()});
 		addIndex("IDX_SUPP_2", new String[]{getColumnNameIsValid()});
 		addIndex("IDX_SUPP_4", new String[]{COLUMN_SUPPLIER_MANAGER_ID, getColumnNameIsValid()});
+		
+		addManyToManyRelationShip(VoucherAd.class);
 	}
 
 	public void insertStartData() throws Exception {
@@ -565,6 +567,19 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		// SQL fyrir sub-query sem "kannski" gerir thetta betur.
 		//select * from CC_INFORMATION where CC_INFORMATION_ID in (select i. CC_INFORMATION_ID from cc_information i, CC_KTH_MERCHANT m where i.cc_type ='KORTATHJONUSTAN' AND i.cc_merchant_pk = m.cc_kth_merchant_id AND end_date is null) OR CC_INFORMATION_ID in (select i. CC_INFORMATION_ID from cc_information i, tpos_merchant m where i.cc_type ='TPOS' AND i.cc_merchant_pk = m.tpos_merchant_id AND end_date is null)
 
+	}
+
+	public Collection getVoucherAdds() throws IDORelationshipException {
+		return idoGetRelatedEntities(VoucherAd.class);
+	}
+
+	public void addVoucherAd(VoucherAd voucherAdd) throws IDOAddRelationshipException {
+		idoAddTo(voucherAdd);
+	}
+
+	public void removeVoucherAd(VoucherAd voucherAdd)
+			throws IDORemoveRelationshipException {
+		idoRemoveFrom(voucherAdd);
 	}
 }
 

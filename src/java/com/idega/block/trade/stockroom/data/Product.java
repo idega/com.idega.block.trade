@@ -1,23 +1,26 @@
 package com.idega.block.trade.stockroom.data;
 
 
-import com.idega.core.location.data.Address;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.List;
+
+import javax.ejb.FinderException;
+
+import com.idega.block.text.data.TxText;
+import com.idega.block.trade.data.VoucherAd;
 import com.idega.core.file.data.ICFile;
+import com.idega.core.location.data.Address;
+import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOException;
 import com.idega.data.IDOFinderException;
-import java.sql.SQLException;
-import com.idega.data.MetaDataCapable;
-import com.idega.data.IDORemoveRelationshipException;
-import com.idega.block.text.data.TxText;
-import java.rmi.RemoteException;
-import java.sql.Timestamp;
-import com.idega.data.IDOAddRelationshipException;
-import com.idega.data.IDORelationshipException;
-import java.util.Collection;
-import com.idega.util.IWTimestamp;
-import javax.ejb.FinderException;
-import java.util.List;
 import com.idega.data.IDOLegacyEntity;
+import com.idega.data.IDORelationshipException;
+import com.idega.data.IDORemoveRelationshipException;
+import com.idega.data.MetaDataCapable;
+import com.idega.util.IWTimestamp;
 
 public interface Product extends IDOLegacyEntity, MetaDataCapable {
 	/**
@@ -300,4 +303,8 @@ public interface Product extends IDOLegacyEntity, MetaDataCapable {
 	 * @see com.idega.block.trade.stockroom.data.ProductBMPBean#getVoucherComment
 	 */
 	public String getVoucherComment();
+	
+	public Collection getVoucherAds()  throws IDORelationshipException ;
+	
+	public void addVoucherAd(VoucherAd voucherAd) throws IDOAddRelationshipException ;
 }

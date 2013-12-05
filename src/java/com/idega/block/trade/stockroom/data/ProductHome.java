@@ -42,6 +42,7 @@ public interface ProductHome extends IDOHome {
 
 	public int getProductCount(int supplierId) throws IDOException;
 	public int getProductCount(boolean onlyValidProducts, int supplierId) throws IDOException;
+	public int getProductCount(boolean onlyValidProducts, int supplierId,boolean onlyEnabled) throws IDOException;
 
 	public int getProductCount(int supplierId, int productCategoryId)
 			throws IDOException;
