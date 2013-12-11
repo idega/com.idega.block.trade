@@ -6,7 +6,9 @@
 package com.idega.block.trade.data;
 
 import java.util.Collection;
+
 import javax.ejb.FinderException;
+
 import com.idega.data.GenericEntity;
 import com.idega.data.query.Column;
 import com.idega.data.query.MatchCriteria;
@@ -22,7 +24,7 @@ import com.idega.user.data.Group;
  */
 public class CreditCardInformationBMPBean extends GenericEntity implements CreditCardInformation {
 
-	private static final String ENTITY_NAME = "CC_INFORMATION";
+	public static final String ENTITY_NAME = "CC_INFORMATION";
 	private static final String COLUMN_TYPE = "CC_TYPE";
 	private static final String COLUMN_MERCHANT_PK = "CC_MERCHANT_PK";
 	private static final String COLUMN_SUPPLIER_MANAGER_ID = "SUPPLIER_MANAGER_ID";

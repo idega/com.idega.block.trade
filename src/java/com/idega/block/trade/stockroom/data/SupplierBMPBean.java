@@ -84,10 +84,10 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		this.addManyToManyRelationShip(Address.class, "SR_SUPPLIER_IC_ADDRESS");
 		this.addManyToManyRelationShip(Phone.class, "SR_SUPPLIER_IC_PHONE");
 		this.addManyToManyRelationShip(Email.class, "SR_SUPPLIER_IC_EMAIL");
+		this.addManyToManyRelationShip(CreditCardInformation.class, "SR_SUPPLIER_CC_INFORMATION");
 
 		this.addManyToManyRelationShip(ProductCategory.class, "SR_SUPPLIER_PRODUCT_CATEGORY");
 		this.addManyToManyRelationShip(Reseller.class);
-
 		this.addManyToOneRelationship(COLUMN_IC_FILE_ID, ICFile.class);
 		
 		addMetaDataRelationship();
