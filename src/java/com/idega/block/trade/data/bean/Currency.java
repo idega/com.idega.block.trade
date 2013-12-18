@@ -33,7 +33,7 @@ public class Currency implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
-    private Long id;
+    private Integer id;
     
     public static final String nameProp = TABLE_NAME + "_" + COLUMN_CURRENCY_NAME;
     @Column(name = COLUMN_CURRENCY_NAME)
@@ -43,10 +43,10 @@ public class Currency implements Serializable{
     @Column(name = COLUMN_CURRENCY_ABBREVIATION)
     private String currencyAbbreviation;
     
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getName() {
