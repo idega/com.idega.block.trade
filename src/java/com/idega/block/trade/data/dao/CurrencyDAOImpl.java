@@ -1,5 +1,7 @@
 package com.idega.block.trade.data.dao;
 
+import java.util.List;
+
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -20,5 +22,10 @@ public class CurrencyDAOImpl extends GenericDaoImpl implements CurrencyDAO{
 			return null;
 		}
 		return getSingleResult(Currency.QUERY_GET_BY_ID, Currency.class, new Param(Currency.idProp, id));
+	}
+
+	@Override
+	public List<Currency> getAll() {
+		return getResultList(Currency.QUERY_GET_ALL, Currency.class);
 	}
 }

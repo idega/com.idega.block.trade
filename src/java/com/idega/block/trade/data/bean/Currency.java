@@ -19,6 +19,10 @@ import javax.persistence.Table;
 		@NamedQuery(
 				name = Currency.QUERY_GET_BY_ID,
 				query = "FROM Currency c WHERE (c.id = :"+Currency.idProp+")"
+		),
+		@NamedQuery(
+				name = Currency.QUERY_GET_ALL,
+				query = "FROM Currency c"
 		)
 	}
 )
@@ -29,6 +33,7 @@ public class Currency implements Serializable{
 	public static final String COLUMN_CURRENCY_ABBREVIATION="CURRENCY_ABBREVIATION";
 	
 	public static final String QUERY_GET_BY_ID = "currency.getById";
+	public static final String QUERY_GET_ALL = "currency.getAll";
 	public static final String idProp = TABLE_NAME + "_" + "id";
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
