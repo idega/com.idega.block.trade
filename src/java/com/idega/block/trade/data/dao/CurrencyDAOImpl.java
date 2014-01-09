@@ -28,4 +28,9 @@ public class CurrencyDAOImpl extends GenericDaoImpl implements CurrencyDAO{
 	public List<Currency> getAll() {
 		return getResultList(Currency.QUERY_GET_ALL, Currency.class);
 	}
+	
+	public List<Currency> getDistinctCurrencies() {
+		return getResultList(Currency.QUERY_GET_DISTINCT_CURRENCIES, Currency.class);
+	}
+	
 }

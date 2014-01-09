@@ -23,6 +23,10 @@ import javax.persistence.Table;
 		@NamedQuery(
 				name = Currency.QUERY_GET_ALL,
 				query = "FROM Currency c"
+		),
+		@NamedQuery(
+				name = Currency.QUERY_GET_DISTINCT_CURRENCIES,
+				query = "FROM Currency c GROUP BY c.currencyAbbreviation "
 		)
 	}
 )
@@ -34,6 +38,7 @@ public class Currency implements Serializable{
 	
 	public static final String QUERY_GET_BY_ID = "currency.getById";
 	public static final String QUERY_GET_ALL = "currency.getAll";
+	public static final String QUERY_GET_DISTINCT_CURRENCIES = TABLE_NAME + "_getDistinctCurrencies";
 	public static final String idProp = TABLE_NAME + "_" + "id";
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

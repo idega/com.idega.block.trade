@@ -9,4 +9,5 @@ public interface CurrencyDAO {
 	public static final String BEAN_NAME = "currencyDAO";
 	public Currency getById(Integer id);
 	public List<Currency> getAll();
+	public List<Currency> getDistinctCurrencies();
 }
