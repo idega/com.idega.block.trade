@@ -6,7 +6,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.media-3.1.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.image-3.1.4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/bundles/jars/org.apache.axis-1.3.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.text-3.1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/axis/jars/axis-1.3.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/axis/jars/axis-jaxrpc-1.3.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar"/>
@@ -24,6 +23,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jta/jars/jta-spec1_0_1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.web2.0-3.1.7.jar"/>
 	<classpathentry kind="src" path="/com.idega.core"></classpathentry>
+	<classpathentry kind="src" path="/com.idega.block.text"/>
 	<classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.builder-3.1.17.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
