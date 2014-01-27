@@ -1,25 +1,27 @@
 package com.idega.block.trade.stockroom.business;
 
 
-import com.idega.data.IDOException;
-import com.idega.presentation.IWContext;
-import com.idega.presentation.ui.DropdownMenu;
-import com.idega.data.IDOFinderException;
-import java.sql.SQLException;
-import com.idega.block.trade.stockroom.data.ProductHome;
 import java.rmi.RemoteException;
-import com.idega.data.IDORelationshipException;
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
+
+import javax.ejb.EJBException;
+import javax.ejb.FinderException;
+
 import com.idega.block.category.data.ICCategory;
 import com.idega.block.trade.stockroom.data.Product;
-import javax.ejb.FinderException;
 import com.idega.block.trade.stockroom.data.ProductCategory;
-import com.idega.util.IWTimestamp;
+import com.idega.block.trade.stockroom.data.ProductHome;
 import com.idega.block.trade.stockroom.data.ProductPriceHome;
-import javax.ejb.EJBException;
-import com.idega.business.IBOService;
-import java.util.List;
 import com.idega.block.trade.stockroom.data.Timeframe;
+import com.idega.business.IBOService;
+import com.idega.data.IDOException;
+import com.idega.data.IDOFinderException;
+import com.idega.data.IDORelationshipException;
+import com.idega.presentation.IWContext;
+import com.idega.presentation.ui.DropdownMenu;
+import com.idega.util.IWTimestamp;
 
 public interface ProductBusiness extends IBOService {
 	/**
@@ -333,4 +335,7 @@ public interface ProductBusiness extends IBOService {
 	 
 	public boolean displayProductForPublic(Product product);
 
+	 public void deleteProduct(Product product,IWContext iwc);
+	  
+	  public void changeValidity(Product product,IWContext iwc);
 }

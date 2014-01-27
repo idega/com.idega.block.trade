@@ -597,4 +597,19 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 	  }
 	  
   }
+  
+  public void deleteProduct(Product product,IWContext iwc){
+	  	product.setIsValid(false);
+	  	product.store();
+		iwc.setApplicationAttribute(productsApplication+product.getSupplierId(), null);
+  }
+  
+  public void changeValidity(Product product,IWContext iwc){
+	    	boolean validity = product.getIsValid();
+	    	product.setIsValid(!validity);
+	    	product.setDisabled(validity);
+	    	product.store();
+	    	iwc.setApplicationAttribute(productsApplication+product.getSupplierId(), null);
+  }
+  
 }
