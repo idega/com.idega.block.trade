@@ -599,9 +599,12 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   }
   
   public void deleteProduct(Product product,IWContext iwc){
-	  	product.setIsValid(false);
-	  	product.store();
-		iwc.setApplicationAttribute(productsApplication+product.getSupplierId(), null);
+	  try {
+		  deleteProduct(product);
+		  iwc.setApplicationAttribute(productsApplication+product.getSupplierId(), null);
+	  } catch (Exception e) {
+			// TODO: handle exception
+	  }
   }
   
   public void changeValidity(Product product,IWContext iwc){
@@ -610,6 +613,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 	    	product.setDisabled(validity);
 	    	product.store();
 	    	iwc.setApplicationAttribute(productsApplication+product.getSupplierId(), null);
+	    	invalidateProductCache(String.valueOf(product.getID()));
   }
   
 }
