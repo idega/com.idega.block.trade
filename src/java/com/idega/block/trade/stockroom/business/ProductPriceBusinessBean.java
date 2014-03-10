@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -392,7 +393,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	}
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, IWTimestamp stamp) throws FinderException {
 		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1, stamp);
-//		return getProductPriceHome().findMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1);
 	}
 
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId) throws FinderException {
@@ -451,22 +451,22 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 				tmp = prices;
 			} else {
 				tmp = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 1, currencyId, vis, null);
+				getLogger().info("Found misc. prices (" + prices + "). Product ID: " + productId + ", timeframe ID: " +
+						timeframeId + ", address ID: " + addressId + ", net booking only: " + netBookingOnly + ", currency ID: " + currencyId + ", date: " + date);
 			}
 
-			if ( tmp != null && ! tmp.isEmpty() && date != null) {
-				prices = new Vector();
+			if (tmp != null && ! tmp.isEmpty() && date != null) {
+				prices = new ArrayList();
 				Date exactDate = date.getDate();
 
-				Iterator iter = tmp.iterator();
 				ProductPrice price;
-				while (iter.hasNext()) {
+				for (Iterator iter = tmp.iterator(); iter.hasNext();) {
 					price = (ProductPrice) iter.next();
 
 					Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 1, currencyId, price.getPriceCategoryID(), exactDate);
 
 					if (coll != null && !coll.isEmpty()) {
-						Iterator tmpIter = coll.iterator();
-						while (tmpIter.hasNext()) {
+						for (Iterator tmpIter = coll.iterator(); tmpIter.hasNext();) {
 							prices.add(tmpIter.next());
 						}
 					} else {
@@ -479,10 +479,11 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			} else if (date != null) {
 				Date exactDate = date.getDate();
 				Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 1, currencyId, -1, exactDate);
-				Iterator iter = coll.iterator();
-				prices = new Vector();
-				while (iter.hasNext()) {
-					prices.add(iter.next());
+				prices = new ArrayList();
+				if (!ListUtil.isEmpty(coll)) {
+					for (Iterator iter = coll.iterator(); iter.hasNext();) {
+						prices.add(iter.next());
+					}
 				}
 				miscMap.put(mapDateKey.toString(), prices);
 			} else {
@@ -492,6 +493,9 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			}
 
 		}
+		
+		getLogger().info("Returning misc. prices (" + prices + "), key: " + mapKey.toString() + ". Product ID: " + productId + ", timeframe ID: " +
+			timeframeId + ", address ID: " + addressId + ", net booking only: " + netBookingOnly + ", currency ID: " + currencyId + ", date: " + date);
 		return prices;
 		
 //		StringBuffer key = new StringBuffer(productId).append("_").append(timeframeId).append("_").append(addressId)
