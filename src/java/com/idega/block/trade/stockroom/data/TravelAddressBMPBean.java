@@ -2,9 +2,15 @@ package com.idega.block.trade.stockroom.data;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.logging.Level;
 
 import com.idega.core.location.data.Address;
 import com.idega.data.GenericEntity;
+import com.idega.data.IDOAddRelationshipException;
+import com.idega.data.IDORelationshipException;
+import com.idega.data.IDORemoveRelationshipException;
 import com.idega.util.IWTimestamp;
 import com.idega.util.text.TextSoap;
 
@@ -24,6 +30,7 @@ public class TravelAddressBMPBean extends GenericEntity implements TravelAddress
 
   private static final String COLUMN_ORDER = "ORDER_NR";
   private static final String COLUMN_GROUP_NAME = "GROUP_NAME";
+  public static final String RELATION_DISCOUNT_CODE_GROUP = "sr_address_dc_group";
   
   public TravelAddressBMPBean() {
     super();
@@ -44,6 +51,7 @@ public class TravelAddressBMPBean extends GenericEntity implements TravelAddress
 
     this.addOneToOneRelationship(getColumnNameAddressId(), Address.class);
     this.addManyToManyRelationShip( Product.class, "SR_PRODUCT_SR_ADDRESS" );
+    this.addManyToManyRelationShip( DiscountCodeGroup.class, RELATION_DISCOUNT_CODE_GROUP );
   }
 
   public String getEntityName() {
@@ -137,6 +145,31 @@ public class TravelAddressBMPBean extends GenericEntity implements TravelAddress
   public static String getColumnNameTime() { return "DP_AR_TIME";}
   public static String getColumnNameAddressTypeId() {return "SR_ADDRESS_TYPE_ID";}
   public static String getColumnNameRefillStock() {return "REFILL_STOCK";}
+
+  	public Collection getDiscountCodeGroups(){
+	    try {
+			return this.idoGetRelatedEntities(DiscountCodeGroup.class);
+		} catch (IDORelationshipException e) {
+			getLogger().log(Level.WARNING, "Failed getting discount code groups of product " + getPrimaryKey(), e);
+		}
+		return Collections.EMPTY_LIST;
+	  }
+
+	  public void removeDiscountCodeGroup(DiscountCodeGroup discountCodeGroup){
+	    try {
+			this.idoRemoveFrom(discountCodeGroup);
+		} catch (IDORemoveRelationshipException e) {
+			getLogger().log(Level.WARNING, "Failed removing discount code group "+discountCodeGroup +" from product " + getPrimaryKey(), e);
+		}
+	  }
+
+	  public void addDiscountCodeGroup(DiscountCodeGroup discountCodeGroup){
+	    try {
+			this.idoAddTo(discountCodeGroup);
+		} catch (IDOAddRelationshipException e) {
+			getLogger().log(Level.WARNING, "Failed adding discount code group "+discountCodeGroup +" to product " + getPrimaryKey(), e);
+		}
+	  }
 }
 
 

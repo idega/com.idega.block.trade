@@ -307,4 +307,10 @@ public interface Product extends IDOLegacyEntity, MetaDataCapable {
 	public Collection getVoucherAds()  throws IDORelationshipException ;
 	
 	public void addVoucherAd(VoucherAd voucherAd) throws IDOAddRelationshipException ;
+	
+	public Collection getDiscountCodeGroups();
+
+	public void removeDiscountCodeGroup(DiscountCodeGroup discountCodeGroup);
+
+	public void addDiscountCodeGroup(DiscountCodeGroup discountCodeGroup);
 }

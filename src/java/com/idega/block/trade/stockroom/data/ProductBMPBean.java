@@ -65,6 +65,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   private static final String COLUMN_VOUCHER_COMMENT = "VOUCHER_COMMENT";
   private static final String COLUMN_DISABLED = "DISABLED";
   
+  public static final String RELATION_DISCOUNT_CODE_GROUP = "sr_product_dc_group";
+  
   /**
    *  Constructor for the Product object
    */
@@ -104,6 +106,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     this.addManyToManyRelationShip( Address.class, "SR_PRODUCT_IC_ADDRESS" );
     this.addManyToManyRelationShip( TxText.class );
     this.addManyToManyRelationShip( ICFile.class );
+    this.addManyToManyRelationShip( DiscountCodeGroup.class, RELATION_DISCOUNT_CODE_GROUP );
     addMetaDataRelationship();
     
     addAttribute( COLUMN_DISABLED, "Disabled", true, true, Boolean.class );
@@ -998,7 +1001,33 @@ private StringBuffer getSQL(boolean onlyValidProducts, int supplierId, int produ
   public void addICFile(ICFile file) throws IDOAddRelationshipException{
     this.idoAddTo(file);
   }
+  
+  public Collection getDiscountCodeGroups(){
+    try {
+		return this.idoGetRelatedEntities(DiscountCodeGroup.class);
+	} catch (IDORelationshipException e) {
+		getLogger().log(Level.WARNING, "Failed getting discount code groups of product " + getPrimaryKey(), e);
+	}
+	return Collections.EMPTY_LIST;
+  }
 
+  public void removeDiscountCodeGroup(DiscountCodeGroup discountCodeGroup){
+    try {
+		this.idoRemoveFrom(discountCodeGroup);
+	} catch (IDORemoveRelationshipException e) {
+		getLogger().log(Level.WARNING, "Failed removing discount code group "+discountCodeGroup +" from product " + getPrimaryKey(), e);
+	}
+  }
+
+  public void addDiscountCodeGroup(DiscountCodeGroup discountCodeGroup){
+    try {
+		this.idoAddTo(discountCodeGroup);
+	} catch (IDOAddRelationshipException e) {
+		getLogger().log(Level.WARNING, "Failed adding discount code group "+discountCodeGroup +" to product " + getPrimaryKey(), e);
+	}
+  }
+
+  
   public void addTimeframe(Timeframe frame) throws IDOAddRelationshipException{
     this.idoAddTo(frame);
   }

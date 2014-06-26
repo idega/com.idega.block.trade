@@ -11,4 +11,10 @@ public interface DiscountCodeHome  extends IDOHome{
 	public int countByProduct(Object productId);
 	public Collection getBySupplier(Object supplierPK,int start, int max);
 	public Collection getBySupplierNotUsed(Object supplierPK,int start, int max);
+	public int countBySupplierAndCode(Object supplierPk, String code);
+	public int countByCodeGroupAndCode(Object codeGroupPk, String code);
+	public DiscountCode getByCodeGroupAndCode(Object codeGroupPk, String code);
+	public int countByProductDepartures(Object productId);
+	public boolean isCodesForProduct(Object productId,Object departureId);
+	public DiscountCode getByCodeAndProductAndDeparture(String code, Object productId, Object departureId);
 }
