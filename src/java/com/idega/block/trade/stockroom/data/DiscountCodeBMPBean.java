@@ -102,6 +102,29 @@ public class DiscountCodeBMPBean extends com.idega.data.GenericEntity implements
 				"Y"));
 		return idoFindOnePKByQuery(query);
 	}
+	public Object getByCodeGroupAndCodeNotUsed(Object codeGroupPk, String code) throws FinderException, IDORelationshipException{
+		Table table = new Table(this);
+		Table dcGroup = new Table(DiscountCodeGroup.class);
+		
+		SelectQuery query = new SelectQuery(table);
+		query.addJoin(table, dcGroup);
+		query.addColumn(new WildCardColumn(table));
+		query.addCriteria(new MatchCriteria(table, COLUMN_CODE, 
+				MatchCriteria.EQUALS, 
+				code));
+		query.addCriteria(new MatchCriteria(table, COLUMN_DISCOUNT_CODE_GROUP, 
+				MatchCriteria.EQUALS, 
+				codeGroupPk));
+		query.addCriteria(new MatchCriteria(table, COLUMN_DISCOUNT_CODE_GROUP, 
+				MatchCriteria.EQUALS, 
+				codeGroupPk));
+		query.addCriteria(new ColumnMatchCriteria(dcGroup.getColumn(DiscountCodeGroupBMPBean.COLUMN_MAX_USAGE), 
+				table.getColumn(COLUMN_TIMES_USED),MatchCriteria.GREATER));
+		query.addCriteria(new MatchCriteria(table, COLUMN_VALID, 
+				MatchCriteria.EQUALS, 
+				"Y"));
+		return idoFindOnePKByQuery(query);
+	}
 	
 	public Object getByCodeAndProduct(String code,Object productId) throws IDORelationshipException, FinderException{
 		Table table = new Table(this);

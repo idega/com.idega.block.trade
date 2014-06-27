@@ -17,4 +17,5 @@ public interface DiscountCodeHome  extends IDOHome{
 	public int countByProductDepartures(Object productId);
 	public boolean isCodesForProduct(Object productId,Object departureId);
 	public DiscountCode getByCodeAndProductAndDeparture(String code, Object productId, Object departureId);
+	public DiscountCode getByCodeGroupAndCodeNotUsed(Object codeGroupPk, String code);
 }

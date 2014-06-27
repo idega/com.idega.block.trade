@@ -159,5 +159,17 @@ public class DiscountCodeHomeImpl  extends IDOFactory implements DiscountCodeHom
 		}
 		return null;
 	}
+	public DiscountCode getByCodeGroupAndCodeNotUsed(Object codeGroupPk, String code){
+		try{
+			IDOEntity entity = this.idoCheckOutPooledEntity();
+			Object id = ((DiscountCodeBMPBean) entity).getByCodeGroupAndCodeNotUsed(codeGroupPk, code);
+			this.idoCheckInPooledEntity(entity);
+			return (DiscountCode) this.findByPrimaryKeyIDO(id);
+		}catch (FinderException e) {
+		}catch (Exception e) {
+			getLogger().log(Level.WARNING, "Failed getting not used by " + codeGroupPk + " and code " + code, e);
+		}
+		return null;
+	}
 
 }
