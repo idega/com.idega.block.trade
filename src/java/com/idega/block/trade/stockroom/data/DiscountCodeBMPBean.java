@@ -198,6 +198,8 @@ public class DiscountCodeBMPBean extends com.idega.data.GenericEntity implements
 		query.addCriteria(new MatchCriteria(dcGroup, DiscountCodeGroupBMPBean.COLUMN_VALID, 
 				MatchCriteria.EQUALS, 
 				"Y"));
+		query.addCriteria(new ColumnMatchCriteria(dcGroup.getColumn(DiscountCodeGroupBMPBean.COLUMN_MAX_USAGE), 
+				table.getColumn(COLUMN_TIMES_USED),MatchCriteria.GREATER));
 		try{
 			return idoFindOnePKByQuery(query);
 		}catch (FinderException e) {
@@ -215,6 +217,8 @@ public class DiscountCodeBMPBean extends com.idega.data.GenericEntity implements
 			query.addCriteria(new MatchCriteria(departures, "SR_ADDRESS_ID", 
 					MatchCriteria.EQUALS, 
 					departureId));
+			query.addCriteria(new ColumnMatchCriteria(dcGroup.getColumn(DiscountCodeGroupBMPBean.COLUMN_MAX_USAGE), 
+					table.getColumn(COLUMN_TIMES_USED),MatchCriteria.GREATER));
 			query.addCriteria(new MatchCriteria(table, COLUMN_VALID, 
 					MatchCriteria.EQUALS, 
 					"Y"));
@@ -237,12 +241,15 @@ public class DiscountCodeBMPBean extends com.idega.data.GenericEntity implements
 		query.addCriteria(new MatchCriteria(product, ProductBMPBean.getIdColumnName(), 
 				MatchCriteria.EQUALS, 
 				productId));
+		query.addCriteria(new ColumnMatchCriteria(dcGroup.getColumn(DiscountCodeGroupBMPBean.COLUMN_MAX_USAGE), 
+				table.getColumn(COLUMN_TIMES_USED),MatchCriteria.GREATER));
 		query.addCriteria(new MatchCriteria(table, COLUMN_VALID, 
 				MatchCriteria.EQUALS, 
 				"Y"));
 		query.addCriteria(new MatchCriteria(dcGroup, DiscountCodeGroupBMPBean.COLUMN_VALID, 
 				MatchCriteria.EQUALS, 
 				"Y"));
+		
 		return idoGetNumberOfRecords(query);
 	}
 	
@@ -288,6 +295,8 @@ public class DiscountCodeBMPBean extends com.idega.data.GenericEntity implements
 		query.addCriteria(new MatchCriteria(product, ProductBMPBean.getIdColumnName(), 
 				MatchCriteria.EQUALS, 
 				productId));
+		query.addCriteria(new ColumnMatchCriteria(dcGroup.getColumn(DiscountCodeGroupBMPBean.COLUMN_MAX_USAGE), 
+				table.getColumn(COLUMN_TIMES_USED),MatchCriteria.GREATER));
 		query.addCriteria(new MatchCriteria(dcGroup, DiscountCodeGroupBMPBean.COLUMN_VALID, 
 				MatchCriteria.EQUALS, 
 				"Y"));
