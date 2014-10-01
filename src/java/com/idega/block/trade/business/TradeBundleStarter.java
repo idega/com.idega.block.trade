@@ -17,19 +17,14 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.ejb.CreateException;
-
 import com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean;
 import com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean;
 import com.idega.block.trade.stockroom.data.SupplierStaffGroupBMPBean;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.core.component.data.ICObject;
-import com.idega.core.data.ICApplicationBinding;
-import com.idega.core.data.ICApplicationBindingHome;
 import com.idega.data.IDOFactory;
 import com.idega.data.IDOLookup;
-import com.idega.data.IDOLookupException;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWBundleStartable;
 import com.idega.idegaweb.IWMainApplicationSettings;
@@ -39,15 +34,16 @@ import com.idega.util.database.ConnectionBroker;
 import com.idega.util.database.PoolManager;
 
 public class TradeBundleStarter implements IWBundleStartable,ActionListener{
-	
+
 	private IWBundle bundle_;
 	private EventTimer timer;
 	public static final String IW_CURRENCY_TIMER = "iw_currency_timer";
 	public static final String DATASOURCE = "travel.datasource";
-	
+
 	public TradeBundleStarter() {
 	}
-	
+
+	@Override
 	public void start(IWBundle bundle){
 		this.bundle_ = bundle;
 		checkDataSource(bundle);
@@ -59,10 +55,10 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 		System.out.println("Trade bundle starter: starting");
 		createGroupTypes(bundle);
 	}
-	
+
 	private void createGroupTypes(IWBundle bundle) {
 		try {
-			GroupBusiness gb = (GroupBusiness) IBOLookup.getServiceInstance(bundle.getApplication().getIWApplicationContext(), GroupBusiness.class);
+			GroupBusiness gb = IBOLookup.getServiceInstance(bundle.getApplication().getIWApplicationContext(), GroupBusiness.class);
 			gb.createGroupTypeOrUpdate(SupplierStaffGroupBMPBean.GROUP_TYPE_VALUE, false);
 			gb.createGroupTypeOrUpdate(ResellerStaffGroupBMPBean.GROUP_TYPE_VALUE, false);
 			gb.createGroupTypeOrUpdate(SupplierManagerBusinessBean.SUPPLIER_ADMINISTRATOR_GROUP_DESCRIPTION, true);
@@ -83,8 +79,8 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param bundle
 	 */
@@ -92,14 +88,14 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 		// Switching the datasource
 		IWMainApplicationSettings settings = bundle.getApplication().getIWApplicationContext().getApplicationSettings();
 		String dataSource = settings.getProperty(DATASOURCE);
-		
+
 		if (dataSource == null) {
 			dataSource = bundle.getProperty("datasource");
 			if (dataSource != null) {
 				settings.setProperty(DATASOURCE, dataSource, "travel.binding");
 			}
 		}
-		
+
 		try {
 			if (dataSource != null && (PoolManager.getInstance().hasDatasource(dataSource) || ConnectionBroker.hasDataSource(dataSource))) {
 				Collection entities = bundle.getDataObjects();
@@ -125,7 +121,8 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 			e.printStackTrace();
 		}
 	}
-	
+
+	@Override
 	public void actionPerformed(ActionEvent event) {
 		try{
 			if (event.getActionCommand().equalsIgnoreCase(IW_CURRENCY_TIMER)) {
@@ -143,10 +140,11 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 			re.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * @see com.idega.idegaweb.IWBundleStartable#stop(IWBundle)
 	 */
+	@Override
 	public void stop(IWBundle starterBundle) {
 		if (this.timer != null) {
 			this.timer.stop();

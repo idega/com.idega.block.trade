@@ -40,8 +40,6 @@ import com.idega.business.IBORuntimeException;
 import com.idega.business.IBOServiceBean;
 import com.idega.core.accesscontrol.business.LoginBusinessBean;
 import com.idega.core.accesscontrol.business.NotLoggedOnException;
-import com.idega.core.data.ICApplicationBinding;
-import com.idega.core.data.ICApplicationBindingHome;
 import com.idega.data.EntityControl;
 import com.idega.data.EntityFinder;
 import com.idega.data.GenericEntity;
@@ -73,32 +71,39 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 
   public StockroomBusinessBean() {
   }
-  public void addSupplies(int product_id, float amount) {
+  @Override
+public void addSupplies(int product_id, float amount) {
     /**@todo: Implement this com.idega.block.trade.stockroom.business.SupplyManager method*/
     throw new java.lang.UnsupportedOperationException("Method addSupplies() not yet implemented.");
   }
-  public void depleteSupplies(int product_id, float amount) {
+  @Override
+public void depleteSupplies(int product_id, float amount) {
     /**@todo: Implement this com.idega.block.trade.stockroom.business.SupplyManager method*/
     throw new java.lang.UnsupportedOperationException("Method depleteSupplies() not yet implemented.");
   }
-  public void setSupplyStatus(int product_id, float status) {
+  @Override
+public void setSupplyStatus(int product_id, float status) {
     /**@todo: Implement this com.idega.block.trade.stockroom.business.SupplyManager method*/
     throw new java.lang.UnsupportedOperationException("Method addSupplies() not yet implemented.");
   }
-  public float getSupplyStatus(int product_id)  throws SQLException {
+  @Override
+public float getSupplyStatus(int product_id)  throws SQLException {
     /**@todo: Implement this com.idega.block.trade.stockroom.business.SupplyManager method*/
     throw new java.lang.UnsupportedOperationException("Method getSupplyStatus() not yet implemented.");
   }
-  public float getSupplyStatus(int product_id, Timestamp time) {
+  @Override
+public float getSupplyStatus(int product_id, Timestamp time) {
     /**@todo: Implement this com.idega.block.trade.stockroom.business.SupplyManager method*/
     throw new java.lang.UnsupportedOperationException("Method getSupplyStatus() not yet implemented.");
   }
 
-  public ProductPrice setPrice(int productPriceIdToReplace, int productId, int priceCategoryId, int currencyId, Timestamp time, float price, int priceType, int timeframeId, int addressId) throws FinderException, IDOAddRelationshipException, CreateException, RemoteException {
+  @Override
+public ProductPrice setPrice(int productPriceIdToReplace, int productId, int priceCategoryId, int currencyId, Timestamp time, float price, int priceType, int timeframeId, int addressId) throws FinderException, IDOAddRelationshipException, CreateException, RemoteException {
     return setPrice(productPriceIdToReplace, productId, priceCategoryId, currencyId, time, price, priceType, timeframeId, addressId, -1);
   }
 
-  public ProductPrice setPrice(int productPriceIdToReplace, int productId, int priceCategoryId, int currencyId, Timestamp time, float price, int priceType, int timeframeId, int addressId, int maxUsage) throws FinderException, IDOAddRelationshipException, CreateException, RemoteException {
+  @Override
+public ProductPrice setPrice(int productPriceIdToReplace, int productId, int priceCategoryId, int currencyId, Timestamp time, float price, int priceType, int timeframeId, int addressId, int maxUsage) throws FinderException, IDOAddRelationshipException, CreateException, RemoteException {
     if (productPriceIdToReplace != -1) {
         ProductPrice pPrice = ((com.idega.block.trade.stockroom.data.ProductPriceHome)com.idega.data.IDOLookup.getHome(ProductPrice.class)).findByPrimaryKey(new Integer(productPriceIdToReplace));
           pPrice.invalidate();
@@ -109,11 +114,13 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
     return setPrice(productId, priceCategoryId, currencyId, time, price, priceType, timeframeId, addressId, maxUsage, null);
   }
 
-  public ProductPrice setPrice(int productId, int priceCategoryId, int currencyId, Timestamp time, float price, int priceType, int timeframeId, int addressId) throws IDOAddRelationshipException, CreateException, RemoteException {
+  @Override
+public ProductPrice setPrice(int productId, int priceCategoryId, int currencyId, Timestamp time, float price, int priceType, int timeframeId, int addressId) throws IDOAddRelationshipException, CreateException, RemoteException {
     return setPrice(productId, priceCategoryId, currencyId, time, price, priceType, timeframeId, addressId, -1, null);
   }
 
-  public ProductPrice setPrice(int productId, int priceCategoryId, int currencyId, Timestamp time, float price, int priceType, int timeframeId, int addressId, int maxUsage, Date exactDate) throws IDOAddRelationshipException, CreateException, RemoteException {
+  @Override
+public ProductPrice setPrice(int productId, int priceCategoryId, int currencyId, Timestamp time, float price, int priceType, int timeframeId, int addressId, int maxUsage, Date exactDate) throws IDOAddRelationshipException, CreateException, RemoteException {
 	  ProductPrice prPrice = ((com.idega.block.trade.stockroom.data.ProductPriceHome)com.idega.data.IDOLookup.getHome(ProductPrice.class)).create();
 	  prPrice.setProductId(productId);
 	  prPrice.setCurrencyId(currencyId);
@@ -137,11 +144,13 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 	  return prPrice;
   }
 
-  public  float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time) throws SQLException, RemoteException {
+  @Override
+public  float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time) throws SQLException, RemoteException {
     return getPrice(productPriceId, productId, priceCategoryId, currencyId, time, -1, -1);
   }
 
-  public  ProductPrice getPrice(Product product) throws RemoteException {
+  @Override
+public  ProductPrice getPrice(Product product) throws RemoteException {
     StringBuffer buffer = new StringBuffer();
       buffer.append("SELECT * FROM "+com.idega.block.trade.stockroom.data.ProductPriceBMPBean.getProductPriceTableName());
       buffer.append(" WHERE ");
@@ -167,19 +176,23 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
     return null;
   }
 
-  public float getPrice(int productPriceId, int productId, int priceCategoryId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException {
+  @Override
+public float getPrice(int productPriceId, int productId, int priceCategoryId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException {
     return getPrice(productPriceId, productId, priceCategoryId, -1, time, timeframeId, addressId);
   }
 
-  public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
+  @Override
+public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
 	  return getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId, null);
   }
-  public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException  {
+  @Override
+public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException  {
 	  ProductPrice price = getProductPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId, exactDate);
 	  return getPrice(price, time, timeframeId, addressId);
   }
 
-  	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
+  	@Override
+	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
   	  if (price != null) {
 		  PriceCategory cat = price.getPriceCategory();
 		  if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_PRICE)){
@@ -198,14 +211,15 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 		  }
 		  return 0;
 	  }
-  	
+
   	private HashMap onlineDiscountMap = null;
-  	
-  	public float getOnlineDiscount(ProductPrice price) {
+
+  	@Override
+	public float getOnlineDiscount(ProductPrice price) {
   		if (onlineDiscountMap == null) {
   			onlineDiscountMap = new HashMap();
   		}
-  		
+
   		Float f = (Float) onlineDiscountMap.get(price.getPrimaryKey());
   		if (f == null) {
 			try {
@@ -224,32 +238,35 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   		}
   		return f.floatValue();
   	}
-  	
+
   	private HashMap priceMap = null;
-  	
+
   	private HashMap getPriceMap(int productId) {
   		if (priceMap == null) {
   			priceMap = new HashMap();
   		}
-  		
+
   		HashMap pMap = (HashMap) priceMap.get(new Integer(productId));
   		if (pMap == null) {
   			pMap = new HashMap();
   	  		priceMap.put(new Integer(productId), pMap);
   		}
-  		
+
   		return pMap;
   	}
-  	
-  	public void clearCache(int productID) {
+
+  	@Override
+	public void clearCache(int productID) {
   		getPriceMap(productID).clear();
   	}
-  	
-  	public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
+
+  	@Override
+	public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId) throws SQLException, RemoteException  {
   		return getProductPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId, null);
   	}
-  	
-  	public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException  {
+
+  	@Override
+	public ProductPrice getProductPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException  {
   		StringBuffer keyb = new StringBuffer("");
   		keyb.append(productPriceId).append("_").append(priceCategoryId).append("_").append(currencyId)
   		.append("_").append(timeframeId).append("_").append(addressId);
@@ -415,17 +432,18 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 			throw new ProductPriceException("No Price Was Found");
   		}
 		return null;
-			 
+
   	}
 
 
   /**
    * returns 0.0 if pricecategory is not of type com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT
- * @throws SQLException 
- * @throws SQLException 
- * @throws FinderException 
+ * @throws SQLException
+ * @throws SQLException
+ * @throws FinderException
    */
-  public float getDiscount(int productId, int priceCategoryId, Timestamp time) throws RemoteException, SQLException, FinderException {
+  @Override
+public float getDiscount(int productId, int priceCategoryId, Timestamp time) throws RemoteException, SQLException, FinderException {
     PriceCategory cat = ((com.idega.block.trade.stockroom.data.PriceCategoryHome)com.idega.data.IDOLookup.getHomeLegacy(PriceCategory.class)).findByPrimaryKeyLegacy(priceCategoryId);
     if(cat.getType().equals(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT)){
       ProductPrice ppr = ((ProductPrice)GenericEntity.getStaticInstance(ProductPrice.class));
@@ -445,7 +463,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 		  ProductPriceHome ppHome = (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);
 		  Collection result = ppHome.findBySQL(buffer.toString());
 //	      List result = EntityFinder.findAll(ppr,buffer.toString());
-		
+
       if(result != null && result.size() > 0){
 		  Iterator iter = result.iterator();
 		  ProductPrice price = (ProductPrice) iter.next();
@@ -458,31 +476,33 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
     }
   }
 
-  public int createPriceCategory(int supplierId, String name, String description, String extraInfo) throws SQLException {
+  @Override
+public int createPriceCategory(int supplierId, String name, String description, String extraInfo) throws SQLException {
 		return createPriceCategory(supplierId, name, description, extraInfo, null);
   }
-	
-  public int createPriceCategory(int supplierId, String name, String description, String extraInfo, String key)throws SQLException {
+
+  @Override
+public int createPriceCategory(int supplierId, String name, String description, String extraInfo, String key)throws SQLException {
   		try {
   			PriceCategory cat = ((com.idega.block.trade.stockroom.data.PriceCategoryHome)com.idega.data.IDOLookup.getHome(PriceCategory.class)).create();
 	    cat.setType(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_PRICE);
-	
+
 	    cat.setName(name);
-	
+
 	    if(description != null){
 	      cat.setDescription(description);
 	    }
-	
+
 	    if(extraInfo != null){
 	      cat.setExtraInfo(extraInfo);
 	    }
-	    
+
 	    if (key != null) {
 	    	cat.setKey(key);
 	    }
-	
+
 	    cat.insert();
-	
+
 	    return cat.getID();
 		} catch (Exception e) {
 			throw new SQLException(e.getMessage());
@@ -490,22 +510,23 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   }
 
 
-  public void createPriceDiscountCategory(int parentId, int supplierId, String name, String description, String extraInfo) throws SQLException{
+  @Override
+public void createPriceDiscountCategory(int parentId, int supplierId, String name, String description, String extraInfo) throws SQLException{
   		try {
 	    PriceCategory cat = ((com.idega.block.trade.stockroom.data.PriceCategoryHome)com.idega.data.IDOLookup.getHome(PriceCategory.class)).create();
 	    cat.setParentId(parentId);
 	    cat.setType(com.idega.block.trade.stockroom.data.PriceCategoryBMPBean.PRICETYPE_DISCOUNT);
-	
+
 	    cat.setName(name);
-	
+
 	    if(description != null){
 	      cat.setDescription(description);
 	    }
-	
+
 	    if(extraInfo != null){
 	      cat.setExtraInfo(extraInfo);
 	    }
-	
+
 	    cat.insert();
   		} catch (Exception e) {
   			throw new SQLException(e.getMessage());
@@ -514,7 +535,8 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   }
 
 
-  public  int getUserSupplierId(User user) throws RuntimeException, SQLException{
+  @Override
+public  int getUserSupplierId(User user) throws RuntimeException, SQLException{
   	try {
 	  	List gr = user.getParentGroups();
 	    if(gr != null){
@@ -527,11 +549,11 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
         			Collection coll = sHome.findAllByGroupID( ((Integer) item.getPrimaryKey()).intValue());
         			if (coll != null && !coll.isEmpty()) {
         				return ((Supplier) coll.iterator().next()).getID();
-        			} 
+        			}
         		} catch (FinderException fe) {
         			fe.printStackTrace();
         		}
-	        		
+
 //	          IDOLegacyEntity[] supp = ((Supplier) SupplierBMPBean.getStaticInstance(Supplier.class)).findAllByColumn(SupplierBMPBean.getColumnNameGroupID(),item.getID());
 //	          if(supp != null && supp.length > 0){
 //	            return supp[0].getID();
@@ -546,7 +568,8 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   	}
   }
 
-  public  int getUserSupplierId(IWContext iwc) throws RuntimeException, SQLException {
+  @Override
+public  int getUserSupplierId(IWContext iwc) throws RuntimeException, SQLException {
     String supplierLoginAttributeString = "sr_supplier_id";
 
     Object obj = LoginBusinessBean.getLoginAttribute(supplierLoginAttributeString,iwc);
@@ -564,7 +587,8 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
     }
   }
 
-  public  int getUserResellerId(IWContext iwc) throws RuntimeException, SQLException {
+  @Override
+public  int getUserResellerId(IWContext iwc) throws RuntimeException, SQLException {
     String resellerLoginAttributeString = "sr_reseller_id";
 
     Object obj = LoginBusinessBean.getLoginAttribute(resellerLoginAttributeString,iwc);
@@ -584,7 +608,8 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
   }
 
 
-  public  int getUserResellerId(User user) throws RuntimeException, SQLException{
+  @Override
+public  int getUserResellerId(User user) throws RuntimeException, SQLException{
   	List gr = user.getParentGroups();
 		if(gr != null){
 			try {
@@ -597,7 +622,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 	      			Collection coll = rHome.findAllByGroupID( item.getPrimaryKey() );
 	      			if (coll != null && !coll.isEmpty()) {
 	      				return ((Reseller) coll.iterator().next()).getID();
-	      			} 
+	      			}
 	      		} catch (FinderException fe) {
 	      			fe.printStackTrace();
 	      		}
@@ -614,7 +639,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 			}
 		}
 		throw new RuntimeException("Does not belong to any reseller");
-	
+
 	/*com.idega.core.data.GenericGroup gGroup = ((com.idega.core.data.GenericGroupHome)com.idega.data.IDOLookup.getHomeLegacy(GenericGroup.class)).createLegacy();
     List gr = gGroup.getAllGroupsContainingUser(user);
     if(gr != null){
@@ -633,19 +658,22 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
     */
   }
 
-  public  int updateProduct(int productId, int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int discountTypeId) throws Exception{
+  @Override
+public  int updateProduct(int productId, int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int discountTypeId) throws Exception{
     return getProductBusiness().createProduct(productId,supplierId, fileId, productName, number, productDescription, isValid, discountTypeId);
   }
 
-  public  int createProduct(int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int discountTypeId) throws Exception{
+  @Override
+public  int createProduct(int supplierId, Integer fileId, String productName, String number, String productDescription, boolean isValid, int discountTypeId) throws Exception{
     return getProductBusiness().createProduct(-1,supplierId, fileId, productName, number, productDescription, isValid, discountTypeId);
   }
 
   private ProductBusiness getProductBusiness() throws RemoteException {
-    return (ProductBusiness) IBOLookup.getServiceInstance(getIWApplicationContext(), ProductBusiness.class);
+    return IBOLookup.getServiceInstance(getIWApplicationContext(), ProductBusiness.class);
   }
 
-  public DropdownMenu getCurrencyDropdownMenu(String menuName) {
+  @Override
+public DropdownMenu getCurrencyDropdownMenu(String menuName) {
     DropdownMenu menu = new DropdownMenu(menuName);
     List currencyList = CurrencyBusiness.getCurrencyList();
     Iterator iter = currencyList.iterator();
@@ -657,10 +685,12 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
     return menu;
   }
 
+	@Override
 	public boolean isInTimeframe(IWTimestamp from, IWTimestamp to, IWTimestamp stampToCheck, boolean yearly) {
 		return isBetween(from, to, stampToCheck, yearly, true);
 	}
 
+	@Override
 	public boolean isBetween(IWTimestamp from, IWTimestamp to, IWTimestamp stampToCheck, boolean yearly, boolean bordersCount) {
 		from.setAsDate();
 		to.setAsDate();
@@ -697,16 +727,16 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 			}
 		}
 	}
-	
+
 	protected ProductPriceBusiness getProductPriceBusiness() {
 		try {
-			return (ProductPriceBusiness) IBOLookup.getServiceInstance(getIWApplicationContext(), ProductPriceBusiness.class);
+			return IBOLookup.getServiceInstance(getIWApplicationContext(), ProductPriceBusiness.class);
 		}
 		catch (IBOLookupException e) {
 			throw new IBORuntimeException(e);
 		}
 	}
-	
+
 	private String getRemoteTravelApplicationUrlCsvList() {
 		if (remoteTravelApplications == null) {
 			String icABKey = "RemoteTravelAppUrl";
@@ -727,7 +757,8 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 //	public void executeRemoteService(String remoteDomainToExclude, String methodQuery) {
 //		executeRemoteService(remoteDomainToExclude, methodQuery, "/idegaweb/bundles/com.idega.block.trade.bundle/resources/services/IWTradeWS.jws");
 //	}
-	
+
+	@Override
 	public Collection getService_PortTypes(String remoteDomainToExclude) throws ServiceException, MalformedURLException {
 		Collection c = new Vector();
 		String remoteTravelWebs = getRemoteTravelApplicationUrlCsvList();
@@ -750,9 +781,9 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 				}
 			}
 
-			
+
 		}
-		
+
 		return c;
 	}
 	protected java.rmi.Remote createServiceStatePortType(String remoteWeb) throws ServiceException, MalformedURLException {
@@ -761,7 +792,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 		TradeService_PortType state_port = state_locator.getTradeService(new URL(endpoint2));
 		return state_port;
 	}
-	
+
 //	/**
 //	 * <p>
 //	 * Method for calling methods on remote domains
@@ -782,7 +813,7 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 //				try {
 //					serverName = IWContext.getInstance().getRequest().getServerName();
 //				} catch (NullPointerException e1) {
-//					
+//
 //				}
 //			}
 //			StringTokenizer tokenizer = new StringTokenizer(remoteTravelWebs,",");
