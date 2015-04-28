@@ -97,7 +97,7 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 		}
 
 		try {
-			if (dataSource != null && (PoolManager.getInstance().hasDatasource(dataSource) || ConnectionBroker.hasDataSource(dataSource))) {
+			if (dataSource != null && (PoolManager.getInstance().hasDatasource(dataSource) || ConnectionBroker.getDataSource(dataSource) != null)) {
 				Collection entities = bundle.getDataObjects();
 				if (entities != null){
 					Iterator iter = entities.iterator();

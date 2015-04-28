@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Level;
 
 import javax.ejb.FinderException;
 
@@ -21,6 +22,7 @@ import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.data.IDOQuery;
 import com.idega.data.IDORelationshipException;
+import com.idega.data.IDOStoreException;
 import com.idega.data.MetaDataCapable;
 import com.idega.data.SimpleQuerier;
 import com.idega.data.query.Column;
@@ -29,6 +31,8 @@ import com.idega.data.query.MatchCriteria;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
 import com.idega.data.query.WildCardColumn;
+import com.idega.presentation.IWContext;
+import com.idega.util.CoreUtil;
 import com.idega.util.text.TextSoap;
 
 /**
@@ -45,6 +49,8 @@ public class ProductPriceBMPBean extends com.idega.data.GenericEntity implements
   public static final int PRICETYPE_PRICE = 0;
   public static final int PRICETYPE_DISCOUNT = 1;
 	private static final String COLUMN_FIXED_PRICE = "FIXED_PRICE";
+	private static final String COLUMN_DELETED_BY = "DELETED_BY";
+	private static final String COLUMN_DELETED_WHEN = "DELETED_WHEN";
 
 
   public ProductPriceBMPBean(){
@@ -68,6 +74,8 @@ public class ProductPriceBMPBean extends com.idega.data.GenericEntity implements
     /** added 19.11.2004 by birna */
     addAttribute(getColumnNameExactDate(), "Exact date", true, true, Date.class);
 
+    addAttribute(COLUMN_DELETED_BY,COLUMN_DELETED_BY , Integer.class);
+    addAttribute(COLUMN_DELETED_WHEN,COLUMN_DELETED_WHEN , Timestamp.class);
     this.addManyToManyRelationShip(Timeframe.class,getProductPriceTableName()+"_TIMEFRAME");
     this.addManyToManyRelationShip(Address.class,getProductPriceTableName()+"_ADDRESS");
     this.addManyToManyRelationShip(TravelAddress.class);
@@ -546,6 +554,7 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
   public static String getColumnNameIsValid() {return "IS_VALID";}
   public static String getColumnNameMaxUsage() {return "MAX_USAGE";}
   public static String getColumnNameExactDate() {return "EXACT_DATE";}
+  public static String getIdColumnName() { return getProductPriceTableName()+"_ID";}
   
   public Integer ejbFindByData(int productId,int timeframeId,int addressId,int currencyId,int priceCategoryId,Date date)throws FinderException{
  
@@ -626,5 +635,27 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 	  }
 	  return this.idoFindOnePKByQuery(query);
   }
+  private void recordDeletion(){
+	  int deletedBy = getIntColumnValue(COLUMN_DELETED_BY, -1);
+	  if(deletedBy >= 0){
+		  return;
+	  }
+	  int userId;
+	  try{
+		  IWContext iwc = CoreUtil.getIWContext();
+		  userId = iwc.getCurrentUserId();
+	  }catch (Exception e) {
+		getLogger().log(Level.WARNING, "Failed recording deletion", e);
+		userId = 0;//Deleted with error probably by system
+	  }
+	  setColumn(COLUMN_DELETED_BY, userId);
+	  setColumn(COLUMN_DELETED_WHEN, new Timestamp(System.currentTimeMillis()));
+  }
+	public void store() throws IDOStoreException {
+		if(!getIsValid()){
+			recordDeletion();
+		}
+		super.store();
+	}
 
 }

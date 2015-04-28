@@ -3,6 +3,7 @@ package com.idega.block.trade.stockroom.business;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -310,7 +311,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   public List getProducts(IWContext iwc, int supplierId) throws RemoteException{
     List temp = (List) iwc.getApplicationAttribute(productsApplication+supplierId);
     if (temp == null) {
-      temp = getProducts(supplierId);
+      temp = getProducts(true, supplierId);
       iwc.setApplicationAttribute(productsApplication+supplierId, temp);
       return temp;
     }else {
@@ -321,23 +322,32 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   /**
    * @deprecated
    */
-  public List getProducts(int supplierId) throws RemoteException{
-    //return getProducts(supplierId, null);
-    List list = new Vector();
+  public List getProducts(int supplierId) throws RemoteException {
+	  return getProducts(true, supplierId);
+  }
+  public List getProducts(boolean onlyValidProducts, int supplierId) throws RemoteException {
+    List list = new ArrayList();
     try {
-      Collection coll = getProductHome().findProducts(supplierId);
+      Collection coll = getProductHome().findProducts(onlyValidProducts, supplierId);
       if (coll != null) {
-      		list = new Vector(coll);
+      		list = new ArrayList(coll);
       }
-    }catch (FinderException fe) {
+    } catch (FinderException fe) {
       fe.printStackTrace(System.err);
     }
     return list;
   }
   
   public Collection getProduct(int supplierId, int firstEntity, int lastEntity) throws FinderException, RemoteException {
-	  return getProductHome().findProducts(supplierId, firstEntity, lastEntity);
+	  return getProduct(true, supplierId, firstEntity, lastEntity);
   }
+  public Collection getProduct(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity) throws FinderException, RemoteException {
+	  return getProductHome().findProducts(onlyValidProducts, supplierId, firstEntity, lastEntity);
+  }
+  public Collection getProduct(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity,boolean onlyEnabled) throws FinderException, RemoteException {
+	  return getProductHome().findProducts(onlyValidProducts, supplierId, firstEntity, lastEntity,onlyEnabled);
+  }
+
 
 
   public List getProducts() throws RemoteException, FinderException{
@@ -587,4 +597,23 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 	  }
 	  
   }
+  
+  public void deleteProduct(Product product,IWContext iwc){
+	  try {
+		  deleteProduct(product);
+		  iwc.setApplicationAttribute(productsApplication+product.getSupplierId(), null);
+	  } catch (Exception e) {
+			// TODO: handle exception
+	  }
+  }
+  
+  public void changeValidity(Product product,IWContext iwc){
+	    	boolean validity = product.getIsValid();
+	    	product.setIsValid(!validity);
+	    	product.setDisabled(validity);
+	    	product.store();
+	    	iwc.setApplicationAttribute(productsApplication+product.getSupplierId(), null);
+	    	invalidateProductCache(String.valueOf(product.getID()));
+  }
+  
 }

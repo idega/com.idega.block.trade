@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,22 +52,18 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	private HashMap mapForProductPriceMap = new HashMap();
 	private HashMap mapForMiscellaniousPriceMap = new HashMap();
 
-	@Override
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int[] visibility, IWTimestamp date) throws FinderException {
 		return getProductPrices(productId, timeframeId, addressId, -1, visibility, null, date);
 	}
 
-	@Override
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, boolean netbookingOnly, IWTimestamp date) throws FinderException {
 		return getProductPrices(productId, timeframeId, addressId, -1, netbookingOnly, null, date);
 	}
 
-	@Override
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, boolean netbookingOnly, String key, IWTimestamp date) throws FinderException {
 		return getProductPrices(productId, timeframeId, addressId, -1, netbookingOnly, key, date);
 	}
 
-	@Override
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int currencyId, boolean netbookingOnly, String key, IWTimestamp date) throws FinderException {
 		int[] vis;
 		if (netbookingOnly) {
@@ -77,7 +74,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return getProductPrices(productId, timeframeId, addressId, currencyId, vis, key, date);
 	}
 
-	@Override
 	public Collection getProductPrices(int productId, int timeframeId, int addressId, int currencyId, int[] visibility, String key, IWTimestamp date) throws FinderException {
 
 		String visString = "";
@@ -191,7 +187,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return t;
 	}
 	
-	@Override
 	public boolean invalidateCache(PriceCategory cat) {
 		try {
 			ProductHome pHome = (ProductHome) IDOLookup.getHome(Product.class);
@@ -213,12 +208,10 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return false;
 	}
 
-	@Override
 	public boolean invalidateCache(String productId) {
 		return  invalidateCache(productId, null);
 	}
 
-	@Override
 	public Collection getGroupedCategories(ProductPrice price) throws RemoteException {
 		PriceCategory cat = price.getPriceCategory();
 		Collection cats = getGroupedCategories(cat);
@@ -277,7 +270,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 	private HashMap groupedCats = new HashMap();
 	private HashMap priceGroupedCats = new HashMap();
 		
-	@Override
 	public Collection getGroupedCategories(PriceCategory category) {
 		Object pk = category.getPrimaryKey();
 		if (groupedCats.containsKey(pk)) {
@@ -298,12 +290,10 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		return null;
 	}
 	
-	@Override
 	public void clearGroupedCategoriesCache() {
 		groupedCats.clear();
 		priceGroupedCats.clear();
 	}
-	@Override
 	public PriceCategoryHome getPriceCategoryHome() {
 		try {
 			return (PriceCategoryHome) IDOLookup.getHome(PriceCategory.class);
@@ -312,7 +302,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		}
 	}
 
-	@Override
 	public boolean invalidateCache(String productID, String remoteDomainToExclude) {
 		this.mapForProductPriceMap.put(new Integer(productID), null);
 		this.mapForMiscellaniousPriceMap.put(new Integer(productID), null);
@@ -353,7 +342,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //	}
 
 
-  	@Override
 	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException {
 //		if (price != null) {
 //			HashMap map = getFloatPriceMapForProduct(new Integer(price.getProductId())); 
@@ -371,7 +359,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			return getStockroomBusiness().getPrice(price, time, timeframeId, addressId);
 //		}
   	}
-	@Override
 	public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException  {
 //		if (productPriceId != -1) {
 //			HashMap map = getFloatPriceMapForProduct(new Integer(productId)); 
@@ -386,11 +373,10 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 //			}
 //		} else {
 //			System.out.println("[ProductPriceBUsiness] Wrong usage of getPrice method, need to have productPriceId");
-			return getStockroomBusiness().getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId);
+			return getStockroomBusiness().getPrice(productPriceId, productId, priceCategoryId, currencyId, time, timeframeId, addressId, exactDate);
 //		}
 	}
 	
-	@Override
 	public Collection getCurrenciesInUse(Product product) throws IDOLookupException, FinderException {
 		int[] currIDs = getProductPriceHome().getCurrenciesInUse(((Integer)product.getPrimaryKey()).intValue());
 		CurrencyHome cHome = (CurrencyHome) IDOLookup.getHome(Currency.class);
@@ -402,21 +388,16 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		}
 		return v;
 	}
-	@Override
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly) throws FinderException {
 		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1, null);
 	}
-	@Override
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, IWTimestamp stamp) throws FinderException {
 		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1, stamp);
-//		return getProductPriceHome().findMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, -1);
 	}
 
-	@Override
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId) throws FinderException {
 		return getMiscellaneousPrices(productId, timeframeId, addressId, netBookingOnly, currencyId, null);
 	}
-	@Override
 	public Collection getMiscellaneousPrices(int productId, int timeframeId, int addressId, boolean netBookingOnly, int currencyId, IWTimestamp date) throws FinderException {
 
 		int[] vis;
@@ -470,22 +451,22 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 				tmp = prices;
 			} else {
 				tmp = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 1, currencyId, vis, null);
+				getLogger().info("Found misc. prices (" + prices + "). Product ID: " + productId + ", timeframe ID: " +
+						timeframeId + ", address ID: " + addressId + ", net booking only: " + netBookingOnly + ", currency ID: " + currencyId + ", date: " + date);
 			}
 
-			if ( tmp != null && ! tmp.isEmpty() && date != null) {
-				prices = new Vector();
+			if (tmp != null && ! tmp.isEmpty() && date != null) {
+				prices = new ArrayList();
 				Date exactDate = date.getDate();
 
-				Iterator iter = tmp.iterator();
 				ProductPrice price;
-				while (iter.hasNext()) {
+				for (Iterator iter = tmp.iterator(); iter.hasNext();) {
 					price = (ProductPrice) iter.next();
 
 					Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 1, currencyId, price.getPriceCategoryID(), exactDate);
 
 					if (coll != null && !coll.isEmpty()) {
-						Iterator tmpIter = coll.iterator();
-						while (tmpIter.hasNext()) {
+						for (Iterator tmpIter = coll.iterator(); tmpIter.hasNext();) {
 							prices.add(tmpIter.next());
 						}
 					} else {
@@ -498,10 +479,11 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			} else if (date != null) {
 				Date exactDate = date.getDate();
 				Collection coll = getProductPriceHome().findProductPrices(productId, timeframeId, addressId, 1, currencyId, -1, exactDate);
-				Iterator iter = coll.iterator();
-				prices = new Vector();
-				while (iter.hasNext()) {
-					prices.add(iter.next());
+				prices = new ArrayList();
+				if (!ListUtil.isEmpty(coll)) {
+					for (Iterator iter = coll.iterator(); iter.hasNext();) {
+						prices.add(iter.next());
+					}
 				}
 				miscMap.put(mapDateKey.toString(), prices);
 			} else {
@@ -511,6 +493,9 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 			}
 
 		}
+		
+		getLogger().info("Returning misc. prices (" + prices + "), key: " + mapKey.toString() + ". Product ID: " + productId + ", timeframe ID: " +
+			timeframeId + ", address ID: " + addressId + ", net booking only: " + netBookingOnly + ", currency ID: " + currencyId + ", date: " + date);
 		return prices;
 		
 //		StringBuffer key = new StringBuffer(productId).append("_").append(timeframeId).append("_").append(addressId)
@@ -536,7 +521,6 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		}
 	}
 
-	@Override
 	public ProductPriceHome getProductPriceHome() {
 		try {
 			return (ProductPriceHome) IDOLookup.getHome(ProductPrice.class);

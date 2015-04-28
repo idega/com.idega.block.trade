@@ -1,10 +1,12 @@
 package com.idega.block.trade.stockroom.data;
 
 
-import com.idega.core.location.data.Address;
-import com.idega.util.IWTimestamp;
-import com.idega.data.IDOLegacyEntity;
 import java.sql.Timestamp;
+import java.util.Collection;
+
+import com.idega.core.location.data.Address;
+import com.idega.data.IDOLegacyEntity;
+import com.idega.util.IWTimestamp;
 
 public interface TravelAddress extends IDOLegacyEntity {
 	/**
@@ -96,4 +98,10 @@ public interface TravelAddress extends IDOLegacyEntity {
 	 * @see com.idega.block.trade.stockroom.data.TravelAddressBMPBean#getOrder
 	 */
 	public int getOrder();
+	
+	public Collection getDiscountCodeGroups();
+
+	public void removeDiscountCodeGroup(DiscountCodeGroup discountCodeGroup);
+
+	public void addDiscountCodeGroup(DiscountCodeGroup discountCodeGroup);
 }

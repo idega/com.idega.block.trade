@@ -12,6 +12,7 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 
 import com.idega.block.trade.data.CreditCardInformation;
+import com.idega.block.trade.data.VoucherAd;
 import com.idega.block.trade.stockroom.business.SupplierManagerBusiness;
 import com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean;
 import com.idega.business.IBOLookup;
@@ -68,7 +69,6 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		super(id);
 	}
 
-	@Override
 	public void initializeAttributes() {
 		addAttribute(getIDColumnName());
 		addAttribute(getColumnNameName(), "Name", true, true, String.class);
@@ -84,11 +84,10 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		this.addManyToManyRelationShip(Address.class, "SR_SUPPLIER_IC_ADDRESS");
 		this.addManyToManyRelationShip(Phone.class, "SR_SUPPLIER_IC_PHONE");
 		this.addManyToManyRelationShip(Email.class, "SR_SUPPLIER_IC_EMAIL");
+		this.addManyToManyRelationShip(CreditCardInformation.class, "SR_SUPPLIER_CC_INFORMATION");
 
 		this.addManyToManyRelationShip(ProductCategory.class, "SR_SUPPLIER_PRODUCT_CATEGORY");
 		this.addManyToManyRelationShip(Reseller.class);
-		this.addManyToManyRelationShip(CreditCardInformation.class, "SR_SUPPLIER_CC_INFORMATION");
-
 		this.addManyToOneRelationship(COLUMN_IC_FILE_ID, ICFile.class);
 		
 		addMetaDataRelationship();
@@ -96,13 +95,13 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		addIndex("IDX_SUPP_1", new String[]{getIDColumnName(), getColumnNameIsValid()});
 		addIndex("IDX_SUPP_2", new String[]{getColumnNameIsValid()});
 		addIndex("IDX_SUPP_4", new String[]{COLUMN_SUPPLIER_MANAGER_ID, getColumnNameIsValid()});
+		
+		addManyToManyRelationShip(VoucherAd.class);
 	}
 
-	@Override
 	public void insertStartData() throws Exception {
 	}
 
-	@Override
 	public void setDefaultValues() {
 		setIsValid(true);
 	}
@@ -131,73 +130,59 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		return "TPOS_MERCHANT_ID";
 	}
 
-	@Override
 	public String getEntityName() {
 		return getSupplierTableName();
 	}
 
-	@Override
 	public String getName() {
 		return getStringColumnValue(getColumnNameName());
 	}
 	
-	@Override
 	public void setName(String name) {
 		this.newName = name;
 		setColumn(COLUMN_NAME_NAME_ALL_CAPS, name.toUpperCase());
 	}
 
-	@Override
 	public String getDescription() {
 		return getStringColumnValue(getColumnNameDescription());
 	}
 
-	@Override
 	public void setDescription(String description) {
 		setColumn(getColumnNameDescription(), description);
 	}
 
-	@Override
 	public void setGroupId(int id) {
 		setColumn(getColumnNameGroupID(), id);
 	}
 
-	@Override
 	public int getGroupId() {
 		return getIntColumnValue(getColumnNameGroupID());
 	}
 
-	@Override
 	public void setIsValid(boolean isValid) {
 		setColumn(getColumnNameIsValid(), isValid);
 	}
 
-	@Override
 	public boolean getIsValid() {
 		return getBooleanColumnValue(getColumnNameIsValid());
 	}
 
-	@Override
 	public int getSupplierManagerID() {
 		return getIntColumnValue(COLUMN_SUPPLIER_MANAGER_ID);
 	}
 
-	@Override
 	public Group getSupplierManager() {
 		return (Group) getColumnValue(COLUMN_SUPPLIER_MANAGER_ID);
 	}
 	
-	@Override
 	public void setSupplierManager(Group group) {
 		setColumn(COLUMN_SUPPLIER_MANAGER_ID, group);
 	}
  	
-	@Override
 	public void setSupplierManagerPK(Object pk) {
 		setColumn(COLUMN_SUPPLIER_MANAGER_ID, pk);
 	}
 	
-	@Override
 	public Address getAddress() throws SQLException {
 		Address address = null;
 		List addr = getAddresses();
@@ -207,37 +192,30 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		return address;
 	}
 
-	@Override
 	public List getAddresses() throws SQLException {
 		return EntityFinder.findRelated(this, GenericEntity.getStaticInstance(Address.class));
 	}
 
-	@Override
 	public List getPhones() throws SQLException {
 		return EntityFinder.findRelated(this, GenericEntity.getStaticInstance(Phone.class));
 	}
 
-	@Override
 	public List getHomePhone() throws SQLException {
 		return getPhones(com.idega.core.contact.data.PhoneBMPBean.getHomeNumberID());
 	}
 
-	@Override
 	public List getFaxPhone() throws SQLException {
 		return getPhones(com.idega.core.contact.data.PhoneBMPBean.getFaxNumberID());
 	}
 
-	@Override
 	public List getWorkPhone() throws SQLException {
 		return getPhones(com.idega.core.contact.data.PhoneBMPBean.getWorkNumberID());
 	}
 
-	@Override
 	public List getMobilePhone() throws SQLException {
 		return getPhones(com.idega.core.contact.data.PhoneBMPBean.getMobileNumberID());
 	}
 
-	@Override
 	public List getPhones(int PhoneTypeId) throws SQLException {
 		Vector phones = new Vector();
 		List allPhones = getPhones();
@@ -253,7 +231,6 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		return phones;
 	}
 
-	@Override
 	public Email getEmail() throws SQLException {
 		Email email = null;
 		List emails = getEmails();
@@ -263,7 +240,6 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		return email;
 	}
 
-	@Override
 	public List getEmails() throws SQLException {
 		return EntityFinder.findRelated(this, GenericEntity.getStaticInstance(Email.class));
 	}
@@ -271,7 +247,6 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 	/**
 	 * @deprecated Replaced with findAll( supplierManager );
 	 */
-	@Deprecated
 	public static Supplier[] getValidSuppliers() throws SQLException {
 		try {
 			throw new Exception("ERRRROR : Using a wrong method : getValidSuppliers(), should be findAll ( supplierManager )    !!!!");
@@ -299,7 +274,6 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 //		return this.idoFindAllIDsByColumnOrderedBySQL(this.getColumnNameIsValid(), "'Y'", getColumnNameName());
 	}
 
-	@Override
 	public void update() throws SQLException {
 		if (this.newName != null) {
 			try {
@@ -321,7 +295,6 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		super.update();
 	}
 
-	@Override
 	public void insert() throws SQLException {
 		if (this.newName != null) {
 			setColumn(getColumnNameName(), this.newName);
@@ -329,12 +302,10 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		super.insert();
 	}
 
-	@Override
 	public int getTPosMerchantId() {
 		return getIntColumnValue(getColumnNameTPosMerchantID());
 	}
 
-	@Override
 	public Settings getSettings() throws FinderException, RemoteException, CreateException, IDOAddRelationshipException {
 		SettingsHome shome = (SettingsHome) IDOLookup.getHome(Settings.class);
 		Collection coll = null;
@@ -371,7 +342,6 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		}
 	}
 
-	@Override
 	public void setCreditCardInformation(Collection pks) throws IDORemoveRelationshipException, IDOAddRelationshipException, EJBException {
 		if (pks != null) {
 			Iterator iter = pks.iterator();
@@ -393,24 +363,20 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		}
 	}
 
-	@Override
 	public void addCreditCardInformationPK(Object pk) throws IDOAddRelationshipException {
 		this.idoAddTo(CreditCardInformation.class, pk);
 	}
 
-	@Override
 	public void addCreditCardInformation(CreditCardInformation info) throws IDOAddRelationshipException, EJBException {
 		if (info != null) {
 			addCreditCardInformationPK(info.getPrimaryKey());
 		}
 	}
 
-	@Override
 	public Collection getCreditCardInformation() throws IDORelationshipException {
 		return this.idoGetRelatedEntities(CreditCardInformation.class);
 	}
 
-	@Override
 	public Collection getProductCategories() throws IDORelationshipException {
 		return this.idoGetRelatedEntities(ProductCategory.class);
 	}
@@ -494,27 +460,22 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		return idoFindPKsByQuery(query);
 	}
 
-	@Override
 	public String getOrganizationID() {
 		return getStringColumnValue(COLUMN_ORGANIZATION_ID);
 	}
 
-	@Override
 	public void setOrganizationID(String organizationId) {
 		setColumn(COLUMN_ORGANIZATION_ID, organizationId);
 	}
 	
-	@Override
 	public ICFile getICFile() {
 		return (ICFile) getColumnValue(COLUMN_IC_FILE_ID);
 	}
 	
-	@Override
 	public void setICFile(int fileID) {
 		setColumn(COLUMN_IC_FILE_ID, fileID);
 	}
 	
-	@Override
 	public void setICFile(ICFile file) {
 		setColumn(COLUMN_IC_FILE_ID, file);
 	}
@@ -606,6 +567,19 @@ public class SupplierBMPBean extends GenericEntity implements Supplier, MetaData
 		// SQL fyrir sub-query sem "kannski" gerir thetta betur.
 		//select * from CC_INFORMATION where CC_INFORMATION_ID in (select i. CC_INFORMATION_ID from cc_information i, CC_KTH_MERCHANT m where i.cc_type ='KORTATHJONUSTAN' AND i.cc_merchant_pk = m.cc_kth_merchant_id AND end_date is null) OR CC_INFORMATION_ID in (select i. CC_INFORMATION_ID from cc_information i, tpos_merchant m where i.cc_type ='TPOS' AND i.cc_merchant_pk = m.tpos_merchant_id AND end_date is null)
 
+	}
+
+	public Collection getVoucherAdds() throws IDORelationshipException {
+		return idoGetRelatedEntities(VoucherAd.class);
+	}
+
+	public void addVoucherAd(VoucherAd voucherAdd) throws IDOAddRelationshipException {
+		idoAddTo(voucherAdd);
+	}
+
+	public void removeVoucherAd(VoucherAd voucherAdd)
+			throws IDORemoveRelationshipException {
+		idoRemoveFrom(voucherAdd);
 	}
 }
 

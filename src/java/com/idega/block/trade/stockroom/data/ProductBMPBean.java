@@ -19,6 +19,7 @@ import com.idega.block.text.business.TextFinder;
 import com.idega.block.text.data.LocalizedText;
 import com.idega.block.text.data.LocalizedTextBMPBean;
 import com.idega.block.text.data.TxText;
+import com.idega.block.trade.data.VoucherAd;
 import com.idega.block.trade.stockroom.business.TimeframeComparator;
 import com.idega.core.file.data.ICFile;
 import com.idega.core.location.data.Address;
@@ -62,7 +63,10 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   private final int FILTER_NOT_CONNECTED_TO_CATEGORY = 0;
   private static final String COLUMN_REFUNDABLE = "refundable";
   private static final String COLUMN_VOUCHER_COMMENT = "VOUCHER_COMMENT";
-  
+  private static final String COLUMN_DISABLED = "DISABLED";
+
+  public static final String RELATION_DISCOUNT_CODE_GROUP = "sr_product_dc_group";
+
   /**
    *  Constructor for the Product object
    */
@@ -76,14 +80,16 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *@deprecated
    */
 
-  public ProductBMPBean( int id ) throws SQLException {
+  @Deprecated
+public ProductBMPBean( int id ) throws SQLException {
     super( id );
   }
 
   /**
    *  Description of the Method
    */
-  public void initializeAttributes() {
+  @Override
+public void initializeAttributes() {
     this.addAttribute( getIDColumnName() );
     this.addAttribute( getColumnNameSupplierId(), "Birgi", true, true, Integer.class, "many_to_one", Supplier.class );
     this.addAttribute( getColumnNameFileId(), "Fylgiskjal(mynd)", true, true, Integer.class, "many_to_one", ICFile.class );
@@ -102,14 +108,19 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     this.addManyToManyRelationShip( Address.class, "SR_PRODUCT_IC_ADDRESS" );
     this.addManyToManyRelationShip( TxText.class );
     this.addManyToManyRelationShip( ICFile.class );
+    this.addManyToManyRelationShip( DiscountCodeGroup.class, RELATION_DISCOUNT_CODE_GROUP );
     addMetaDataRelationship();
-    
+
+    addAttribute( COLUMN_DISABLED, "Disabled", true, true, Boolean.class );
+
     addIndex("IDX_PROD_1", new String[]{getColumnNameSupplierId(), getColumnNameIsValid()});
     addIndex("IDX_PROD_2", new String[]{getIDColumnName(), getColumnNameSupplierId(), getColumnNameIsValid()});
   }
 
 
-  public void invalidate() throws IDOException{
+
+  @Override
+public void invalidate() throws IDOException{
     this.setIsValid( false );
     this.store();
   }
@@ -117,14 +128,16 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   /**
    * deprecated
    */
-  public int getID() {
+  @Override
+public int getID() {
     return ((Integer) this.getPrimaryKey()).intValue();
   }
 
   /**
    *  Sets the defaultValues attribute of the Product object
    */
-  public void setDefaultValues() {
+  @Override
+public void setDefaultValues() {
     this.setIsValid( true );
     this.setDiscountTypeId( DISCOUNT_TYPE_ID_PERCENT );
     this.setCreationDate( IWTimestamp.getTimestampRightNow() );
@@ -137,7 +150,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@return    The entityName value
    */
-  public String getEntityName() {
+  @Override
+public String getEntityName() {
     return getProductEntityName();
   }
 
@@ -163,7 +177,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@param  id  The new supplierId value
    */
-  public void setSupplierId( int id ) {
+  @Override
+public void setSupplierId( int id ) {
     this.setColumn( getColumnNameSupplierId(), id );
   }
 
@@ -172,7 +187,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@param  id  The new supplierId value
    */
-  public void setSupplierId( Integer id ) {
+  @Override
+public void setSupplierId( Integer id ) {
     this.setColumn( getColumnNameSupplierId(), id );
   }
 
@@ -181,7 +197,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@param  id  The new fileId value
    */
-  public void setFileId( int id ) {
+  @Override
+public void setFileId( int id ) {
     this.setColumn( getColumnNameFileId(), id );
   }
 
@@ -190,7 +207,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@param  id  The new fileId value
    */
-  public void setFileId( Integer id ) {
+  @Override
+public void setFileId( Integer id ) {
     if (id == null) {
       this.removeFromColumn(getColumnNameFileId());
     }else {
@@ -213,8 +231,14 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@param  valid  The new isValid value
    */
-  public void setIsValid( boolean valid ) {
+  @Override
+public void setIsValid( boolean valid ) {
     this.setColumn( getColumnNameIsValid(), valid );
+  }
+
+  @Override
+public void setDisabled( boolean disabled ) {
+	   this.setColumn( COLUMN_DISABLED, disabled );
   }
 
   /**
@@ -222,7 +246,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@param  discountTypeId  The new discountTypeId value
    */
-  public void setDiscountTypeId( int discountTypeId ) {
+  @Override
+public void setDiscountTypeId( int discountTypeId ) {
     setColumn( getDiscountTypeIdColumnName(), discountTypeId );
   }
 
@@ -231,7 +256,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@param  number  The new number value
    */
-  public void setNumber( String number ) {
+  @Override
+public void setNumber( String number ) {
     setColumn( getColumnNameNumber(), number );
   }
 
@@ -240,7 +266,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@param  timestamp  The new creationDate value
    */
-  public void setCreationDate( IWTimestamp timestamp ) {
+  @Override
+public void setCreationDate( IWTimestamp timestamp ) {
     setCreationDate( timestamp.getTimestamp() );
   }
 
@@ -249,7 +276,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@param  timestamp  The new creationDate value
    */
-  public void setCreationDate( Timestamp timestamp ) {
+  @Override
+public void setCreationDate( Timestamp timestamp ) {
     setColumn( getColumnNameCreationDate(), timestamp );
   }
 
@@ -263,11 +291,12 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   }
   /**
    *  Set to true if the sale is to be set on hold
-   * 
+   *
    * @param saleOnHold true if the sale is set on hold while creditcard is checked, false otherwise
-   *  
+   *
    */
-  public void setAuthorizationCheck(boolean saleOnHold) {
+  @Override
+public void setAuthorizationCheck(boolean saleOnHold) {
   		setColumn(getColumnNameAuthorizationCheck(), saleOnHold);
   }
 
@@ -280,20 +309,23 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@return    The supplierId value
    */
-  public int getSupplierId() {
+  @Override
+public int getSupplierId() {
     return this.getIntColumnValue( getColumnNameSupplierId() );
   }
 
-  public Supplier getSupplier() {
+  @Override
+public Supplier getSupplier() {
   		return (Supplier) getColumnValue( getColumnNameSupplierId() );
   }
-  
+
   /**
    *  Gets the fileId attribute of the Product object
    *
    *@return    The fileId value
    */
-  public int getFileId() {
+  @Override
+public int getFileId() {
     return this.getIntColumnValue( getColumnNameFileId() );
   }
 
@@ -302,6 +334,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   *
   *@return    The fileId value
   */
+	@Override
 	public ICFile getFile() {
 	  return (ICFile) this.getColumnValue( getColumnNameFileId() );
 	}
@@ -311,17 +344,23 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@return    The isValid value
    */
-  public boolean getIsValid() {
+  @Override
+public boolean getIsValid() {
     return this.getBooleanColumnValue( getColumnNameIsValid() );
   }
 
+  @Override
+public boolean getDisabled() {
+	   return this.getBooleanColumnValue( COLUMN_DISABLED );
+  }
 
   /**
    *  Gets the discountTypeId attribute of the Product object
    *
    *@return    The discountTypeId value
    */
-  public int getDiscountTypeId() {
+  @Override
+public int getDiscountTypeId() {
     return getIntColumnValue( getDiscountTypeIdColumnName() );
   }
 
@@ -330,7 +369,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@return    The number value
    */
-  public String getNumber() {
+  @Override
+public String getNumber() {
     return getStringColumnValue( getColumnNameNumber() );
   }
 
@@ -340,7 +380,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *@return                   The timeframes value
    *@exception  SQLException  Description of the Exception
    */
-  public Timeframe[] getTimeframes() throws SQLException {
+  @Override
+public Timeframe[] getTimeframes() throws SQLException {
     return getTimeframesOrdered( TimeframeComparator.FROMDATE );
   }
 
@@ -380,7 +421,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *@return                   The timeframe value
    *@exception  SQLException  Description of the Exception
    */
-  public Timeframe getTimeframe() throws SQLException {
+  @Override
+public Timeframe getTimeframe() throws SQLException {
     Timeframe[] temp = getTimeframes();
     if ( temp.length > 0 ) {
       return temp[0];
@@ -394,7 +436,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@return    The creationDate value
    */
-  public Timestamp getCreationDate() {
+  @Override
+public Timestamp getCreationDate() {
     return ( Timestamp ) getColumnValue( getColumnNameCreationDate() );
   }
 
@@ -403,7 +446,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@return    The editDate value
    */
-  public Timestamp getEditDate() {
+  @Override
+public Timestamp getEditDate() {
     return ( Timestamp ) getColumnValue( getColumnNameModificationDate() );
   }
 
@@ -413,7 +457,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *@return                   The text value
    *@exception  SQLException  Description of the Exception
    */
-  public TxText getText() throws SQLException {
+  @Override
+public TxText getText() throws SQLException {
 		try {
 			Collection coll = this.idoGetRelatedEntities( TxText.class);
 			if (coll != null && (coll.size() > 0) ) {
@@ -423,12 +468,12 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 				while (iter.hasNext()) {
 					obj = iter.next();
 					if (!iter.hasNext()) {
-						return (TxText) obj;	
-					}	
+						return (TxText) obj;
+					}
 				}
 			}else {
 				return null;
-			}	
+			}
 		} catch (IDORelationshipException e) {
 			throw new SQLException(e.getMessage());
 		}
@@ -442,10 +487,11 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   }
   /**
    * 	Gets the status of the saleOnHold attribute
-   * 
+   *
    * @return true if the sale of the product is set on hold, false otherwise
    */
-  public boolean getAuthorizationCheck() {
+  @Override
+public boolean getAuthorizationCheck() {
   		return this.getBooleanColumnValue( getColumnNameAuthorizationCheck() );
   }
 
@@ -454,18 +500,21 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
    *
    *@exception  SQLException  Description of the Exception
    */
-  public void update() throws SQLException {
+  @Override
+public void update() throws SQLException {
     setModificationDate( IWTimestamp.getTimestampRightNow() );
     super.update();
   }
 
 
-  public Collection getProductCategories() throws IDORelationshipException {
+  @Override
+public Collection getProductCategories() throws IDORelationshipException {
     Collection coll = this.idoGetRelatedEntities(ProductCategory.class);
     return coll;
   }
 
-  public void setProductCategories(int[] categoryIds) throws RemoteException, FinderException, IDORemoveRelationshipException{
+  @Override
+public void setProductCategories(int[] categoryIds) throws RemoteException, FinderException, IDORemoveRelationshipException{
     this.idoRemoveFrom(ProductCategory.class);
     ProductCategory pCat;
     ProductCategoryHome pCatHome = (ProductCategoryHome) IDOLookup.getHome(ProductCategory.class);
@@ -476,7 +525,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     }
   }
 
-  public boolean addCategory(ProductCategory productCategory) {
+  @Override
+public boolean addCategory(ProductCategory productCategory) {
     try {
       productCategory.addTo(this);
       return true;
@@ -485,15 +535,18 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     }
   }
 
-  public void removeCategory(ProductCategory productCategory) throws IDORemoveRelationshipException{
+  @Override
+public void removeCategory(ProductCategory productCategory) throws IDORemoveRelationshipException{
     this.idoRemoveFrom(productCategory);
   }
 
-  public void removeAllFrom(Class entityInterface) throws IDORemoveRelationshipException{
+  @Override
+public void removeAllFrom(Class entityInterface) throws IDORemoveRelationshipException{
     this.idoRemoveFrom(entityInterface);
   }
 
-  public void addTravelAddresses(int[] addressIds) throws RemoteException, FinderException, IDOAddRelationshipException{
+  @Override
+public void addTravelAddresses(int[] addressIds) throws RemoteException, FinderException, IDOAddRelationshipException{
     TravelAddress address;
     TravelAddressHome home = (TravelAddressHome) IDOLookup.getHome(TravelAddress.class);
     if(addressIds != null){
@@ -505,7 +558,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     }
   }
 
-  public void addTravelAddress(TravelAddress address)  {
+  @Override
+public void addTravelAddress(TravelAddress address)  {
     try {
       this.idoAddTo(address);
     }catch (IDOAddRelationshipException e) {
@@ -513,11 +567,13 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     }
   }
 
-  public void removeTravelAddress(TravelAddress address) throws IDORemoveRelationshipException {
+  @Override
+public void removeTravelAddress(TravelAddress address) throws IDORemoveRelationshipException {
     this.idoRemoveFrom(address);
   }
 
-  public String getProductName(int localeId, String returnIfNull) {
+  @Override
+public String getProductName(int localeId, String returnIfNull) {
     LocalizedText text = TextFinder.getLocalizedText(this, localeId);
   		if (text == null) {
   			return returnIfNull;
@@ -525,8 +581,9 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   			return text.getHeadline();
   		}
   }
-  
-  public String getProductName(int localeId) {
+
+  @Override
+public String getProductName(int localeId) {
 	  LocalizedText text = TextFinder.getLocalizedText(this, localeId);
 	    if (text == null) {
 				text = TextFinder.getLocalizedText(this, 1);
@@ -549,8 +606,9 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 	    }
 	    return name == null ? CoreConstants.EMPTY : name;
   }
-  
-  public String getProductName(int localeId, int localeIDIfNull, String returnIfNull) {
+
+  @Override
+public String getProductName(int localeId, int localeIDIfNull, String returnIfNull) {
   		String text = getProductName(localeId, returnIfNull);
   		if (text == null) {
   			return getProductName(localeIDIfNull, returnIfNull);
@@ -558,7 +616,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   		return text;
   }
 
-  public void setProductName(int localeId, String name) {
+  @Override
+public void setProductName(int localeId, String name) {
     LocalizedText locText = TextFinder.getLocalizedText(this,localeId);
     boolean newLocText = false;
     if ( locText == null ) {
@@ -589,7 +648,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   }
 
 
-  public String getProductDescription(int localeId) {
+  @Override
+public String getProductDescription(int localeId) {
     LocalizedText text = TextFinder.getLocalizedText(this, localeId);
     if (text == null) {
 			text = TextFinder.getLocalizedText(this, 1);
@@ -601,7 +661,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     return description;
   }
 
-  public void setProductDescription(int localeId, String description) {
+  @Override
+public void setProductDescription(int localeId, String description) {
     LocalizedText locText = TextFinder.getLocalizedText(this,localeId);
     boolean newLocText = false;
     if ( locText == null ) {
@@ -632,7 +693,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   }
 
 
-  public String getProductTeaser(int localeId) {
+  @Override
+public String getProductTeaser(int localeId) {
     LocalizedText text = TextFinder.getLocalizedText(this, localeId);
     if (text == null) {
 			text = TextFinder.getLocalizedText(this, 1);
@@ -647,7 +709,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     return teaser;
   }
 
-  public void setProductTeaser(int localeId, String teaser) {
+  @Override
+public void setProductTeaser(int localeId, String teaser) {
     LocalizedText locText = TextFinder.getLocalizedText(this,localeId);
     boolean newLocText = false;
     if ( locText == null ) {
@@ -689,37 +752,67 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     return ejbFindProducts(supplierId, productCategoryId, from, to, ICCategoryBMPBean.getEntityTableName()+"."+ICCategoryBMPBean.getColumnName(), -1, -1, false);
   }
 
-  public Collection ejbFindProducts(int supplierId) throws FinderException {
-	  return ejbFindProducts(supplierId, -1, -1);
+  public Collection ejbFindProducts(boolean onlyValidProducts, int supplierId) throws FinderException {
+	  return ejbFindProducts(onlyValidProducts, supplierId, -1, -1);
   }
-  
-  public Collection ejbFindProducts(int supplierId, int productCategoryId, int firstEntity, int lastEntity) throws FinderException {
-	  StringBuffer SQL = getSQL(supplierId, productCategoryId, null, null,null, -1, false);
-	    return this.idoFindPKsBySQL(SQL.toString(), lastEntity-firstEntity, firstEntity);
-  }
-  
-  public Collection ejbFindProducts(int supplierId, int firstEntity, int lastEntity) throws FinderException {
-    String pTable = com.idega.block.trade.stockroom.data.ProductBMPBean.getProductEntityName();
 
-    StringBuffer sqlQuery = new StringBuffer();
-      sqlQuery.append("SELECT * FROM ").append(pTable);
-      sqlQuery.append(" WHERE ");
-      sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
-      if (supplierId != -1) {
-			sqlQuery.append(" AND ").append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
-		}
-      
-      sqlQuery.append(" order by ").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameNumber());
-
-    return this.idoFindPKsBySQL(sqlQuery.toString(), lastEntity-firstEntity, firstEntity);
+  public Collection ejbFindProducts(boolean onlyValidProducts, int supplierId, int productCategoryId, int firstEntity, int lastEntity) throws FinderException {
+	  StringBuffer SQL = getSQL(onlyValidProducts, supplierId, productCategoryId, null, null,null, -1, false);
+	  return this.idoFindPKsBySQL(SQL.toString(), lastEntity-firstEntity, firstEntity);
   }
+
+  public Collection ejbFindProducts(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity) throws FinderException {
+	  return ejbFindProducts(onlyValidProducts,supplierId,firstEntity,lastEntity,true);
+  }
+  public Collection ejbFindProducts(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity,boolean onlyEnabled) throws FinderException {
+	    String pTable = com.idega.block.trade.stockroom.data.ProductBMPBean.getProductEntityName();
+
+	    StringBuffer sqlQuery = new StringBuffer();
+	      sqlQuery.append("SELECT * FROM ").append(pTable);
+	      sqlQuery.append(" WHERE ");
+	      if (onlyValidProducts){
+	    	  	if(onlyEnabled){
+	    	  		// Do not need to check if disabled
+	    	  		sqlQuery.append(pTable).append(".")
+	  				.append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid())
+	  				.append(" = 'Y'");
+	    	  	}else{
+	    	  		// When deleting disabling too
+	    	  		sqlQuery.append("((").append(pTable).append(".")
+	  				.append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid())
+	  				.append(" = 'Y') OR (").append(pTable).append(".")
+	  				.append(COLUMN_DISABLED)
+	  				.append(" = 'Y'))");
+	    	  	}
+	      }
+	      if (supplierId != -1) {
+	    	  if (onlyValidProducts)
+	    		  sqlQuery.append(" AND ");
+	    	  sqlQuery.append(pTable).append(".").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
+	      }
+
+	      sqlQuery.append(" order by ").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameNumber());
+
+	    return this.idoFindPKsBySQL(sqlQuery.toString(), lastEntity-firstEntity, firstEntity);
+	  }
 
 
   public int ejbHomeGetProductCount(int supplierId) throws IDOException {
-	  return ejbHomeGetProductCount(supplierId, -1);
+	  return ejbHomeGetProductCount(true, supplierId, -1);
   }
-  
+  public int ejbHomeGetProductCount(boolean onlyValidProducts, int supplierId,boolean onlyEnabled) throws IDOException {
+	  return ejbHomeGetProductCount(onlyValidProducts, supplierId, -1,onlyEnabled);
+  }
+  public int ejbHomeGetProductCount(boolean onlyValidProducts, int supplierId) throws IDOException {
+	  return ejbHomeGetProductCount(onlyValidProducts, supplierId, -1);
+  }
   public int ejbHomeGetProductCount(int supplierId, int productCategoryId) throws IDOException {
+	  return ejbHomeGetProductCount(true, supplierId, productCategoryId);
+  }
+  public int ejbHomeGetProductCount(boolean onlyValidProducts, int supplierId, int productCategoryId) throws IDOException{
+	  return ejbHomeGetProductCount(onlyValidProducts, supplierId, productCategoryId, true);
+  }
+  public int ejbHomeGetProductCount(boolean onlyValidProducts, int supplierId, int productCategoryId,boolean onlyEnabled) throws IDOException {
 	    String pTable = com.idega.block.trade.stockroom.data.ProductBMPBean.getProductEntityName();
 	    ProductCategory pCat = (ProductCategory) GenericEntity.getStaticInstance(ProductCategory.class);
 	    String catMiddle = EntityControl.getManyToManyRelationShipTableName(ProductCategory.class,Product.class);
@@ -727,8 +820,21 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 	    StringBuffer sqlQuery = new StringBuffer();
 	      sqlQuery.append("SELECT count(*) FROM ").append(pTable).append(" p, ").append(catMiddle);
 	      sqlQuery.append(" c WHERE ");
-	      sqlQuery.append("p.").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()).append(" = 'Y'");
-    	  sqlQuery.append(" AND ");
+	      if (onlyValidProducts){
+	    	  	if(onlyEnabled){
+	    	  		// Do not need to check if disabled
+	    	  		sqlQuery.append("p.")
+	  				.append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid())
+	  				.append(" = 'Y'");
+	    	  	}else{
+	    	  		// When deleting disabling too
+	    	  		sqlQuery.append("((").append("p.")
+	  				.append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid())
+	  				.append(" = 'Y') OR (").append("p.")
+	  				.append(COLUMN_DISABLED)
+	  				.append(" = 'Y'))  AND ");
+	    	  	}
+	      }
     	  sqlQuery.append("c."+getIdColumnName() +" = p."+getIdColumnName());
 	      if (supplierId != -1) {
 					sqlQuery.append(" AND ").append("p.").append(com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameSupplierId()).append(" = ").append(supplierId);
@@ -740,8 +846,8 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
 
 	      return this.idoGetNumberOfRecords(sqlQuery.toString());
   }
-  
-  
+
+
   public Collection ejbFindProducts(int supplierId, int productCategoryId ,IWTimestamp from, IWTimestamp to) throws FinderException{
     return ejbFindProducts(supplierId, productCategoryId, from, to, null);
   }
@@ -757,11 +863,11 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   public Collection ejbFindProducts(int supplierId, int productCategoryId ,IWTimestamp from, IWTimestamp to, String orderBy, int localeId, int filter) throws FinderException{
 		return ejbFindProducts(supplierId, productCategoryId, from, to, orderBy, localeId, filter, true);
   }
-  
+
   public Collection ejbFindProducts(int supplierId, int productCategoryId ,IWTimestamp from, IWTimestamp to, String orderBy, int localeId, int filter, boolean useTimeframes) throws FinderException{
     Collection coll;
 
-    StringBuffer timeframeSQL = getSQL(supplierId, productCategoryId, from, to,
+    StringBuffer timeframeSQL = getSQL(true, supplierId, productCategoryId, from, to,
 			orderBy, localeId, useTimeframes);
 
 //    System.out.println(timeframeSQL.toString());
@@ -770,7 +876,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     return coll;
   }
 
-private StringBuffer getSQL(int supplierId, int productCategoryId,
+private StringBuffer getSQL(boolean onlyValidProducts, int supplierId, int productCategoryId,
 		IWTimestamp from, IWTimestamp to, String orderBy, int localeId,
 		boolean useTimeframes) throws FinderException {
 	String orderString = null;
@@ -811,7 +917,13 @@ private StringBuffer getSQL(int supplierId, int productCategoryId,
 
       timeframeSQL.append(", "+catMiddle+", "+catTable);
       timeframeSQL.append(" WHERE ");
-      timeframeSQL.append(Ptable+"."+com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()+" = 'Y'");
+
+      if (onlyValidProducts) {
+    	  timeframeSQL.append(Ptable+"."+com.idega.block.trade.stockroom.data.ProductBMPBean.getColumnNameIsValid()+" = 'Y'");
+      } else {
+    	  timeframeSQL.append(Ptable+"."+com.idega.block.trade.stockroom.data.ProductBMPBean.getIdColumnName() + " is not null");
+      }
+
       if (from != null && to != null && useTimeframes) {
         timeframeSQL.append(" AND ");
         timeframeSQL.append(Ttable+"."+timeframe.getIDColumnName()+" = "+middleTable+"."+timeframe.getIDColumnName());
@@ -831,7 +943,7 @@ private StringBuffer getSQL(int supplierId, int productCategoryId,
     // Hondla ef supplierId != -1
     Collection tempProducts = null;
     if (supplierId != -1) {
-			tempProducts = ejbFindProducts(supplierId);
+			tempProducts = ejbFindProducts(onlyValidProducts, supplierId);
 		}
     if (tempProducts != null) {
 			if (tempProducts.size() > 0) {
@@ -891,7 +1003,8 @@ private StringBuffer getSQL(int supplierId, int productCategoryId,
 	return timeframeSQL;
 }
 
-  public List getDepartureAddresses(boolean ordered) throws IDOFinderException  {
+  @Override
+public List getDepartureAddresses(boolean ordered) throws IDOFinderException  {
     List list = EntityFinder.getInstance().findRelated(this, TravelAddress.class, com.idega.block.trade.stockroom.data.TravelAddressBMPBean.getColumnNameAddressTypeId(), Integer.toString(com.idega.block.trade.stockroom.data.TravelAddressBMPBean.ADDRESS_TYPE_DEPARTURE) );
     if (list == null) {
       list = new Vector();
@@ -899,7 +1012,8 @@ private StringBuffer getSQL(int supplierId, int productCategoryId,
     return list;
   }
 
-  public void addArrivalAddress(Address address)  {
+  @Override
+public void addArrivalAddress(Address address)  {
     try {
       this.idoAddTo(address);
 /*
@@ -918,7 +1032,8 @@ private StringBuffer getSQL(int supplierId, int productCategoryId,
     }
   }
 
-  public List getArrivalAddresses() throws IDOFinderException  {
+  @Override
+public List getArrivalAddresses() throws IDOFinderException  {
     List list = EntityFinder.getInstance().findRelated(this, Address.class);//, com.idega.block.trade.stockroom.data.TravelAddressBMPBean.getColumnNameAddressTypeId(), Integer.toString(com.idega.block.trade.stockroom.data.TravelAddressBMPBean.ADDRESS_TYPE_ARRIVAL) );
     if (list == null) {
       list = new Vector();
@@ -926,77 +1041,117 @@ private StringBuffer getSQL(int supplierId, int productCategoryId,
     return list;
   }
 
-  public Collection getICFile() throws IDORelationshipException {
+  @Override
+public Collection getICFile() throws IDORelationshipException {
     return this.idoGetRelatedEntities(ICFile.class);
   }
 
-  public void removeICFile(ICFile file) throws IDORemoveRelationshipException{
+  @Override
+public void removeICFile(ICFile file) throws IDORemoveRelationshipException{
     this.idoRemoveFrom(file);
   }
 
-  public void addICFile(ICFile file) throws IDOAddRelationshipException{
+  @Override
+public void addICFile(ICFile file) throws IDOAddRelationshipException{
     this.idoAddTo(file);
   }
 
-  public void addTimeframe(Timeframe frame) throws IDOAddRelationshipException{
+  @Override
+public Collection getDiscountCodeGroups(){
+    try {
+		return this.idoGetRelatedEntities(DiscountCodeGroup.class);
+	} catch (IDORelationshipException e) {
+		getLogger().log(Level.WARNING, "Failed getting discount code groups of product " + getPrimaryKey(), e);
+	}
+	return Collections.EMPTY_LIST;
+  }
+
+  @Override
+public void removeDiscountCodeGroup(DiscountCodeGroup discountCodeGroup){
+    try {
+		this.idoRemoveFrom(discountCodeGroup);
+	} catch (IDORemoveRelationshipException e) {
+		getLogger().log(Level.WARNING, "Failed removing discount code group "+discountCodeGroup +" from product " + getPrimaryKey(), e);
+	}
+  }
+
+  @Override
+public void addDiscountCodeGroup(DiscountCodeGroup discountCodeGroup){
+    try {
+		this.idoAddTo(discountCodeGroup);
+	} catch (IDOAddRelationshipException e) {
+		getLogger().log(Level.WARNING, "Failed adding discount code group "+discountCodeGroup +" to product " + getPrimaryKey(), e);
+	}
+  }
+
+
+  @Override
+public void addTimeframe(Timeframe frame) throws IDOAddRelationshipException{
     this.idoAddTo(frame);
   }
 
-  public void removeTimeframe(Timeframe frame) throws IDORemoveRelationshipException{
+  @Override
+public void removeTimeframe(Timeframe frame) throws IDORemoveRelationshipException{
     this.idoRemoveFrom(frame);
   }
 
-  public void addText(TxText text) throws IDOAddRelationshipException{
+  @Override
+public void addText(TxText text) throws IDOAddRelationshipException{
     this.idoAddTo(text);
   }
 
 	/* (non-Javadoc)
 	 * @see com.idega.data.GenericEntity#delete()
 	 */
+	@Override
 	public void delete() throws SQLException {
 		this.removeFrom(MetaData.class);
 		super.delete();
 	}
-	
+
+	@Override
 	public void setRefundable(boolean refundable) {
 		setColumn(COLUMN_REFUNDABLE, refundable);
 	}
-	
+
+	@Override
 	public boolean getRefundable() {
 		return getBooleanColumnValue(COLUMN_REFUNDABLE, true);
 	}
-	
+
+	@Override
 	public void setVoucherComment(String comment) {
 		setColumn(COLUMN_VOUCHER_COMMENT, comment);
 	}
-	
+
+	@Override
 	public String getVoucherComment() {
 		return getStringColumnValue(COLUMN_VOUCHER_COMMENT);
 	}
-	
+
 	public Collection ejbFindBySupplyPool(SupplyPool pool) throws IDORelationshipException, FinderException, IDOCompositePrimaryKeyException {
-		
+
 		Table table = new Table(this);
 		Table poolTable = new Table(pool);
-		
+
 		Column poolID = new Column(poolTable, pool.getEntityDefinition().getPrimaryKeyDefinition().getField().getSQLFieldName());
-		
+
 		SelectQuery query = new SelectQuery(table);
 		query.addColumn(new WildCardColumn());
 
 		query.addManyToManyJoin(table, poolTable);
-		
+
 		query.addCriteria(new MatchCriteria(new Column(table, getColumnNameIsValid()), MatchCriteria.EQUALS, true));
 		query.addCriteria(new MatchCriteria(poolID, MatchCriteria.EQUALS, pool));
 
 		return idoFindPKsByQuery(query);
 	}
-	
+
 	public Collection ejbFindByPriceCategory(PriceCategory priceCategory) throws IDORelationshipException, FinderException {
 		Table table = new Table(this);
 		Table priceTable = new Table(ProductPrice.class);
 		Table catTable = new Table(priceCategory);
-		
+
 		Column pk = new Column(table, getIDColumnName());
 		pk.setAsDistinct();
 		SelectQuery query = new SelectQuery(table);
@@ -1009,5 +1164,14 @@ private StringBuffer getSQL(int supplierId, int productCategoryId,
 //				"AND pc.sr_product_category_id = "+priceCategory.getPrimaryKey().toString();
 //		return idoFindPKsBySQL(sql);
 		return idoFindPKsByQuery(query);
+	}
+
+	@Override
+	public Collection getVoucherAds()  throws IDORelationshipException {
+		return idoGetRelatedEntities(VoucherAd.class);
+	}
+	@Override
+	public void addVoucherAd(VoucherAd voucherAd) throws IDOAddRelationshipException {
+		idoAddTo(voucherAd);
 	}
 }

@@ -73,34 +73,55 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 	}
 
 	public Collection findProducts(int supplierId) throws FinderException {
+		return findProducts(true, supplierId);
+	}
+	public Collection findProducts(boolean onlyValidProducts, int supplierId) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId);
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(onlyValidProducts, supplierId);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findProducts(int supplierId, int productCategoryId,
-			int firstEntity, int lastEntity) throws FinderException {
+	public Collection findProducts(int supplierId, int productCategoryId, int firstEntity, int lastEntity) throws FinderException {
+		return findProducts(true, supplierId, productCategoryId, firstEntity, lastEntity);
+	}
+	public Collection findProducts(boolean onlyValidProducts, int supplierId, int productCategoryId, int firstEntity, int lastEntity)
+			throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId,
-				productCategoryId, firstEntity, lastEntity);
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(onlyValidProducts, supplierId, productCategoryId, firstEntity, lastEntity);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findProducts(int supplierId, int firstEntity,
-			int lastEntity) throws FinderException {
+	public Collection findProducts(int supplierId, int firstEntity, int lastEntity) throws FinderException {
+		return findProducts(true, supplierId, firstEntity, lastEntity);
+	}
+	public Collection findProducts(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(supplierId,
-				firstEntity, lastEntity);
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(onlyValidProducts, supplierId, firstEntity, lastEntity);
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+	public Collection findProducts(boolean onlyValidProducts, int supplierId, int firstEntity, int lastEntity,boolean onlyEnabled) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection ids = ((ProductBMPBean) entity).ejbFindProducts(onlyValidProducts, supplierId, firstEntity, lastEntity,onlyEnabled);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
 	public int getProductCount(int supplierId) throws IDOException {
+		return getProductCount(true, supplierId);
+	}
+	public int getProductCount(boolean onlyValidProducts, int supplierId) throws IDOException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		int theReturn = ((ProductBMPBean) entity)
-				.ejbHomeGetProductCount(supplierId);
+		int theReturn = ((ProductBMPBean) entity).ejbHomeGetProductCount(onlyValidProducts, supplierId);
+		this.idoCheckInPooledEntity(entity);
+		return theReturn;
+	}
+	
+	public int getProductCount(boolean onlyValidProducts, int supplierId,boolean onlyEnabled) throws IDOException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		int theReturn = ((ProductBMPBean) entity).ejbHomeGetProductCount(onlyValidProducts, supplierId,onlyEnabled);
 		this.idoCheckInPooledEntity(entity);
 		return theReturn;
 	}
@@ -108,8 +129,7 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 	public int getProductCount(int supplierId, int productCategoryId)
 			throws IDOException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		int theReturn = ((ProductBMPBean) entity).ejbHomeGetProductCount(
-				supplierId, productCategoryId);
+		int theReturn = ((ProductBMPBean) entity).ejbHomeGetProductCount(supplierId, productCategoryId);
 		this.idoCheckInPooledEntity(entity);
 		return theReturn;
 	}

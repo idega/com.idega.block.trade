@@ -19,6 +19,7 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 
 import com.idega.block.trade.data.CreditCardInformation;
+import com.idega.block.trade.data.VoucherAd;
 import com.idega.core.contact.data.Email;
 import com.idega.core.file.data.ICFile;
 import com.idega.core.location.data.Address;
@@ -208,4 +209,10 @@ public interface Supplier extends IDOLegacyEntity {
 	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#setICFile
 	 */
 	public void setICFile(ICFile file);
+	
+	public Collection getVoucherAdds() throws IDORelationshipException ;
+	
+	public void addVoucherAd(VoucherAd voucherAd) throws IDOAddRelationshipException ;
+	
+	public void removeVoucherAd(VoucherAd voucherAd) throws IDORemoveRelationshipException ;
 }
