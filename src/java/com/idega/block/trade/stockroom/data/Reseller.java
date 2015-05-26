@@ -18,7 +18,7 @@ import com.idega.user.data.Group;
 /**
  * @author gimmi
  */
-public interface Reseller extends IDOLegacyEntity, TreeableEntity {
+public interface Reseller extends IDOLegacyEntity, TreeableEntity<Reseller> {
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.ResellerBMPBean#getName

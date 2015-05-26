@@ -38,8 +38,10 @@ import com.idega.user.data.Group;
  * @version 1.0
  */
 
-public class ResellerBMPBean extends TreeableEntityBMPBean implements Reseller, TreeableEntity{
-  private String newName;
+public class ResellerBMPBean extends TreeableEntityBMPBean<Reseller> implements Reseller {
+
+	private static final long serialVersionUID = -3252232521070970020L;
+ private String newName;
 	private static String COLUMN_ORGANIZATION_ID = "ORGANIZATION_ID";
 
   public ResellerBMPBean() {
