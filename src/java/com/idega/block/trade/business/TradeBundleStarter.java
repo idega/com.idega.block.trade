@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean;
 import com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean;
@@ -87,38 +88,43 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 	private void checkDataSource(IWBundle bundle) {
 		// Switching the datasource
 		IWMainApplicationSettings settings = bundle.getApplication().getIWApplicationContext().getApplicationSettings();
-		String dataSource = settings.getProperty(DATASOURCE);
+		String dataSource = null;
+		if (settings.getBoolean("connect_to_travel", false)) {
+			try {
+				dataSource = settings.getProperty(DATASOURCE);
 
-		if (dataSource == null) {
-			dataSource = bundle.getProperty("datasource");
-			if (dataSource != null) {
-				settings.setProperty(DATASOURCE, dataSource, "travel.binding");
-			}
-		}
+				if (dataSource == null) {
+					dataSource = bundle.getProperty("datasource");
+					if (dataSource != null) {
+						settings.setProperty(DATASOURCE, dataSource, "travel.binding");
+					}
+				}
 
-		try {
-			if (dataSource != null && (PoolManager.getInstance().hasDatasource(dataSource) || ConnectionBroker.getDataSource(dataSource) != null)) {
-				Collection entities = bundle.getDataObjects();
-				if (entities != null){
-					Iterator iter = entities.iterator();
-					while (iter.hasNext())
-					{
-						ICObject ico = (ICObject) iter.next();
-						try
+				if (dataSource != null && (PoolManager.getInstance().hasDatasource(dataSource) || ConnectionBroker.getDataSource(dataSource) != null)) {
+					Collection entities = bundle.getDataObjects();
+					if (entities != null){
+						Iterator iter = entities.iterator();
+						while (iter.hasNext())
 						{
-							Class c = ico.getObjectClass();
-							IDOFactory home = (IDOFactory) IDOLookup.getHome(c);
-							home.setDatasource(dataSource, false);
-						}
-						catch (ClassNotFoundException e)
-						{
-							System.out.println("Cant set the dataSource : Class " + e.getMessage() + " not found");
+							ICObject ico = (ICObject) iter.next();
+							try
+							{
+								Class c = ico.getObjectClass();
+								IDOFactory home = (IDOFactory) IDOLookup.getHome(c);
+								home.setDatasource(dataSource, false);
+							}
+							catch (ClassNotFoundException e)
+							{
+								System.out.println("Cant set the dataSource : Class " + e.getMessage() + " not found");
+							}
 						}
 					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			Logger.getLogger(getClass().getName()).info("Not connecting to datasource " + dataSource);
 		}
 	}
 
