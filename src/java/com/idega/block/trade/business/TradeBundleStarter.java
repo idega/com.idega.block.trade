@@ -1,6 +1,5 @@
 package com.idega.block.trade.business;
 
-
 /**
  * Title:TradeBundleStarter
  * Description: TradeBundleStarter implements the IWBundleStartable interface. The start method of this
@@ -16,8 +15,10 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.idega.block.trade.business.CurrencyBusiness;
 import com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean;
 import com.idega.block.trade.stockroom.data.ResellerStaffGroupBMPBean;
 import com.idega.block.trade.stockroom.data.SupplierStaffGroupBMPBean;
@@ -36,8 +37,11 @@ import com.idega.util.database.PoolManager;
 
 public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 
+	private static final Logger LOGGER = Logger.getLogger(TradeBundleStarter.class.getName());
+
 	private IWBundle bundle_;
 	private EventTimer timer;
+
 	public static final String IW_CURRENCY_TIMER = "iw_currency_timer";
 	public static final String DATASOURCE = "travel.datasource";
 
@@ -47,13 +51,18 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 	@Override
 	public void start(IWBundle bundle){
 		this.bundle_ = bundle;
-		checkDataSource(bundle);
+		boolean starting = checkDataSource(bundle);
+		if (!starting) {
+			LOGGER.info("Trade bundle starter: not starting");
+			return;
+		}
+
 		this.timer = new EventTimer(EventTimer.THREAD_SLEEP_24_HOURS/2,IW_CURRENCY_TIMER);
 		this.timer.addActionListener(this);
 		//Starts the thread while waiting for 3 mins. before the idegaWebApp starts up.
 		// -- Fix for working properly on Interebase with entity-auto-create-on.
 		this.timer.start(3*60*1000);
-		System.out.println("Trade bundle starter: starting");
+		LOGGER.info("Trade bundle starter: starting");
 		createGroupTypes(bundle);
 	}
 
@@ -85,7 +94,7 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 	/**
 	 * @param bundle
 	 */
-	private void checkDataSource(IWBundle bundle) {
+	private boolean checkDataSource(IWBundle bundle) {
 		// Switching the datasource
 		IWMainApplicationSettings settings = bundle.getApplication().getIWApplicationContext().getApplicationSettings();
 		String dataSource = null;
@@ -101,31 +110,31 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 				}
 
 				if (dataSource != null && (PoolManager.getInstance().hasDatasource(dataSource) || ConnectionBroker.getDataSource(dataSource) != null)) {
-					Collection entities = bundle.getDataObjects();
+					Collection<ICObject> entities = bundle.getDataObjects();
 					if (entities != null){
-						Iterator iter = entities.iterator();
-						while (iter.hasNext())
-						{
-							ICObject ico = (ICObject) iter.next();
-							try
-							{
-								Class c = ico.getObjectClass();
+						Iterator<ICObject> iter = entities.iterator();
+						while (iter.hasNext()) {
+							ICObject ico = iter.next();
+							Class c = null;
+							try {
+								c = ico.getObjectClass();
 								IDOFactory home = (IDOFactory) IDOLookup.getHome(c);
 								home.setDatasource(dataSource, false);
-							}
-							catch (ClassNotFoundException e)
-							{
-								System.out.println("Cant set the dataSource : Class " + e.getMessage() + " not found");
+							} catch (Exception e) {
+								LOGGER.log(Level.WARNING, "Cant set the dataSource : " + c + " not found", e);
 							}
 						}
 					}
 				}
+				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else {
-			Logger.getLogger(getClass().getName()).info("Not connecting to datasource " + dataSource);
+			LOGGER.info("Not connecting to datasource " + dataSource);
 		}
+
+		return false;
 	}
 
 	@Override
@@ -136,13 +145,13 @@ public class TradeBundleStarter implements IWBundleStartable,ActionListener{
 			}
 		}
 		catch (com.idega.data.IDONoDatastoreError error) {
-			System.err.println("TradeBundleStarter.actionPerformed() Error: "+error.getMessage());
+			LOGGER.warning("TradeBundleStarter.actionPerformed() Error: "+error.getMessage());
 		}
 		catch (RemoteException re) {
-			System.err.println("TradeBundleStarter.actionPerformed() Error: "+re.getMessage());
+			LOGGER.warning("TradeBundleStarter.actionPerformed() Error: "+re.getMessage());
 		}
 		catch (Exception re) {
-			System.err.println("TradeBundleStarter.actionPerformed() Error: "+re.getMessage());
+			LOGGER.warning("TradeBundleStarter.actionPerformed() Error: "+re.getMessage());
 			re.printStackTrace();
 		}
 	}
