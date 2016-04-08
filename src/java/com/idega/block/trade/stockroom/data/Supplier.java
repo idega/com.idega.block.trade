@@ -31,9 +31,9 @@ import com.idega.user.data.Group;
 
 
 /**
- * 
+ *
  *  Last modified: $Date: 2008/05/07 02:37:08 $ by $Author: gimmi $
- * 
+ *
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
  * @version $Revision: 1.27 $
  */
@@ -42,11 +42,13 @@ public interface Supplier extends IDOLegacyEntity {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#getName
 	 */
+	@Override
 	public String getName();
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#setName
 	 */
+	@Override
 	public void setName(String name);
 
 	/**
@@ -206,13 +208,23 @@ public interface Supplier extends IDOLegacyEntity {
 	public void setICFile(int fileID);
 
 	/**
+	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#getMerchantID
+	 */
+	public String getMerchantID();
+
+	/**
+	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#setMerchantID
+	 */
+	public void setMerchantID(String merchantId);
+
+	/**
 	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#setICFile
 	 */
 	public void setICFile(ICFile file);
-	
+
 	public Collection getVoucherAdds() throws IDORelationshipException ;
-	
+
 	public void addVoucherAd(VoucherAd voucherAd) throws IDOAddRelationshipException ;
-	
+
 	public void removeVoucherAd(VoucherAd voucherAd) throws IDORemoveRelationshipException ;
 }
