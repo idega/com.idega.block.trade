@@ -14,7 +14,7 @@ import com.idega.user.data.bean.Group;
 @Entity
 @Table(name = CreditCardInformation.ENTITY_NAME)
 @NamedQueries({
-	@NamedQuery(name = CreditCardInformation.findBySupplierManager, query = "select cci from CreditCardInformation cci left join Group as grp where grp.groupID = :" + CreditCardInformation.supplierProp ),
+	@NamedQuery(name = CreditCardInformation.findBySupplierManager, query = "select u from CreditCardInformation u where u.supplierManager = :supplierManager" ),
 	@NamedQuery(name = CreditCardInformation.findByMerchant, query = "select cci from CreditCardInformation cci where cci." + CreditCardInformation.mpkProp + " = :" + CreditCardInformation.mpkProp + " and cci." + CreditCardInformation.typeProp + " = :" + CreditCardInformation.typeProp),
 	@NamedQuery(name = CreditCardInformation.findByPrimaryKey, query = "select cci from CreditCardInformation cci where cci." + CreditCardInformation.idProp + " = :" + CreditCardInformation.idProp )
 })
