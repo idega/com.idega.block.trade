@@ -6,5 +6,5 @@
 
     <entity class="com.idega.block.trade.data.bean.Currency" />
     <entity class="com.idega.block.trade.data.bean.CreditCardInformation" />
-        
+    <entity class="com.idega.block.trade.data.bean.DebitCardInformation" />    
 </entity-mappings>
