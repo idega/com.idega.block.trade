@@ -180,7 +180,7 @@ public interface Supplier extends IDOLegacyEntity {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#getCreditCardInformation
 	 */
-	public Collection getCreditCardInformation() throws IDORelationshipException;
+	public Collection<CreditCardInformation> getCreditCardInformation() throws IDORelationshipException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#getProductCategories

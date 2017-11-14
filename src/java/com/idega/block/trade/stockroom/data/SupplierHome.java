@@ -10,16 +10,18 @@
 package com.idega.block.trade.stockroom.data;
 
 import java.util.Collection;
+
 import javax.ejb.FinderException;
+
 import com.idega.data.IDOHome;
 import com.idega.data.IDORelationshipException;
 import com.idega.user.data.Group;
 
 
 /**
- * 
+ *
  *  Last modified: $Date: 2006/12/15 09:28:59 $ by $Author: gimmi $
- * 
+ *
  * @author <a href="mailto:gimmi@idega.com">gimmi</a>
  * @version $Revision: 1.12 $
  */
@@ -46,7 +48,7 @@ public interface SupplierHome extends IDOHome {
 	/**
 	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#ejbFindAllByGroupID
 	 */
-	public Collection findAllByGroupID(int groupID) throws FinderException;
+	public Collection<Supplier> findAllByGroupID(int groupID) throws FinderException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.data.SupplierBMPBean#ejbFindByPostalCodes
