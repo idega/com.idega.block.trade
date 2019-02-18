@@ -1,16 +1,19 @@
 package com.idega.block.trade.stockroom.data;
 
 
-import com.idega.data.IDOException;
-import com.idega.data.IDORelationshipException;
-import java.util.Collection;
-import javax.ejb.CreateException;
 import java.sql.SQLException;
-import com.idega.data.IDOCompositePrimaryKeyException;
-import com.idega.util.IWTimestamp;
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.ejb.CreateException;
 import javax.ejb.FinderException;
+
+import com.idega.data.IDOCompositePrimaryKeyException;
 import com.idega.data.IDOEntity;
+import com.idega.data.IDOException;
 import com.idega.data.IDOFactory;
+import com.idega.data.IDORelationshipException;
+import com.idega.util.IWTimestamp;
 
 public class ProductHomeImpl extends IDOFactory implements ProductHome {
 	public Class getEntityInterfaceClass() {
@@ -198,5 +201,30 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 				.ejbFindByPriceCategory(priceCategory);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public Collection findOtherProductsByName(
+			int current, 
+			String term, 
+			int start,
+			int max
+	) throws IDOException {
+		try{
+			IDOEntity entity = this.idoCheckOutPooledEntity();
+			Collection ids = ((ProductBMPBean) entity)
+					.ejbFindOtherProductsByName(current, term, start, max);
+			this.idoCheckInPooledEntity(entity);
+			return this.getEntityCollectionForPrimaryKeys(ids);
+		}catch (FinderException e) {}
+		return Collections.EMPTY_LIST;
+	}
+	
+	public int countOtherProductsByName(
+			int current, 
+			String term
+	) throws IDOException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		return((ProductBMPBean) entity)
+				.countOtherProductsByName(current, term);
 	}
 }

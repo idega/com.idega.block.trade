@@ -1107,4 +1107,47 @@ private StringBuffer getSQL(boolean onlyValidProducts, int supplierId, int produ
 	public void addVoucherAd(VoucherAd voucherAd) throws IDOAddRelationshipException {
 		idoAddTo(voucherAd);
 	}
+	
+	private SelectQuery getQueryFindOtherProductsByName(
+			int current, 
+			String term,
+			boolean order
+	) throws IDORelationshipException {
+		Table table = new Table(this);
+		Table lt = new Table(LocalizedText.class);
+		
+		Column pk = new Column(table, getIDColumnName());
+		pk.setAsDistinct();
+		SelectQuery query = new SelectQuery(table);
+		query.addColumn(pk);
+		query.addCriteria(new MatchCriteria(new Column(table, getIdColumnName()), MatchCriteria.NOTEQUALS, current));
+		query.addCriteria(new MatchCriteria(new Column(table, getColumnNameIsValid()), MatchCriteria.EQUALS, "Y"));
+		if(!StringUtil.isEmpty(term)) {
+			query.addJoin(table, lt);
+			query.addCriteria(new MatchCriteria(new Column(lt, LocalizedTextBMPBean.getColumnNameHeadline()), MatchCriteria.LIKE, "%"+term+"%"));
+		}
+		if(order) {
+			query.addOrder(table, getColumnNameCreationDate(), false);
+		}
+		return query;
+	}
+	
+	public int countOtherProductsByName(
+			int current, 
+			String term 
+	) throws IDOException{
+		SelectQuery query = getQueryFindOtherProductsByName(current, term, false);
+		query.setAsCountQuery(true);
+		return idoGetNumberOfRecords(query);
+	}
+	public Collection ejbFindOtherProductsByName(
+			int current, 
+			String term, 
+			int start,
+			int max
+	) throws IDORelationshipException, FinderException {
+		SelectQuery query = getQueryFindOtherProductsByName(current, term, true);
+		return idoFindPKsByQuery(query,max,start);
+	}
+	
 }
