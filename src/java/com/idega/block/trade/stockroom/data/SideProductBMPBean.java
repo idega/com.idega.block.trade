@@ -13,6 +13,7 @@ public class SideProductBMPBean extends GenericEntity implements SideProduct, ID
 	private static final long serialVersionUID = 4260205997684107323L;
 	public static final String RELATION_PRODUCT = ProductBMPBean.getIdColumnName();
 	public static final String RELATION_SIDE_PRODUCT = "SIDE_PRODUCT_ID"; 
+	public static final String COLUMN_ORDER = "ORDER_NUMBER"; 
 	
 	public String getEntityName() {
 		return "sr_side_product";
@@ -22,6 +23,21 @@ public class SideProductBMPBean extends GenericEntity implements SideProduct, ID
 		this.addAttribute( getIDColumnName() );
 		this.addManyToOneRelationship(RELATION_PRODUCT, Product.class);
 		this.addManyToOneRelationship(RELATION_SIDE_PRODUCT, Product.class);
+		this.addAttribute(COLUMN_ORDER, COLUMN_ORDER, true, true, Integer.class);
+	}
+	
+	public void setDefaultValues() {
+		if(getOrder() == null) {
+			setOrder(Integer.valueOf(Integer.MAX_VALUE));
+		}
+	}
+	
+	public Integer getOrder() {
+		return (Integer) getColumnValue(COLUMN_ORDER);
+	}
+	
+	public void setOrder(Integer order) {
+		setColumn(COLUMN_ORDER, order);
 	}
 	
 	public void setProduct(Integer id) {

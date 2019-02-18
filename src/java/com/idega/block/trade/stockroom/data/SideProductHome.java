@@ -16,5 +16,5 @@ public interface SideProductHome  extends IDOHome {
 	)  throws IDOException, IDOLookupException ;
 	
 	public boolean isSideProduct(int productId,int sideProductId);
-	public SideProduct getSidepProduct(int productId,int sideProductId);
+	public SideProduct findSidepProduct(int productId,int sideProductId);
 }

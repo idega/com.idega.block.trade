@@ -24,7 +24,7 @@ public class SideProductHomeImpl  extends IDOFactory implements SideProductHome 
 		return SideProduct.class;
 	}
 	
-	public SideProduct getSidepProduct(int productId,int sideProductId) {
+	public SideProduct findSidepProduct(int productId,int sideProductId) {
 		try{
 			IDOEntity entity = this.idoCheckOutPooledEntity();
 			Object id = ((SideProductBMPBean) entity)
@@ -54,6 +54,7 @@ public class SideProductHomeImpl  extends IDOFactory implements SideProductHome 
 		Collection products = productHome.findOtherProductsByName(current, term, start, max);
 		ArrayList items = new ArrayList(products.size());
 		IWMainApplication iwma = IWMainApplication.getDefaultIWMainApplication();
+		
 		for(Iterator i = products.iterator();i.hasNext();) {
 			Product product = (Product)i.next();
 			SideProductSearchItem item = new SideProductSearchItem();
@@ -74,9 +75,12 @@ public class SideProductHomeImpl  extends IDOFactory implements SideProductHome 
 				);
 			}
 			item.setName(product.getProductName(localeId));
-			item.setInSideProducts(
-					isSideProduct(current, pId)
-			);
+			
+			SideProduct sideProduct = findSidepProduct(current, pId);
+			if(sideProduct != null) {
+				item.setInSideProducts(true);
+				item.setOrder(sideProduct.getOrder());
+			}
 		}
 		return items;
 	}

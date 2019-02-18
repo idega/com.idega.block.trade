@@ -9,6 +9,14 @@ public class SideProductSearchItem implements Serializable{
 	private String name;
 	private String imageUrl;
 	private boolean inSideProducts;
+	private Integer order;
+	
+	public Integer getOrder() {
+		return order;
+	}
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
 	public String getId() {
 		return id;
 	}

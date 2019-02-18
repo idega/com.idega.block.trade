@@ -11,4 +11,6 @@ public interface SideProduct extends IDOLegacyEntity {
 	public void setSideProduct(Integer id);
 	public void setProduct(Product id);
 	public void setSideProduct(Product id);
+	public Integer getOrder();
+	public void setOrder(Integer order);
 }
