@@ -86,4 +86,6 @@ public interface ProductHome extends IDOHome {
 			int current, 
 			String term
 	) throws IDOException;
+	
+	public Collection findSideProducts(int productId);
 }

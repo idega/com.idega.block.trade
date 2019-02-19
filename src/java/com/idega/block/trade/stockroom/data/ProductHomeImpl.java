@@ -227,4 +227,15 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 		return((ProductBMPBean) entity)
 				.countOtherProductsByName(current, term);
 	}
+	public Collection findSideProducts(int productId){
+		try{
+			IDOEntity entity = this.idoCheckOutPooledEntity();
+			Collection ids = ((ProductBMPBean) entity)
+					.ejbFindSideProducts(productId);
+			this.idoCheckInPooledEntity(entity);
+			return this.getEntityCollectionForPrimaryKeys(ids);
+		}catch (FinderException e) {}
+		return Collections.EMPTY_LIST;
+	}
+	
 }

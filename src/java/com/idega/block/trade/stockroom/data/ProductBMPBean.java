@@ -1150,4 +1150,22 @@ private StringBuffer getSQL(boolean onlyValidProducts, int supplierId, int produ
 		return idoFindPKsByQuery(query,max,start);
 	}
 	
+	public Collection ejbFindSideProducts(int productId) throws FinderException {
+		Table product = new Table(this);
+		Table siteProducts = new Table(SideProduct.class);
+		Column pk = new Column(siteProducts, SideProductBMPBean.RELATION_SIDE_PRODUCT + " as " + getIdColumnName());
+		Column order = new Column(siteProducts, SideProductBMPBean.COLUMN_ORDER);
+		Column modificationDate = new Column(product,getColumnNameModificationDate());
+		SelectQuery query = new SelectQuery(product);
+		query.addColumn(pk);
+		query.addColumn(order);
+		query.addColumn(modificationDate);
+		query.addJoin(siteProducts, getIdColumnName(), product, getIdColumnName());
+		query.addCriteria(new MatchCriteria(new Column(product, getIdColumnName()), MatchCriteria.EQUALS, productId));
+		query.addCriteria(new MatchCriteria(new Column(product, getColumnNameIsValid()), MatchCriteria.EQUALS, "Y"));
+		query.addOrder(siteProducts, SideProductBMPBean.COLUMN_ORDER, true);
+		query.addOrder(product, getColumnNameModificationDate(), true);
+		return idoFindPKsByQuery(query);
+	}
+	
 }
