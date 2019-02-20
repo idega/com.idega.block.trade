@@ -1,15 +1,17 @@
 package com.idega.block.trade.stockroom.data;
 
 
-import com.idega.data.IDOException;
-import com.idega.data.IDORelationshipException;
+import java.sql.Date;
 import java.util.Collection;
+
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
-import com.idega.data.IDOLookupException;
-import java.sql.Date;
+
 import com.idega.data.IDOEntity;
+import com.idega.data.IDOException;
 import com.idega.data.IDOFactory;
+import com.idega.data.IDOLookupException;
+import com.idega.data.IDORelationshipException;
 
 public class ProductPriceHomeImpl extends IDOFactory implements ProductPriceHome {
 	public Class getEntityInterfaceClass() {
@@ -151,6 +153,16 @@ public class ProductPriceHomeImpl extends IDOFactory implements ProductPriceHome
 	public ProductPrice findIdentical(ProductPrice price, int currencyID) throws FinderException, IDORelationshipException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Object pk = ((ProductPriceBMPBean) entity).ejbFindIdentical(price, currencyID);
+		this.idoCheckInPooledEntity(entity);
+		return this.findByPrimaryKey(pk);
+	}
+
+	public ProductPrice findSideProductPrice(int productId) throws IDORelationshipException, FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Object pk = ((ProductPriceBMPBean) entity).ejbFindSideProductPrice(productId);
+		if(pk == null){
+			return null;
+		}
 		this.idoCheckInPooledEntity(entity);
 		return this.findByPrimaryKey(pk);
 	}

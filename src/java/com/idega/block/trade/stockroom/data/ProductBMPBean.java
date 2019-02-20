@@ -1,6 +1,7 @@
 package com.idega.block.trade.stockroom.data;
 
 import java.rmi.RemoteException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -38,6 +39,7 @@ import com.idega.data.MetaData;
 import com.idega.data.MetaDataCapable;
 import com.idega.data.query.Column;
 import com.idega.data.query.MatchCriteria;
+import com.idega.data.query.OR;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
 import com.idega.data.query.WildCardColumn;
@@ -1150,20 +1152,47 @@ private StringBuffer getSQL(boolean onlyValidProducts, int supplierId, int produ
 		return idoFindPKsByQuery(query,max,start);
 	}
 	
-	public Collection ejbFindSideProducts(int productId) throws FinderException {
+	public Collection ejbFindSideProducts(int productId) throws FinderException, IDORelationshipException {
 		Table product = new Table(this);
-		Table siteProducts = new Table(SideProduct.class);
-		Column pk = new Column(siteProducts, SideProductBMPBean.RELATION_SIDE_PRODUCT + " as " + getIdColumnName());
-		Column order = new Column(siteProducts, SideProductBMPBean.COLUMN_ORDER);
+		Table sideProducts = new Table(SideProduct.class);
+		Table price = new Table(ProductPrice.class);
+		Table timeframe = new Table(Timeframe.class);
+		
+		Column pk = new Column(sideProducts, SideProductBMPBean.RELATION_SIDE_PRODUCT + " as " + getIdColumnName());
+		Column order = new Column(sideProducts, SideProductBMPBean.COLUMN_ORDER);
 		Column modificationDate = new Column(product,getColumnNameModificationDate());
+		
+		Column isValid = new Column(price,ProductPriceBMPBean.getColumnNameIsValid());
+		Column priceType = new Column(price,ProductPriceBMPBean.getColumnNamePriceType());
+		Column dateTo = new Column(timeframe,TimeframeBMPBean.getTimeframeToColumnName());
+		Column yearly = new Column(timeframe,"YEARLY");
+		
 		SelectQuery query = new SelectQuery(product);
 		query.addColumn(pk);
 		query.addColumn(order);
 		query.addColumn(modificationDate);
-		query.addJoin(siteProducts, getIdColumnName(), product, getIdColumnName());
+		
+		query.addJoin(sideProducts, getIdColumnName(), product, getIdColumnName());
+		query.addJoin(price, getIdColumnName(), sideProducts, SideProductBMPBean.RELATION_SIDE_PRODUCT);
+//		query.addJoin(price, product);
+		query.addJoin(timeframe,price);
+		
 		query.addCriteria(new MatchCriteria(new Column(product, getIdColumnName()), MatchCriteria.EQUALS, productId));
 		query.addCriteria(new MatchCriteria(new Column(product, getColumnNameIsValid()), MatchCriteria.EQUALS, "Y"));
-		query.addOrder(siteProducts, SideProductBMPBean.COLUMN_ORDER, true);
+		query.addCriteria(new MatchCriteria(isValid, MatchCriteria.EQUALS, "Y"));
+		query.addCriteria(new MatchCriteria(priceType, MatchCriteria.EQUALS, 0));
+		query.addCriteria(
+				new OR(
+						new MatchCriteria(dateTo, MatchCriteria.GREATEREQUAL, new Date(new java.util.Date().getTime())), 
+						new MatchCriteria(yearly, MatchCriteria.EQUALS, "Y")
+				)
+		);
+		
+		
+		//TODO: chack if need this (Added just in case of not getting same products multiple times)
+		query.addGroupByColumn(new Column(sideProducts, SideProductBMPBean.RELATION_SIDE_PRODUCT)); 
+		
+		query.addOrder(sideProducts, SideProductBMPBean.COLUMN_ORDER, true);
 		query.addOrder(product, getColumnNameModificationDate(), true);
 		return idoFindPKsByQuery(query);
 	}

@@ -227,7 +227,7 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 		return((ProductBMPBean) entity)
 				.countOtherProductsByName(current, term);
 	}
-	public Collection findSideProducts(int productId){
+	public Collection findSideProducts(int productId) throws IDORelationshipException{
 		try{
 			IDOEntity entity = this.idoCheckOutPooledEntity();
 			Collection ids = ((ProductBMPBean) entity)

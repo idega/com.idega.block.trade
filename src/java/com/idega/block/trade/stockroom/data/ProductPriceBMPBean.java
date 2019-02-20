@@ -28,6 +28,7 @@ import com.idega.data.SimpleQuerier;
 import com.idega.data.query.Column;
 import com.idega.data.query.InCriteria;
 import com.idega.data.query.MatchCriteria;
+import com.idega.data.query.OR;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
 import com.idega.data.query.WildCardColumn;
@@ -658,4 +659,33 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 		super.store();
 	}
 
+	public Object ejbFindSideProductPrice(int productId) throws IDORelationshipException, FinderException{
+		Table price = new Table(this);
+		Table timeframe = new Table(Timeframe.class);
+		Column pk = new Column(price, getIdColumnName());
+		Column pId = new Column(price, ProductBMPBean.getIdColumnName());
+		Column isValid = new Column(price,getColumnNameIsValid());
+		Column priceType = new Column(price,getColumnNamePriceType());
+		Column dateTo = new Column(timeframe,TimeframeBMPBean.getTimeframeToColumnName());
+		Column yearly = new Column(timeframe,"YEARLY");
+		
+		SelectQuery query = new SelectQuery(price);
+		query.addColumn(pk);
+		query.addJoin(timeframe,price);
+		query.addCriteria(new MatchCriteria(pId, MatchCriteria.EQUALS, productId));
+		query.addCriteria(new MatchCriteria(isValid, MatchCriteria.EQUALS, "Y"));
+		query.addCriteria(new MatchCriteria(priceType, MatchCriteria.EQUALS, 0));
+		query.addCriteria(
+				new OR(
+						new MatchCriteria(dateTo, MatchCriteria.GREATEREQUAL, new Date(new java.util.Date().getTime())), 
+						new MatchCriteria(yearly, MatchCriteria.EQUALS, "Y")
+				)
+		);
+		query.addOrder(price, getColumnNamePrice(), false);
+		Collection pks = idoFindPKsByQuery(query,1);
+		if(pks.size() == 0){
+			return null;
+		}
+		return pks.iterator().next();
+	}
 }
