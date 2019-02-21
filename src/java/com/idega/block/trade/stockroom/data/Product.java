@@ -313,4 +313,8 @@ public interface Product extends IDOLegacyEntity, MetaDataCapable {
 	public void removeDiscountCodeGroup(DiscountCodeGroup discountCodeGroup);
 
 	public void addDiscountCodeGroup(DiscountCodeGroup discountCodeGroup);
+	
+	public void setLinkToProduct(String link);
+	
+	public String getLinkToProduct();
 }

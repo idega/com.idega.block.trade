@@ -66,6 +66,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   private static final String COLUMN_REFUNDABLE = "refundable";
   private static final String COLUMN_VOUCHER_COMMENT = "VOUCHER_COMMENT";
   private static final String COLUMN_DISABLED = "DISABLED";
+  public static final String COLUMN_LINK_TO_PRODUCT = "LINK_TO_PRODUCT";
   
   public static final String RELATION_DISCOUNT_CODE_GROUP = "sr_product_dc_group";
   
@@ -101,6 +102,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
     addAttribute( COLUMN_REFUNDABLE, "refundable", true, true, Boolean.class);
     addAttribute(getColumnNameAuthorizationCheck(),"authorization", true, true, Boolean.class);
     addAttribute( COLUMN_VOUCHER_COMMENT, "voucher_comment", true, true, String.class, 1000);
+    addAttribute( COLUMN_LINK_TO_PRODUCT, COLUMN_LINK_TO_PRODUCT, true, true, String.class, 1024);
 
     this.addManyToManyRelationShip( ProductCategory.class, "SR_PRODUCT_PRODUCT_CATEGORY" );
     this.setNullable( getColumnNameFileId(), true );
@@ -1064,6 +1066,14 @@ private StringBuffer getSQL(boolean onlyValidProducts, int supplierId, int produ
 	
 	public String getVoucherComment() {
 		return getStringColumnValue(COLUMN_VOUCHER_COMMENT);
+	}
+	
+	public void setLinkToProduct(String link) {
+		setColumn(COLUMN_LINK_TO_PRODUCT, link);
+	}
+	
+	public String getLinkToProduct() {
+		return getStringColumnValue(COLUMN_LINK_TO_PRODUCT);
 	}
 	
 	public Collection ejbFindBySupplyPool(SupplyPool pool) throws IDORelationshipException, FinderException, IDOCompositePrimaryKeyException {
