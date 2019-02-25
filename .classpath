@@ -25,5 +25,6 @@
 	<classpathentry kind="src" path="/com.idega.block.text"/>
 	<classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.builder-3.1.17.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.idega.block.category"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

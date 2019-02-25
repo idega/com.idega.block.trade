@@ -10,7 +10,9 @@
 package com.idega.block.trade.stockroom.data;
 
 import java.util.Collection;
+
 import javax.ejb.FinderException;
+
 import com.idega.data.IDOHome;
 import com.idega.data.IDORelationshipException;
 import com.idega.user.data.Group;
@@ -59,4 +61,5 @@ public interface SupplierHome extends IDOHome {
 	 */
 	public Collection findAllWithoutCreditCardMerchant(Group supplierManager) throws IDORelationshipException, FinderException;
 	public Collection findAllWithCreditCardMerchant(Group supplierManager) throws IDORelationshipException, FinderException;
+	public Supplier findByProductId(int productId);
 }

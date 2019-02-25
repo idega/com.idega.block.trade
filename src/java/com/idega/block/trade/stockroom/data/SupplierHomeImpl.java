@@ -10,8 +10,11 @@
 package com.idega.block.trade.stockroom.data;
 
 import java.util.Collection;
+
 import javax.ejb.FinderException;
+
 import com.idega.data.IDOFactory;
+import com.idega.data.IDOLookup;
 import com.idega.data.IDORelationshipException;
 import com.idega.user.data.Group;
 
@@ -100,5 +103,17 @@ public class SupplierHomeImpl extends IDOFactory implements SupplierHome {
 		java.util.Collection ids = ((SupplierBMPBean) entity).ejbFindAllWithCreditCardMerchant(supplierManager);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+	
+	public Supplier findByProductId(int productId) {
+//		TODO: make query instead of this
+		try {
+			ProductHome productHome = (ProductHome)IDOLookup.getHome(
+					Product.class
+			);
+			return productHome.findByPrimaryKey(productId).getSupplier();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
