@@ -184,7 +184,7 @@ public class ProductPriceHomeImpl extends IDOFactory implements ProductPriceHome
 		return this.getEntityCollectionForPrimaryKeys(pks);
 	}
 	
-	public float calculateBookingPrice(Collection priceIds)  throws Exception {
+	public float calculateBookingPrice(Collection priceIds)  throws IDOException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		return ((ProductPriceBMPBean) entity).ejbCalculatePrice(priceIds);
 	}

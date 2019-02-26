@@ -692,13 +692,18 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 		return pks.iterator().next();
 	}
 	
-	public float ejbCalculatePrice(Collection priceIds) throws Exception {
+	public float ejbCalculatePrice(Collection priceIds) throws IDOException {
 		StringBuilder sql = new StringBuilder();
-		//TODO: write query
-		String[] lines = SimpleQuerier.executeStringQuery(sql.toString());
-		if(lines.length == 0) {
-			return 0;
+		try {
+			if(true)return 1;
+			//TODO: write query
+			String[] lines = SimpleQuerier.executeStringQuery(sql.toString());
+			if(lines.length == 0) {
+				return 0;
+			}
+			return Float.valueOf(lines[0]).floatValue();
+		}catch (Exception e) {
+			throw new IDOException(e);
 		}
-		return Float.valueOf(lines[0]).floatValue();
 	}
 }
