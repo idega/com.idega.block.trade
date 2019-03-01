@@ -171,23 +171,4 @@ public class ProductPriceHomeImpl extends IDOFactory implements ProductPriceHome
 		return this.findByPrimaryKey(pk);
 	}
 	
-	public Collection findProductPrices(
-			int productId,
-			Collection categoryIds
-	) throws IDORelationshipException, FinderException {
-		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection pks = ((ProductPriceBMPBean) entity).ejbFindProductPrices(
-				productId,
-				categoryIds
-		);
-		this.idoCheckInPooledEntity(entity);
-		return this.getEntityCollectionForPrimaryKeys(pks);
-	}
-	
-	public float calculateBookingPrice(Collection priceIds)  throws IDOException {
-		IDOEntity entity = this.idoCheckOutPooledEntity();
-		return ((ProductPriceBMPBean) entity).ejbCalculatePrice(priceIds);
-	}
-	
-	
 }

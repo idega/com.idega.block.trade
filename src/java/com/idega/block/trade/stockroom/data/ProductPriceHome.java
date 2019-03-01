@@ -59,10 +59,4 @@ public interface ProductPriceHome extends IDOHome {
 			int productId
 	) throws IDORelationshipException, FinderException;
 	
-	public Collection findProductPrices(
-			int productId,
-			Collection categoryIds
-	) throws IDORelationshipException, FinderException;
-	
-	public float calculateBookingPrice(Collection priceIds)  throws IDOException;
 }

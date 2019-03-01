@@ -395,9 +395,6 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 	  return (this.idoGetNumberOfRecords(s) > 0);
   }
 
-  public Collection ejbFindProductPrices(int productId,Collection categoryIds){
-	  return null; //TODO: create this
-  }
   private String getSQLQuery(int productId, int timeframeId, int addressId, int countAsPersonStatus, int currencyId, int[] visibility, String categoryKey, int priceCategoryId, Date exactDate) {
     PriceCategory category = (PriceCategory) GenericEntity.getStaticInstance(PriceCategory.class);
     Timeframe timeframe = (Timeframe) GenericEntity.getStaticInstance(Timeframe.class);
@@ -692,18 +689,4 @@ private Currency getCurrency(int currId) throws IDOLookupException, FinderExcept
 		return pks.iterator().next();
 	}
 	
-	public float ejbCalculatePrice(Collection priceIds) throws IDOException {
-		StringBuilder sql = new StringBuilder();
-		try {
-			if(true)return 1;
-			//TODO: write query
-			String[] lines = SimpleQuerier.executeStringQuery(sql.toString());
-			if(lines.length == 0) {
-				return 0;
-			}
-			return Float.valueOf(lines[0]).floatValue();
-		}catch (Exception e) {
-			throw new IDOException(e);
-		}
-	}
 }
