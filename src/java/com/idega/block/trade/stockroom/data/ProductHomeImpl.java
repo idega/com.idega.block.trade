@@ -227,11 +227,11 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 		return((ProductBMPBean) entity)
 				.countOtherProductsByName(current, term);
 	}
-	public Collection findSideProducts(int productId) throws IDORelationshipException{
+	public Collection findSideProducts(int productId,int start, int max) throws IDORelationshipException{
 		try{
 			IDOEntity entity = this.idoCheckOutPooledEntity();
 			Collection ids = ((ProductBMPBean) entity)
-					.ejbFindSideProducts(productId);
+					.ejbFindSideProducts(productId,start,max);
 			this.idoCheckInPooledEntity(entity);
 			return this.getEntityCollectionForPrimaryKeys(ids);
 		}catch (FinderException e) {}

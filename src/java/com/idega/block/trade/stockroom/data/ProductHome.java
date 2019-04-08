@@ -87,5 +87,5 @@ public interface ProductHome extends IDOHome {
 			String term
 	) throws IDOException;
 	
-	public Collection findSideProducts(int productId) throws IDORelationshipException;
+	public Collection findSideProducts(int productId,int start, int max) throws IDORelationshipException;
 }
