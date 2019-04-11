@@ -1199,8 +1199,43 @@ private StringBuffer getSQL(boolean onlyValidProducts, int supplierId, int produ
 		);
 		
 		
-		//TODO: chack if need this (Added just in case of not getting same products multiple times)
+		//TODO: check if need this (Added just in case of not getting same products multiple times)
 		query.addGroupByColumn(new Column(sideProducts, SideProductBMPBean.RELATION_SIDE_PRODUCT)); 
+		
+		query.addOrder(sideProducts, SideProductBMPBean.COLUMN_ORDER, true);
+		query.addOrder(product, getColumnNameModificationDate(), true);
+		
+		if(max > 0) {
+			if(start > 0) {
+				return idoFindPKsByQuery(query,max,start);
+			}else {
+				return idoFindPKsByQuery(query,max);
+			}
+		}
+		
+		if(start > 0) {
+			return idoFindPKsByQuery(query,-1,start);
+		}
+		return idoFindPKsByQuery(query);
+	}
+	
+	public Collection ejbFindAllSideProducts(int productId,int start, int max) throws FinderException, IDORelationshipException {
+		Table product = new Table(this);
+		Table sideProducts = new Table(SideProduct.class);
+		
+		Column pk = new Column(sideProducts, SideProductBMPBean.RELATION_SIDE_PRODUCT + " as " + getIdColumnName());
+		Column order = new Column(sideProducts, SideProductBMPBean.COLUMN_ORDER);
+		Column modificationDate = new Column(product,getColumnNameModificationDate());
+		
+		SelectQuery query = new SelectQuery(product);
+		query.addColumn(pk);
+		query.addColumn(order);
+		query.addColumn(modificationDate);
+		
+		query.addJoin(sideProducts, getIdColumnName(), product, getIdColumnName());
+		
+		query.addCriteria(new MatchCriteria(new Column(product, getIdColumnName()), MatchCriteria.EQUALS, productId));
+		query.addCriteria(new MatchCriteria(new Column(product, getColumnNameIsValid()), MatchCriteria.EQUALS, "Y"));
 		
 		query.addOrder(sideProducts, SideProductBMPBean.COLUMN_ORDER, true);
 		query.addOrder(product, getColumnNameModificationDate(), true);

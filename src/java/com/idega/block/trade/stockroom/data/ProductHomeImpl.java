@@ -238,4 +238,15 @@ public class ProductHomeImpl extends IDOFactory implements ProductHome {
 		return Collections.EMPTY_LIST;
 	}
 	
+	public Collection findAllSideProducts(int productId,int start, int max) throws IDORelationshipException{
+		try{
+			IDOEntity entity = this.idoCheckOutPooledEntity();
+			Collection ids = ((ProductBMPBean) entity)
+					.ejbFindAllSideProducts(productId,start,max);
+			this.idoCheckInPooledEntity(entity);
+			return this.getEntityCollectionForPrimaryKeys(ids);
+		}catch (FinderException e) {}
+		return Collections.EMPTY_LIST;
+	}
+	
 }
