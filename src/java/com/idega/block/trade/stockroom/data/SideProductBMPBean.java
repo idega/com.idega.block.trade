@@ -9,6 +9,7 @@ import com.idega.data.query.MatchCriteria;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
 
+//TODO: rename to sideads and split to multiple
 public class SideProductBMPBean extends GenericEntity implements SideProduct, IDOLegacyEntity {
 	private static final long serialVersionUID = 4260205997684107323L;
 	public static final String RELATION_PRODUCT = ProductBMPBean.getIdColumnName();
@@ -27,8 +28,12 @@ public class SideProductBMPBean extends GenericEntity implements SideProduct, ID
 	}
 	
 	public void setDefaultValues() {
-		if(getOrder() == null) {
-			setOrder(Integer.valueOf(Integer.MAX_VALUE));
+		Integer order = getOrder();
+		if(order == null) {
+			return;
+		}
+		if(order.intValue() == Integer.MAX_VALUE) {
+			initializeColumnValue(COLUMN_ORDER,null);
 		}
 	}
 	
@@ -72,6 +77,14 @@ public class SideProductBMPBean extends GenericEntity implements SideProduct, ID
 		query.addCriteria(new MatchCriteria(new Column(table, RELATION_PRODUCT), MatchCriteria.EQUALS, productId));
 		query.addCriteria(new MatchCriteria(new Column(table, RELATION_SIDE_PRODUCT), MatchCriteria.EQUALS, sideProductId));
 		return idoFindOnePKByQuery(query);
+	}
+	
+	public void store() {
+		Integer order = getOrder();
+		if(order == null || order.intValue() < 1) {
+			order = Integer.valueOf(Integer.MAX_VALUE);
+		}
+		super.store();
 	}
 	
 }

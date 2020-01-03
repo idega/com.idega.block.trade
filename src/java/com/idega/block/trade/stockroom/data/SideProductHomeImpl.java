@@ -60,11 +60,7 @@ public class SideProductHomeImpl  extends IDOFactory implements SideProductHome 
 			SideProductSearchItem item = new SideProductSearchItem();
 			items.add(item);
 			int pId = product.getID();
-			item.setId(
-					String.valueOf(
-							product.getID()
-					)
-			);
+			item.setId(Integer.valueOf(product.getID()));
 			ICFile picture = product.getFile();
 			if(picture != null){
 				item.setImageUrl(
