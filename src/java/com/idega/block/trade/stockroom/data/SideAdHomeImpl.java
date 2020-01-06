@@ -1,7 +1,12 @@
 package com.idega.block.trade.stockroom.data;
 
-import javax.ejb.CreateException;
+import java.util.Collection;
+import java.util.Collections;
 
+import javax.ejb.CreateException;
+import javax.ejb.FinderException;
+
+import com.idega.data.IDOEntity;
 import com.idega.data.IDOFactory;
 
 public class SideAdHomeImpl extends IDOFactory implements SideAdHome {
@@ -21,5 +26,15 @@ public class SideAdHomeImpl extends IDOFactory implements SideAdHome {
 
 	protected Class getEntityInterfaceClass() {
 		return SideAd.class;
+	}
+
+	public Collection findsideAdsByProduct(int productId,int start, int max){
+		try{
+			IDOEntity entity = this.idoCheckOutPooledEntity();
+			Collection ids = ((SideAdBMPBean) entity).ejbFindSideAdsByProduct(productId,start,max);
+			idoCheckInPooledEntity(entity);
+			return getEntityCollectionForPrimaryKeys(ids);
+		}catch (FinderException e) {}
+		return Collections.EMPTY_LIST;
 	}
 }

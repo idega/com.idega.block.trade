@@ -1,7 +1,15 @@
 package com.idega.block.trade.stockroom.data;
 
+import java.util.Collection;
+
+import javax.ejb.FinderException;
+
 import com.idega.data.GenericEntity;
 import com.idega.data.IDOLegacyEntity;
+import com.idega.data.query.Column;
+import com.idega.data.query.MatchCriteria;
+import com.idega.data.query.SelectQuery;
+import com.idega.data.query.Table;
 
 //TODO: rename to sideads and split to multiple
 public class SideAdBMPBean extends GenericEntity implements 
@@ -28,7 +36,7 @@ public class SideAdBMPBean extends GenericEntity implements
 	public void initializeAttributes() {
 		this.addAttribute( getIDColumnName() );
 		this.addManyToOneRelationship(RELATION_PRODUCT, Product.class);
-		this.addAttribute(COLUMN_ORDER, COLUMN_TYPE, true, true, Integer.class);
+		this.addAttribute(COLUMN_TYPE, COLUMN_TYPE, true, true, Integer.class);
 		this.addAttribute(COLUMN_ORDER, COLUMN_ORDER, true, true, Integer.class);
 		
 //		ConnectedProduct
@@ -116,6 +124,37 @@ public class SideAdBMPBean extends GenericEntity implements
 	public void setFileUrl(String url) {
 		setColumn(FILE_URL, url);
 		
+	}
+	
+	
+	// Queries
+	public Collection ejbFindSideAdsByProduct(int productId,int start, int max) throws FinderException {
+		Table sideAds = new Table(this);
+		
+		Column pk = new Column(sideAds, getIDColumnName());
+		Column order = new Column(sideAds, COLUMN_ORDER);
+		
+		SelectQuery query = new SelectQuery(sideAds);
+		query.addColumn(pk);
+		query.addColumn(order);
+		
+		
+		query.addCriteria(new MatchCriteria(new Column(sideAds, RELATION_PRODUCT), MatchCriteria.EQUALS, productId));
+		
+		query.addOrder(sideAds, SideProductBMPBean.COLUMN_ORDER, true);
+		
+		if(max > 0) {
+			if(start > 0) {
+				return idoFindPKsByQuery(query,max,start);
+			}else {
+				return idoFindPKsByQuery(query,max);
+			}
+		}
+		
+		if(start > 0) {
+			return idoFindPKsByQuery(query,-1,start);
+		}
+		return idoFindPKsByQuery(query);
 	}
 
 }
