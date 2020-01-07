@@ -1,7 +1,8 @@
 package com.idega.block.trade.stockroom.data;
 
 public interface ConnectedProduct extends SideAd {
-	public Product getSideProduct();
-	public void setSideProduct(Integer id);
-	public void setSideProduct(Product id);
+	Product getSideProduct();
+	Integer getSideProductId();
+	void setSideProduct(Integer id);
+	void setSideProduct(Product id);
 }
