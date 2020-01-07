@@ -1,5 +1,6 @@
 package com.idega.block.trade.stockroom.data;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.idega.data.IDOException;
@@ -17,4 +18,5 @@ public interface SideProductHome  extends IDOHome {
 	
 	public boolean isSideProduct(int productId,int sideProductId);
 	public SideProduct findSidepProduct(int productId,int sideProductId);
+	public Collection getSideProducts(int start, int max);
 }

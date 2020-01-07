@@ -1,5 +1,7 @@
 package com.idega.block.trade.stockroom.data;
 
+import java.util.Collection;
+
 import javax.ejb.FinderException;
 
 import com.idega.data.GenericEntity;
@@ -77,6 +79,25 @@ public class SideProductBMPBean extends GenericEntity implements SideProduct, ID
 		query.addCriteria(new MatchCriteria(new Column(table, RELATION_PRODUCT), MatchCriteria.EQUALS, productId));
 		query.addCriteria(new MatchCriteria(new Column(table, RELATION_SIDE_PRODUCT), MatchCriteria.EQUALS, sideProductId));
 		return idoFindOnePKByQuery(query);
+	}
+	
+	public Collection ejbGetSideProducts(int start, int max) throws FinderException {
+		Table table = new Table(this);
+		Column pk = new Column(table, getIDColumnName());
+		SelectQuery query = new SelectQuery(table);
+		query.addColumn(pk);
+		if(max > 0) {
+			if(start > 0) {
+				return idoFindPKsByQuery(query,max,start);
+			}else {
+				return idoFindPKsByQuery(query,max);
+			}
+		}
+		
+		if(start > 0) {
+			return idoFindPKsByQuery(query,-1,start);
+		}
+		return idoFindPKsByQuery(query);
 	}
 	
 	public void store() {
