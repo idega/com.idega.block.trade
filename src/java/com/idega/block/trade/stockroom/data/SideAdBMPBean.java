@@ -85,6 +85,14 @@ public class SideAdBMPBean extends GenericEntity implements
 		return (Product) getColumnValue(RELATION_PRODUCT);
 	}
 	
+	public Integer getProductId() {
+		int id = getIntColumnValue(RELATION_PRODUCT);
+		if(id > 0) {
+			return new Integer(id);
+		}
+		return null;
+	}
+	
 	public void store() {
 		Integer order = getOrder();
 		if(order == null || order.intValue() < 1) {

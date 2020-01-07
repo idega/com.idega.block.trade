@@ -37,4 +37,27 @@ public class SideAdHomeImpl extends IDOFactory implements SideAdHome {
 		}catch (FinderException e) {}
 		return Collections.EMPTY_LIST;
 	}
+
+	public SideAd findByPrimaryKey(Object pk) {
+		try {
+			return (SideAd) findByPrimaryKeyIDO(pk);
+		} catch (FinderException e) {}
+		return null;
+	}
+
+	public FileLinkAd findFileLinkAdByPk(Object pk) {
+		SideAd sideAd = findByPrimaryKey(pk);
+		if((sideAd == null) || (!SideAd.TYPE_FILE_LINK.equals(sideAd.getType()))) {
+			return null;
+		}
+		return (FileLinkAd) sideAd;
+	}
+
+	public ConnectedProduct findConnectedProductByPk(Object pk) {
+		SideAd sideAd = findByPrimaryKey(pk);
+		if((sideAd == null) || (!SideAd.TYPE_SIDE_PRODUCT.equals(sideAd.getType()))) {
+			return null;
+		}
+		return (ConnectedProduct) sideAd;
+	}
 }

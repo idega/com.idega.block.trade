@@ -9,6 +9,7 @@ public interface SideAd extends IDOLegacyEntity {
 	public static final Integer TYPE_SIDE_PRODUCT = new Integer(1);
 	
 	public Product getProduct();
+	public Integer getProductId();
 	public void setProduct(Integer id);
 	public void setProduct(Product id);
 	
