@@ -28,6 +28,11 @@ public class SideAdBMPBean extends GenericEntity implements
 //	FileLinkAd
 	public static final String FILE_URL = "FILE_URL"; 
 	public static final String AD_URL = "AD_URL"; 
+	public static final String AD_NAME = "AD_NAME";
+	public static final String AD_INFO = "AD_INFO";
+	public static final String AD_BOOKING_URL = "AD_BOOKING_URL";
+	
+	
 	
 	public String getEntityName() {
 		return "sr_side_ad";
@@ -45,6 +50,9 @@ public class SideAdBMPBean extends GenericEntity implements
 //		FileLinkAd
 		this.addAttribute(FILE_URL, FILE_URL, true, true, String.class,1024);
 		this.addAttribute(AD_URL, AD_URL, true, true, String.class,1024);
+		this.addAttribute(AD_NAME, AD_NAME, true, true, String.class,1024);
+		this.addAttribute(AD_INFO, AD_INFO, true, true, String.class,1024);
+		this.addAttribute(AD_BOOKING_URL, AD_BOOKING_URL, true, true, String.class,1024);
 	}
 	
 	public void setDefaultValues() {
@@ -124,15 +132,6 @@ public class SideAdBMPBean extends GenericEntity implements
 	}
 	
 //	FileLinkAd
-	public String getAdUrl() {
-		return (String) getColumnValue(AD_URL);
-	}
-
-	public void setAdUrl(String url) {
-		setColumn(AD_URL, url);
-		
-	}
-	
 	public String getFileUrl() {
 		return (String) getColumnValue(FILE_URL);
 	}
@@ -142,6 +141,40 @@ public class SideAdBMPBean extends GenericEntity implements
 		
 	}
 	
+	public String getAdUrl() {
+		return (String) getColumnValue(AD_URL);
+	}
+
+	public void setAdUrl(String url) {
+		setColumn(AD_URL, url);
+		
+	}
+	
+	public String getAdName() {
+		return (String) getColumnValue(AD_NAME);
+	}
+
+	public void setAdName(String name) {
+		setColumn(AD_NAME, name);
+		
+	}
+	
+	public String getAdInfo() {
+		return (String) getColumnValue(AD_INFO);
+	}
+
+	public void setAdInfo(String info) {
+		setColumn(AD_INFO, info);
+	}
+	
+	public String getBookingUrl() {
+		return (String) getColumnValue(AD_BOOKING_URL);
+	}
+
+	public void setBookingUrl(String url) {
+		setColumn(AD_BOOKING_URL, url);
+	}
+
 	
 	// Queries
 	public Collection ejbFindSideAdsByProduct(int productId,int start, int max) throws FinderException {
