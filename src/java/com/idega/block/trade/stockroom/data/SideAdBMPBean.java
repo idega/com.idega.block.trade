@@ -55,16 +55,6 @@ public class SideAdBMPBean extends GenericEntity implements
 		this.addAttribute(AD_BOOKING_URL, AD_BOOKING_URL, true, true, String.class,1024);
 	}
 	
-	public void setDefaultValues() {
-		Integer order = getOrder();
-		if(order == null) {
-			return;
-		}
-		if(order.intValue() == Integer.MAX_VALUE) {
-			initializeColumnValue(COLUMN_ORDER,null);
-		}
-	}
-	
 	public Integer getType() {
 		return (Integer) getColumnValue(COLUMN_TYPE);
 	}
@@ -74,7 +64,14 @@ public class SideAdBMPBean extends GenericEntity implements
 	}
 	
 	public Integer getOrder() {
-		return (Integer) getColumnValue(COLUMN_ORDER);
+		Integer order = (Integer) getColumnValue(COLUMN_ORDER);
+		if(order == null) {
+			return null;
+		}
+		if(order.intValue() == Integer.MAX_VALUE) {
+			return null;
+		}
+		return order;
 	}
 	
 	public void setOrder(Integer order) {
@@ -104,7 +101,7 @@ public class SideAdBMPBean extends GenericEntity implements
 	public void store() {
 		Integer order = getOrder();
 		if(order == null || order.intValue() < 1) {
-			order = Integer.valueOf(Integer.MAX_VALUE);
+			this.setOrder(Integer.valueOf(Integer.MAX_VALUE));
 		}
 		super.store();
 	}
