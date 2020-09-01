@@ -16,17 +16,25 @@ import com.idega.user.data.bean.Group;
 @Entity
 @Table(name = CreditCardInformation.ENTITY_NAME)
 @NamedQueries({
-
-		@NamedQuery(name = CreditCardInformation.findBySupplierManager, query = "select cci from CreditCardInformation cci left join cci.supplierManager where cci.supplierManager.groupID = :"
-				+ CreditCardInformation.supplierProp),
-		@NamedQuery(name = CreditCardInformation.findByMerchant, query = "select cci from CreditCardInformation cci where cci."
-				+ CreditCardInformation.mpkProp + " = :" + CreditCardInformation.mpkProp + " and cci."
-				+ CreditCardInformation.typeProp + " = :" + CreditCardInformation.typeProp),
-		@NamedQuery(name = CreditCardInformation.findByPrimaryKey, query = "select cci from CreditCardInformation cci where cci."
-				+ CreditCardInformation.idProp + " = :" + CreditCardInformation.idProp) })
+	@NamedQuery(
+			name = CreditCardInformation.findBySupplierManager,
+			query = "select cci from CreditCardInformation cci left join cci.supplierManager where cci.supplierManager.groupID = :" + CreditCardInformation.supplierProp
+	),
+	@NamedQuery(
+			name = CreditCardInformation.findByMerchant,
+			query = "select cci from CreditCardInformation cci where cci." + CreditCardInformation.mpkProp + " = :" + CreditCardInformation.mpkProp + " and cci."
+					+ CreditCardInformation.typeProp + " = :" + CreditCardInformation.typeProp
+	),
+	@NamedQuery(
+			name = CreditCardInformation.findByPrimaryKey,
+			query = "select cci from CreditCardInformation cci where cci." + CreditCardInformation.idProp + " = :" + CreditCardInformation.idProp
+	)
+})
 
 public class CreditCardInformation {
+
 	public static final String ENTITY_NAME = "CC_INFORMATION";
+
 	private static final String COLUMN_TYPE = "CC_TYPE";
 	private static final String COLUMN_MERCHANT_PK = "CC_MERCHANT_PK";
 	private static final String COLUMN_SUPPLIER_MANAGER_ID = "SUPPLIER_MANAGER_ID";
@@ -84,6 +92,11 @@ public class CreditCardInformation {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	@Override
+	public String toString() {
+		return "ID: " + getId();
 	}
 
 }
