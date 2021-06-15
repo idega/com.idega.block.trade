@@ -664,9 +664,9 @@ public class StockroomBusinessBean extends IBOServiceBean implements StockroomBu
 
 	public boolean isBetween(IWTimestamp from, IWTimestamp to, IWTimestamp stampToCheck, boolean yearly, boolean bordersCount) {
 		if(stampToCheck == null){
-			getLogger().log(Level.WARNING, "Time stamp to check is not provided");
 			return false;
 		}
+		
 		from.setAsDate();
 		to.setAsDate();
 		if (yearly) {
