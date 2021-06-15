@@ -595,7 +595,7 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   }
   
   public void setPublicDisplay(Product product, boolean display) {
-	  if (product == nulll) {
+	  if (product == null) {
 		  return;
 	  }
 	  
