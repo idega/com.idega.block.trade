@@ -2,6 +2,7 @@ package com.idega.block.trade.stockroom.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -60,11 +61,7 @@ public class SideProductHomeImpl  extends IDOFactory implements SideProductHome 
 			SideProductSearchItem item = new SideProductSearchItem();
 			items.add(item);
 			int pId = product.getID();
-			item.setId(
-					String.valueOf(
-							product.getID()
-					)
-			);
+			item.setId(Integer.valueOf(product.getID()));
 			ICFile picture = product.getFile();
 			if(picture != null){
 				item.setImageUrl(
@@ -83,6 +80,16 @@ public class SideProductHomeImpl  extends IDOFactory implements SideProductHome 
 			}
 		}
 		return items;
+	}
+
+	public Collection getSideProducts(int start, int max) {
+		try{
+			IDOEntity entity = this.idoCheckOutPooledEntity();
+			Collection ids = ((SideProductBMPBean) entity).ejbGetSideProducts(start, max);
+			idoCheckInPooledEntity(entity);
+			return getEntityCollectionForPrimaryKeys(ids);
+		}catch (FinderException e) {}
+		return Collections.EMPTY_LIST;
 	}
 
 }

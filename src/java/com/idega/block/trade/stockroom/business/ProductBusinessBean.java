@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.ejb.EJBException;
@@ -30,6 +31,7 @@ import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
 import com.idega.business.IBOServiceBean;
+import com.idega.core.cache.IWCacheManager2;
 import com.idega.core.localisation.business.ICLocaleBusiness;
 import com.idega.core.localisation.presentation.ICLocalePresentation;
 import com.idega.data.EntityFinder;
@@ -65,7 +67,17 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   private static String productsApplication = "productsApplication_";
   
   public static final String COMMAND_CLEAR_CACHE = "clearProductsCache";
-  public HashMap products = new HashMap();
+  private Map getProductsMap() {
+	  IWCacheManager2 iwcm = IWCacheManager2.getInstance(getIWMainApplication());
+	  return iwcm.getCache(
+			  "ProductBusinessBean.products",
+			  defaultCacheSize,
+			  overFlowToDisk,
+			  eternal,
+			  defaultTTLSeconds,
+			  defaultTTLSeconds
+	  );
+  }
 
   public ProductBusinessBean() {
   }
@@ -153,11 +165,11 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   }
 
   public Product getProduct(int productId) throws RemoteException, FinderException{
-    Object obj = this.products.get(Integer.toString(productId));
+    Object obj = this.getProductsMap().get(Integer.toString(productId));
     if (obj == null) {
       Product prod = getProductHome().findByPrimaryKey(new Integer(productId));
 //      Product prod = ((com.idega.block.trade.stockroom.data.ProductHome)com.idega.data.IDOLookup.getHomeLegacy(Product.class)).findByPrimaryKeyLegacy(productId);
-      this.products.put(Integer.toString(productId), prod);
+      this.getProductsMap().put(Integer.toString(productId), prod);
       //System.err.println("ProductBusiness : creating product : "+productId);
       return prod;
     }else {
@@ -170,9 +182,9 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 	  return invalidateProductCache(productID, null);
   }
   public boolean invalidateProductCache(String productID, String remoteDomainToExclude) {
-	  this.products.remove(productID);
+	  this.getProductsMap().remove(productID);
 	  this.timeframeMap.remove(productID);
-	  this.publicDisplay.remove(productID);
+	  this.getPublicDisplayMap().remove(productID);
 	    System.out.println("[ProductBusiness] invalidateProductCache for product "+productID);
 	    try {
 			Collection coll = getStockroomBusiness().getService_PortTypes(remoteDomainToExclude);
@@ -557,21 +569,37 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
 	}
   }
   
-  private HashMap publicDisplay = new HashMap();
+  private static final int defaultTTLSeconds = 24*60*60;
+  private static final int defaultCacheSize = 10000;
+  private static final boolean eternal=false;
+  private static final boolean overFlowToDisk=true;
+  
+  
+  private Map getPublicDisplayMap() {
+	  IWCacheManager2 iwcm = IWCacheManager2.getInstance(getIWMainApplication());
+	  return iwcm.getCache(
+			  "ProductBusinessBean.publicDisplay",
+			  defaultCacheSize,
+			  overFlowToDisk,
+			  eternal,
+			  defaultTTLSeconds,
+			  defaultTTLSeconds
+	  );
+  }
   
   public Boolean getPublicDisplay(Product product) {
 	  if (product != null) {
-		  return (Boolean) publicDisplay.get(product.getPrimaryKey().toString());
+		  return (Boolean) getPublicDisplayMap().get(product.getPrimaryKey().toString());
 	  }
 	  return null;
   }
   
   public void setPublicDisplay(Product product, boolean display) {
-	  if (product == null || publicDisplay == null) {
+	  if (product == nulll) {
 		  return;
 	  }
 	  
-	  publicDisplay.put(product.getPrimaryKey().toString(), new Boolean(display));
+	  getPublicDisplayMap().put(product.getPrimaryKey().toString(), new Boolean(display));
   }
   
   public boolean displayProductForPublic(Product product) {
