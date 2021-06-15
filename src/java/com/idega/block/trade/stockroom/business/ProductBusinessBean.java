@@ -567,6 +567,10 @@ public class ProductBusinessBean extends IBOServiceBean implements ProductBusine
   }
   
   public void setPublicDisplay(Product product, boolean display) {
+	  if (product == null || publicDisplay == null) {
+		  return;
+	  }
+	  
 	  publicDisplay.put(product.getPrimaryKey().toString(), new Boolean(display));
   }
   
