@@ -29,4 +29,6 @@ public class TradeConstants {
 	public static final String ROLE_CURRENCY_SETTER = "supp_man_currency_setter";
 	public static final String ROLE_SAVE_CUSTOMER_INFO = "supp_man_save_customer_info";
 	public static final String ROLE_DISCOUNTS = "supp_man_discounts";
+	public static final String ROLE_SUPPLIER_MANAGER_OVERBOOKING = "supp_man_overbooking";
+
 }
