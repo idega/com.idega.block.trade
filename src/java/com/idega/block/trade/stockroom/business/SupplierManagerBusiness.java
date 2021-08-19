@@ -147,6 +147,8 @@ public interface SupplierManagerBusiness extends IBOService {
 	 * @see com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean#getSupplierManager
 	 */
 	public Group getSupplierManager(User user) throws RemoteException;
+	
+	public Group getSupplierManagerStaff(User user) throws RemoteException;
 
 	/**
 	 * @see com.idega.block.trade.stockroom.business.SupplierManagerBusinessBean#getGroupBusiness
