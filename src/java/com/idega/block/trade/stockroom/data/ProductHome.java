@@ -1,15 +1,17 @@
 package com.idega.block.trade.stockroom.data;
 
 
-import com.idega.data.IDOException;
-import com.idega.data.IDORelationshipException;
-import java.util.Collection;
-import javax.ejb.CreateException;
-import com.idega.data.IDOHome;
 import java.sql.SQLException;
-import com.idega.data.IDOCompositePrimaryKeyException;
-import com.idega.util.IWTimestamp;
+import java.util.Collection;
+
+import javax.ejb.CreateException;
 import javax.ejb.FinderException;
+
+import com.idega.data.IDOCompositePrimaryKeyException;
+import com.idega.data.IDOException;
+import com.idega.data.IDOHome;
+import com.idega.data.IDORelationshipException;
+import com.idega.util.IWTimestamp;
 
 public interface ProductHome extends IDOHome {
 	public Product create() throws CreateException;
@@ -73,4 +75,20 @@ public interface ProductHome extends IDOHome {
 
 	public Collection findProducts(boolean onlyValidProducts, int supplierId,
 			int firstEntity, int lastEntity, boolean onlyEnabled) throws FinderException;
+	
+	public Collection findOtherProductsByName(
+			int current, 
+			String term, 
+			int start,
+			int max
+	) throws IDOException;
+	public int countOtherProductsByName(
+			int current, 
+			String term
+	) throws IDOException;
+	
+	public Collection findSideProducts(int productId,int start, int max) throws IDORelationshipException;
+	
+	public Collection findAllSideProducts(int productId,int start, int max) throws IDORelationshipException;
+
 }

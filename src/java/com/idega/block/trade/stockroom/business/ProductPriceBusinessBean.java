@@ -14,10 +14,12 @@ import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Vector;
 
 import javax.ejb.FinderException;
@@ -528,6 +530,12 @@ public class ProductPriceBusinessBean extends IBOServiceBean  implements Product
 		catch (IDOLookupException e) {
 			throw new IDORuntimeException(e);
 		}
+	}
+	
+	public String formatPrice(float price) {
+		NumberFormat format = NumberFormat.getInstance(Locale.GERMAN);
+		format.setMaximumFractionDigits(0);
+		return format.format(price);
 	}
 
 }

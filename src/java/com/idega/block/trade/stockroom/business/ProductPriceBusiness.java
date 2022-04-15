@@ -86,5 +86,6 @@ public interface ProductPriceBusiness extends IBOService {
 	public float getPrice(int productPriceId, int productId, int priceCategoryId, int currencyId, Timestamp time, int timeframeId, int addressId, Date exactDate) throws SQLException, RemoteException;
   	public float getPrice(ProductPrice price, Timestamp time, int timeframeId, int addressId) throws RemoteException, SQLException;
 
+  	public String formatPrice(float price);
 
 }

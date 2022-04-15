@@ -17,4 +17,5 @@ public interface Timeframe extends com.idega.data.IDOLegacyEntity
  public void setName(java.lang.String p0);
  public void setTo(java.sql.Timestamp p0);
  public void setYearly(boolean p0);
+ public boolean isIn(long time);
 }

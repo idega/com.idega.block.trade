@@ -15,6 +15,7 @@ import com.idega.block.trade.stockroom.data.PriceCategory;
 import com.idega.block.trade.stockroom.data.Reseller;
 import com.idega.block.trade.stockroom.data.Supplier;
 import com.idega.block.trade.stockroom.data.SupplierStaffGroup;
+import com.idega.block.trade.stockroom.data.SupplierStaffGroupBMPBean;
 import com.idega.block.trade.stockroom.data.SupplierStaffGroupHome;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
@@ -42,7 +43,6 @@ import com.idega.user.data.Group;
 import com.idega.user.data.GroupHome;
 import com.idega.user.data.User;
 import com.idega.util.IWTimestamp;
-
 
 /**
  * @author gimmi
@@ -654,7 +654,15 @@ public class SupplierManagerBusinessBean extends IBOServiceBean implements Suppl
 
 	@Override
 	public Group getSupplierManager(User user) throws RemoteException {
-		Collection coll = getGroupBusiness().getParentGroupsRecursive(user, new String[]{SUPPLIER_MANAGER_GROUP_TYPE}, true);
+		return getParentGroupByTypes(user, new String[] {SUPPLIER_MANAGER_GROUP_TYPE});
+	}
+	
+	public Group getSupplierManagerStaff(User user) throws RemoteException {
+		return getParentGroupByTypes(user, new String[] {SupplierStaffGroupBMPBean.GROUP_TYPE_VALUE});
+	}
+	
+	private Group getParentGroupByTypes(User user, String[] types) throws RemoteException {
+		Collection coll = getGroupBusiness().getParentGroupsRecursive(user, types, true);
 		if (coll != null && !coll.isEmpty()) {
 			Iterator iter = coll.iterator();
 			return (Group) iter.next();

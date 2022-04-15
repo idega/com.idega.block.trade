@@ -1,6 +1,7 @@
 package com.idega.block.trade.stockroom.data;
 
 import java.rmi.RemoteException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -38,6 +39,7 @@ import com.idega.data.MetaData;
 import com.idega.data.MetaDataCapable;
 import com.idega.data.query.Column;
 import com.idega.data.query.MatchCriteria;
+import com.idega.data.query.OR;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
 import com.idega.data.query.WildCardColumn;
@@ -64,6 +66,7 @@ public class ProductBMPBean extends GenericEntity implements Product, IDOLegacyE
   private static final String COLUMN_REFUNDABLE = "refundable";
   private static final String COLUMN_VOUCHER_COMMENT = "VOUCHER_COMMENT";
   private static final String COLUMN_DISABLED = "DISABLED";
+  public static final String COLUMN_LINK_TO_PRODUCT = "LINK_TO_PRODUCT";
 
   public static final String RELATION_DISCOUNT_CODE_GROUP = "sr_product_dc_group";
 
@@ -101,6 +104,7 @@ public void initializeAttributes() {
     addAttribute( COLUMN_REFUNDABLE, "refundable", true, true, Boolean.class);
     addAttribute(getColumnNameAuthorizationCheck(),"authorization", true, true, Boolean.class);
     addAttribute( COLUMN_VOUCHER_COMMENT, "voucher_comment", true, true, String.class, 1000);
+    addAttribute( COLUMN_LINK_TO_PRODUCT, COLUMN_LINK_TO_PRODUCT, true, true, String.class, 1024);
 
     this.addManyToManyRelationShip( ProductCategory.class, "SR_PRODUCT_PRODUCT_CATEGORY" );
     this.setNullable( getColumnNameFileId(), true );
@@ -1129,6 +1133,16 @@ public void addText(TxText text) throws IDOAddRelationshipException{
 		return getStringColumnValue(COLUMN_VOUCHER_COMMENT);
 	}
 
+	@Override
+	public void setLinkToProduct(String link) {
+		setColumn(COLUMN_LINK_TO_PRODUCT, link);
+	}
+
+	@Override
+	public String getLinkToProduct() {
+		return getStringColumnValue(COLUMN_LINK_TO_PRODUCT);
+	}
+
 	public Collection ejbFindBySupplyPool(SupplyPool pool) throws IDORelationshipException, FinderException, IDOCompositePrimaryKeyException {
 
 		Table table = new Table(this);
@@ -1174,4 +1188,141 @@ public void addText(TxText text) throws IDOAddRelationshipException{
 	public void addVoucherAd(VoucherAd voucherAd) throws IDOAddRelationshipException {
 		idoAddTo(voucherAd);
 	}
+
+	private SelectQuery getQueryFindOtherProductsByName(
+			int current,
+			String term,
+			boolean order
+	) throws IDORelationshipException {
+		Table table = new Table(this);
+		Table lt = new Table(LocalizedText.class);
+
+		Column pk = new Column(table, getIDColumnName());
+		pk.setAsDistinct();
+		SelectQuery query = new SelectQuery(table);
+		query.addColumn(pk);
+		query.addCriteria(new MatchCriteria(new Column(table, getIdColumnName()), MatchCriteria.NOTEQUALS, current));
+		query.addCriteria(new MatchCriteria(new Column(table, getColumnNameIsValid()), MatchCriteria.EQUALS, "Y"));
+		if(!StringUtil.isEmpty(term)) {
+			query.addJoin(table, lt);
+			query.addCriteria(new MatchCriteria(new Column(lt, LocalizedTextBMPBean.getColumnNameHeadline()), MatchCriteria.LIKE, "%"+term+"%"));
+		}
+		if(order) {
+			query.addOrder(table, getColumnNameCreationDate(), false);
+		}
+		return query;
+	}
+
+	public int countOtherProductsByName(
+			int current,
+			String term
+	) throws IDOException{
+		SelectQuery query = getQueryFindOtherProductsByName(current, term, false);
+		query.setAsCountQuery(true);
+		return idoGetNumberOfRecords(query);
+	}
+	public Collection ejbFindOtherProductsByName(
+			int current,
+			String term,
+			int start,
+			int max
+	) throws IDORelationshipException, FinderException {
+		SelectQuery query = getQueryFindOtherProductsByName(current, term, true);
+		return idoFindPKsByQuery(query,max,start);
+	}
+
+	public Collection ejbFindSideProducts(int productId,int start, int max) throws FinderException, IDORelationshipException {
+		Table product = new Table(this);
+		Table sideProducts = new Table(SideProduct.class);
+		Table price = new Table(ProductPrice.class);
+		Table timeframe = new Table(Timeframe.class);
+
+		Column pk = new Column(sideProducts, SideProductBMPBean.RELATION_SIDE_PRODUCT + " as " + getIdColumnName());
+		Column order = new Column(sideProducts, SideProductBMPBean.COLUMN_ORDER);
+		Column modificationDate = new Column(product,getColumnNameModificationDate());
+
+		Column isValid = new Column(price,ProductPriceBMPBean.getColumnNameIsValid());
+		Column priceType = new Column(price,ProductPriceBMPBean.getColumnNamePriceType());
+		Column dateTo = new Column(timeframe,TimeframeBMPBean.getTimeframeToColumnName());
+		Column yearly = new Column(timeframe,"YEARLY");
+
+		SelectQuery query = new SelectQuery(product);
+		query.addColumn(pk);
+		query.addColumn(order);
+		query.addColumn(modificationDate);
+
+		query.addJoin(sideProducts, getIdColumnName(), product, getIdColumnName());
+		query.addJoin(price, getIdColumnName(), sideProducts, SideProductBMPBean.RELATION_SIDE_PRODUCT);
+//		query.addJoin(price, product);
+		query.addJoin(timeframe,price);
+
+		query.addCriteria(new MatchCriteria(new Column(product, getIdColumnName()), MatchCriteria.EQUALS, productId));
+		query.addCriteria(new MatchCriteria(new Column(product, getColumnNameIsValid()), MatchCriteria.EQUALS, "Y"));
+		query.addCriteria(new MatchCriteria(isValid, MatchCriteria.EQUALS, "Y"));
+		query.addCriteria(new MatchCriteria(priceType, MatchCriteria.EQUALS, 0));
+		query.addCriteria(
+				new OR(
+						new MatchCriteria(dateTo, MatchCriteria.GREATEREQUAL, new Date(new java.util.Date().getTime())),
+						new MatchCriteria(yearly, MatchCriteria.EQUALS, "Y")
+				)
+		);
+
+
+		//TODO: check if need this (Added just in case of not getting same products multiple times)
+		query.addGroupByColumn(new Column(sideProducts, SideProductBMPBean.RELATION_SIDE_PRODUCT));
+
+		query.addOrder(sideProducts, SideProductBMPBean.COLUMN_ORDER, true);
+		query.addOrder(product, getColumnNameModificationDate(), true);
+
+		if(max > 0) {
+			if(start > 0) {
+				return idoFindPKsByQuery(query,max,start);
+			}else {
+				return idoFindPKsByQuery(query,max);
+			}
+		}
+
+		if(start > 0) {
+			return idoFindPKsByQuery(query,-1,start);
+		}
+		return idoFindPKsByQuery(query);
+	}
+
+	public Collection ejbFindAllSideProducts(int productId,int start, int max) throws FinderException, IDORelationshipException {
+		Table product = new Table(this);
+		Table sideProducts = new Table(SideProduct.class);
+
+		Column pk = new Column(sideProducts, SideProductBMPBean.RELATION_SIDE_PRODUCT + " as " + getIdColumnName());
+		Column order = new Column(sideProducts, SideProductBMPBean.COLUMN_ORDER);
+		Column modificationDate = new Column(product,getColumnNameModificationDate());
+
+		SelectQuery query = new SelectQuery(product);
+		query.addColumn(pk);
+		query.addColumn(order);
+		query.addColumn(modificationDate);
+
+		query.addJoin(sideProducts, getIdColumnName(), product, getIdColumnName());
+
+		query.addCriteria(new MatchCriteria(new Column(product, getIdColumnName()), MatchCriteria.EQUALS, productId));
+		query.addCriteria(new MatchCriteria(new Column(product, getColumnNameIsValid()), MatchCriteria.EQUALS, "Y"));
+
+		query.addOrder(sideProducts, SideProductBMPBean.COLUMN_ORDER, true);
+		query.addOrder(product, getColumnNameModificationDate(), true);
+
+		if(max > 0) {
+			if(start > 0) {
+				return idoFindPKsByQuery(query,max,start);
+			}else {
+				return idoFindPKsByQuery(query,max);
+			}
+		}
+
+		if(start > 0) {
+			return idoFindPKsByQuery(query,-1,start);
+		}
+		return idoFindPKsByQuery(query);
+	}
+
+
+
 }

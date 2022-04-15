@@ -3,6 +3,7 @@ package com.idega.block.trade.stockroom.data;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Locale;
+
 import com.idega.util.IWTimestamp;
 import com.idega.util.LocaleUtil;
 
@@ -107,6 +108,11 @@ public class TimeframeBMPBean extends com.idega.data.GenericEntity implements co
   public static String getTimeframeToColumnName() {return "TIMEFRAME_TO";}
   public static String getTimeframeFromColumnName() {return "TIMEFRAME_FROM";}
   public static String getYearlyColumnName() {return "YEARLY";}
+  
+  public boolean isIn(long time) {
+	  return (time >= getFrom().getTime()) 
+			  && (time <= getTo().getTime());
+  }
 
 }
 
