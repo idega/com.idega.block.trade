@@ -17,14 +17,17 @@ import com.idega.data.IDOFactory;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.idegaweb.IWMainApplication;
+import com.idega.util.CoreUtil;
 
 public class SideProductHomeImpl  extends IDOFactory implements SideProductHome {
 	private static final long serialVersionUID = 5655532636707285527L;
 
+	@Override
 	protected Class getEntityInterfaceClass() {
 		return SideProduct.class;
 	}
-	
+
+	@Override
 	public SideProduct findSidepProduct(int productId,int sideProductId) {
 		try{
 			IDOEntity entity = this.idoCheckOutPooledEntity();
@@ -35,6 +38,7 @@ public class SideProductHomeImpl  extends IDOFactory implements SideProductHome 
 		}catch (FinderException e) {}
 		return null;
 	}
+	@Override
 	public boolean isSideProduct(int productId,int sideProductId) {
 		try {
 			IDOEntity entity = this.idoCheckOutPooledEntity();
@@ -44,9 +48,10 @@ public class SideProductHomeImpl  extends IDOFactory implements SideProductHome 
 		}catch (FinderException e) {}
 		return false;
 	}
+	@Override
 	public List findSideProductSearchItem(
-			int current, 
-			String term, 
+			int current,
+			String term,
 			int localeId,
 			int start,
 			int max
@@ -55,7 +60,7 @@ public class SideProductHomeImpl  extends IDOFactory implements SideProductHome 
 		Collection products = productHome.findOtherProductsByName(current, term, start, max);
 		ArrayList items = new ArrayList(products.size());
 		IWMainApplication iwma = IWMainApplication.getDefaultIWMainApplication();
-		
+
 		for(Iterator i = products.iterator();i.hasNext();) {
 			Product product = (Product)i.next();
 			SideProductSearchItem item = new SideProductSearchItem();
@@ -66,13 +71,14 @@ public class SideProductHomeImpl  extends IDOFactory implements SideProductHome 
 			if(picture != null){
 				item.setImageUrl(
 						MediaBusiness.getMediaURL(
-								picture, 
+								CoreUtil.getIWContext(),
+								picture,
 								iwma
 						)
 				);
 			}
 			item.setName(product.getProductName(localeId));
-			
+
 			SideProduct sideProduct = findSidepProduct(current, pId);
 			if(sideProduct != null) {
 				item.setInSideProducts(true);
@@ -82,6 +88,7 @@ public class SideProductHomeImpl  extends IDOFactory implements SideProductHome 
 		return items;
 	}
 
+	@Override
 	public Collection getSideProducts(int start, int max) {
 		try{
 			IDOEntity entity = this.idoCheckOutPooledEntity();
